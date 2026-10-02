@@ -33,6 +33,20 @@ cp config/athlete.example.json config/athlete.local.json
 
 `config/athlete.local.json` está en `.gitignore`.
 
+## Instalar en el móvil y usar sin conexión
+
+La app es una PWA: se instala como una aplicación y funciona sin conexión una vez cargada.
+
+1. Abre la app en Chrome (Android u ordenador) con conexión.
+2. Menú ⋮ → **Instalar aplicación** (o «Añadir a pantalla de inicio»).
+3. En **Ajustes**, importa tu `config/athlete.local.json`. Cada dispositivo guarda sus propios datos.
+
+Sin conexión funciona todo: biblioteca, editor, player, contador de pulso, resumen e historial. La primera carga necesita red; después, la app entera (código, fuentes e iconos) queda guardada en el dispositivo.
+
+Al pedir almacenamiento persistente, el navegador no borra tus sesiones ni el historial aunque le falte espacio. En **Ajustes → Datos en este dispositivo** puedes ver si lo ha concedido; con la app instalada suele concederlo.
+
+**Actualizaciones:** cuando hay una versión nueva aparece el aviso «Nueva versión disponible» con el botón **Actualizar**. La app nunca se recarga sola, y el aviso no sale mientras haces una sesión o editas una.
+
 ## Despliegue
 
 Cada push y cada PR ejecutan lint, tests y build en GitHub Actions (workflow `CI`).

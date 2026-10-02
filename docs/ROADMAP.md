@@ -50,7 +50,7 @@ Objetivo: instalar la app en el móvil y usarla sin conexión una vez cargada.
 - [x] Service worker que precarga toda la app (JS, CSS, fuentes e iconos)
 - [x] Aviso de nueva versión que nunca recarga a mitad de una sesión
 - [x] Almacenamiento persistente para que el navegador no borre sesiones e historial
-- [ ] Instalación y uso sin conexión documentados en el README
+- [x] Instalación y uso sin conexión documentados en el README
 
 Hecho cuando: instalo la app en el móvil, la abro en modo avión y puedo hacer una sesión completa.
 
