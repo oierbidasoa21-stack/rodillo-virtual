@@ -47,6 +47,20 @@ Al pedir almacenamiento persistente, el navegador no borra tus sesiones ni el hi
 
 **Actualizaciones:** cuando hay una versión nueva aparece el aviso «Nueva versión disponible» con el botón **Actualizar**. La app nunca se recarga sola, y el aviso no sale mientras haces una sesión o editas una.
 
+## Sensores
+
+La app lee una **banda de pulso** (Heart Rate, 0x180D) y un **sensor de velocidad y cadencia** (CSC, 0x1816) por Bluetooth, con Chrome en el ordenador.
+
+1. Pestaña **Sensores** → **Conectar** y elige el sensor en la lista de Chrome. No lo emparejes antes en la configuración Bluetooth de Windows.
+2. Si no aparece: la banda necesita contacto con la piel, y el sensor no puede estar conectado a otro dispositivo (un reloj u otra app).
+3. Chrome pide elegir el sensor una vez cada vez que abres la app. Si se cae durante una sesión, la app avisa y reintenta sola.
+
+La velocidad sale de las vueltas de rueda × la **circunferencia de rueda** (Ajustes → Tus datos; 2155 mm por defecto, para 700×32). Si tu sensor solo mide la rueda, no se muestra cadencia: la app no inventa datos.
+
+Durante la sesión verás el pulso con «En zona / Por encima / Por debajo», además de la velocidad y la cadencia. Con al menos un minuto de pulso, el resumen calcula el tiempo en zona, la carga y las kcal con tu pulso real.
+
+**Sin hardware:** en Ajustes → Desarrollo, activa **Sensores simulados**. Aparecen un pulsómetro y un sensor de velocidad de mentira, con un panel para moverlos o simular una caída. Todo lo simulado va marcado como **SIMULADO**, también en el historial.
+
 ## Despliegue
 
 Cada push y cada PR ejecutan lint, tests y build en GitHub Actions (workflow `CI`).

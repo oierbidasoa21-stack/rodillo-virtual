@@ -72,6 +72,8 @@ Objetivo: leer sensores reales, y simularlos para desarrollar sin hardware.
 
 Hecho cuando: con la banda y el sensor de velocidad conectados al ordenador veo pulso, velocidad y cadencia en directo.
 
+Pendiente: prueba con hardware real (banda de pulso y sensor de velocidad), cuando lo tenga. Hasta entonces, la fase está comprobada con los sensores simulados.
+
 ## Fase 4 — Potencia estimada y métricas
 
 Objetivo: vatios estimados en rodillo tonto y métricas de potencia.
