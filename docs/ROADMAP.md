@@ -5,7 +5,7 @@ Marca `[x]` al completar cada tarea.
 
 Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. Las pruebas en móvil van aparte, en la Fase 9.
 
-**Fase actual: 2**
+**Fase actual: 3**
 
 ---
 
