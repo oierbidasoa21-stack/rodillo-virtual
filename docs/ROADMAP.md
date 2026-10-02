@@ -3,7 +3,7 @@
 Una fase a la vez. Cada fase termina con la app funcionando, desplegada y con los tests en verde.
 Marca `[x]` al completar cada tarea.
 
-**Fase actual: 0**
+**Fase actual: 2**
 
 ---
 
