@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Personal training data (exports, .tcx/.fit/.gpx)
+data/
+
+# Personal athlete config
+config/*.local.json
+
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
