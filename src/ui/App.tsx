@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { requestPersistentStorage } from '../storage/persist';
+import { watchSimulationSetting } from '../sensors/manager';
 import { loadAll } from '../store/loadAll';
 import { useUiStore } from '../store/uiStore';
 import EditorSheet from './editor/EditorSheet';
@@ -7,6 +8,8 @@ import HistoryView from './history/HistoryView';
 import { useTheme } from './hooks/useTheme';
 import Player from './player/Player';
 import UpdatePrompt from './pwa/UpdatePrompt';
+import SensorChips from './sensors/SensorChips';
+import SensorsView from './sensors/SensorsView';
 import SettingsView from './settings/SettingsView';
 import Tabs from './Tabs';
 import Toast from './Toast';
@@ -24,6 +27,7 @@ export default function App() {
     loadAll()
       .then(() => {
         setStatus('ready');
+        watchSimulationSetting();
         void requestPersistentStorage().then(useUiStore.getState().setStoragePersistence);
       })
       .catch((error: unknown) => {
@@ -40,6 +44,7 @@ export default function App() {
             <h1>Rodillo Virtual</h1>
             <p>Sesiones por zonas de pulso, contadas en 10 segundos</p>
           </div>
+          {status === 'ready' && <SensorChips />}
         </header>
         {status === 'error' && (
           <p className="msg error" role="alert">
@@ -54,6 +59,7 @@ export default function App() {
             <main>
               {tab === 'library' && <LibraryView />}
               {tab === 'history' && <HistoryView />}
+              {tab === 'sensors' && <SensorsView />}
               {tab === 'settings' && <SettingsView />}
             </main>
           </>

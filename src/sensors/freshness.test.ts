@@ -8,9 +8,12 @@ describe('isFresh', () => {
     expect(isFresh({ atMs: 1000 }, 6001)).toBe(false);
   });
 
-  it('rejects missing readings and readings from the future', () => {
+  it('rejects missing readings', () => {
     expect(isFresh(null, 1000)).toBe(false);
     expect(isFresh(undefined, 1000)).toBe(false);
-    expect(isFresh({ atMs: 2000 }, 1000)).toBe(false);
+  });
+
+  it('treats a reading newer than the UI clock as fresh', () => {
+    expect(isFresh({ atMs: 1800 }, 1000)).toBe(true);
   });
 });

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import type { Workout } from '../domain/workout/types';
 import type { StoragePersistence } from '../storage/persist';
 
-export type Tab = 'library' | 'history' | 'settings';
+export type Tab = 'library' | 'history' | 'sensors' | 'settings';
 
 interface UiStore {
   tab: Tab;

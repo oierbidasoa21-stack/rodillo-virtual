@@ -362,3 +362,75 @@ input[type='number'] {
   box-shadow: 0 -4px 16px color-mix(in srgb, var(--ink) 12%, transparent);
   font-weight: 600;
 }
+
+/* Sensors */
+.chips {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--surface);
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.chip.on .dot {
+  background: var(--ok);
+}
+.chip.on {
+  color: var(--ink);
+}
+.sim-tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: var(--f-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  vertical-align: middle;
+  color: var(--warn);
+  border: 1px solid var(--warn);
+}
+.sensor-status {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.sensor-status.st-connected {
+  color: var(--ok);
+}
+.sensor-status.st-reconnecting,
+.sensor-status.st-connecting {
+  color: var(--warn);
+}
+.sensor-status.st-error {
+  color: var(--bad);
+}
+.sensor-live {
+  font-family: var(--f-display);
+  font-size: 26px;
+  font-weight: 600;
+}
+input[type='range'] {
+  flex: 1;
+  min-width: 140px;
+  max-width: 320px;
+}

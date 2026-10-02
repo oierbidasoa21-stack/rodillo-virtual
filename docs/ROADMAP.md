@@ -65,7 +65,7 @@ Objetivo: leer sensores reales, y simularlos para desarrollar sin hardware.
 - [x] Heart Rate Service (0x180D)
 - [x] Circunferencia de rueda configurable (2155 mm por defecto, 700×32)
 - [x] Cycling Speed and Cadence (0x1816): velocidad de rueda y cadencia a partir de revoluciones acumuladas
-- [ ] Pantalla de emparejamiento con estado de cada sensor
+- [x] Pantalla de emparejamiento con estado de cada sensor
 - [ ] Reconexión automática y aviso si se pierde un sensor durante la sesión
 - [ ] Player: pulso en directo con estado "en zona / por encima / por debajo"
 - [ ] Resumen con tiempo en zona medido por pulsómetro
