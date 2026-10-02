@@ -31,7 +31,7 @@ Objetivo: todo lo que hace `docs/reference/rodillo-pulso-v1.html`, con arquitect
 - [x] `domain/metrics`: carga por zonas y kcal por MET (con tests)
 - [x] `storage`: Dexie con sesiones propias, historial y ajustes
 - [x] Biblioteca con las 8 sesiones de la v1
-- [ ] Editor de sesiones (bloques, repeticiones, mover, borrar)
+- [x] Editor de sesiones (bloques, repeticiones, mover, borrar)
 - [ ] Player: zona actual, cuenta atrás, perfil con cursor, siguiente bloque, pausa, +1′, saltar, terminar
 - [ ] Audio: pitidos (10 s y 3-2-1) y voz en español, activables
 - [ ] Wake Lock para mantener la pantalla encendida

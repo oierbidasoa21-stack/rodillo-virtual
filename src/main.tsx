@@ -6,6 +6,7 @@ import '@fontsource/barlow-condensed/600.css';
 import '@fontsource/barlow-condensed/700.css';
 import './ui/styles/tokens.css';
 import './ui/styles/app.css';
+import './ui/styles/editor.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './ui/App.tsx';

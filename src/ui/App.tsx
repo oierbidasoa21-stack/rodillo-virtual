@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { loadAll } from '../store/loadAll';
 import { useUiStore } from '../store/uiStore';
+import EditorSheet from './editor/EditorSheet';
 import { useTheme } from './hooks/useTheme';
 import Tabs from './Tabs';
 import Toast from './Toast';
@@ -10,6 +11,7 @@ import ZoneStrip from './ZoneStrip';
 export default function App() {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const tab = useUiStore((s) => s.tab);
+  const editing = useUiStore((s) => s.editing);
   useTheme();
 
   useEffect(() => {
@@ -48,6 +50,7 @@ export default function App() {
           </>
         )}
       </div>
+      {editing && <EditorSheet key={editing.id ?? 'new'} initial={editing} />}
       <Toast />
     </>
   );
