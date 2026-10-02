@@ -61,6 +61,28 @@ export function zoneStatus(valuePer10s: number, target: HrZone): ZoneStatus {
 }
 
 /**
+ * Sets one bound of a zone and moves the neighbouring bound so zones stay
+ * contiguous: a new `max` moves the next zone's `min`, a new `min` moves the
+ * previous zone's `max`. The result can still be invalid (e.g. min > max);
+ * check it with `validateZones`.
+ */
+export function setZoneBound(
+  zones: readonly HrZone[],
+  id: ZoneId,
+  bound: 'min' | 'max',
+  value: number,
+): HrZone[] {
+  const i = zones.findIndex((z) => z.id === id);
+  if (i < 0) return [...zones];
+  return zones.map((z, k) => {
+    if (k === i) return { ...z, [bound]: value };
+    if (bound === 'max' && k === i + 1) return { ...z, min: value + 1 };
+    if (bound === 'min' && k === i - 1 && z.max !== null) return { ...z, max: value - 1 };
+    return z;
+  });
+}
+
+/**
  * Checks that zones are the six known ids, in order, with integer bounds,
  * contiguous (each zone starts one beat after the previous ends) and only
  * the last one open-ended. Returns error messages for the UI; empty when valid.

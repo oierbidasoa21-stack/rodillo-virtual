@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { type HrZone, classifyPer10s, findZone, validateZones, zoneStatus } from './zones';
+import {
+  type HrZone,
+  classifyPer10s,
+  findZone,
+  setZoneBound,
+  validateZones,
+  zoneStatus,
+} from './zones';
 
 // Same values as config/athlete.example.json
 const ZONES: HrZone[] = [
@@ -47,6 +54,26 @@ describe('zoneStatus', () => {
 
   it('never reports above for an open-ended zone', () => {
     expect(zoneStatus(45, findZone(ZONES, 'VO2'))).toBe('in');
+  });
+});
+
+describe('setZoneBound', () => {
+  it('moving a max moves the next min', () => {
+    const next = setZoneBound(ZONES, 'L2', 'max', 24);
+    expect(next.find((z) => z.id === 'L2')).toMatchObject({ min: 22, max: 24 });
+    expect(next.find((z) => z.id === 'L3')).toMatchObject({ min: 25, max: 25 });
+    expect(validateZones(next)).toEqual([]);
+  });
+
+  it('moving a min moves the previous max', () => {
+    const next = setZoneBound(ZONES, 'VO2', 'min', 30);
+    expect(next.find((z) => z.id === 'UA+')).toMatchObject({ min: 28, max: 29 });
+    expect(validateZones(next)).toEqual([]);
+  });
+
+  it('can produce an invalid zone, which validation catches', () => {
+    const next = setZoneBound(ZONES, 'L2', 'max', 26); // L3 becomes 27–25
+    expect(validateZones(next)).not.toEqual([]);
   });
 });
 
