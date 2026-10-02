@@ -5,6 +5,7 @@ import EditorSheet from './editor/EditorSheet';
 import HistoryView from './history/HistoryView';
 import { useTheme } from './hooks/useTheme';
 import Player from './player/Player';
+import UpdatePrompt from './pwa/UpdatePrompt';
 import SettingsView from './settings/SettingsView';
 import Tabs from './Tabs';
 import Toast from './Toast';
@@ -56,6 +57,7 @@ export default function App() {
       </div>
       {editing && <EditorSheet key={editing.id ?? 'new'} initial={editing} />}
       {playing && <Player key={playing.id} workout={playing} />}
+      <UpdatePrompt />
       <Toast />
     </>
   );

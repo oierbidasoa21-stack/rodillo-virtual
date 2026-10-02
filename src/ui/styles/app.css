@@ -344,3 +344,21 @@ input[type='number'] {
     display: none;
   }
 }
+
+.update-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -4px 16px color-mix(in srgb, var(--ink) 12%, transparent);
+  font-weight: 600;
+}
