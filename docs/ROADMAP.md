@@ -3,6 +3,8 @@
 Una fase a la vez. Cada fase termina con la app funcionando, desplegada y con los tests en verde.
 Marca `[x]` al completar cada tarea.
 
+Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. Las pruebas en móvil van aparte, en la Fase 9.
+
 **Fase actual: 2**
 
 ---
@@ -39,11 +41,11 @@ Objetivo: todo lo que hace `docs/reference/rodillo-pulso-v1.html`, con arquitect
 - [x] Resumen: tiempo en zona realizado frente a planificado, carga, kcal, conteos
 - [x] Historial con totales de 7 días
 
-Hecho cuando: puedo hacer una sesión completa en el móvil igual que con la v1.
+Hecho cuando: puedo hacer una sesión completa en el ordenador igual que con la v1.
 
 ## Fase 2 — PWA
 
-Objetivo: instalar la app en el móvil y usarla sin conexión una vez cargada.
+Objetivo: instalar la app y usarla sin conexión una vez cargada.
 
 - [x] Manifest (nombre, iconos, colores, `display: standalone`, `scope` en `/rodillo-virtual/`)
 - [x] Iconos propios (192, 512, maskable y apple-touch-icon)
@@ -52,7 +54,7 @@ Objetivo: instalar la app en el móvil y usarla sin conexión una vez cargada.
 - [x] Almacenamiento persistente para que el navegador no borre sesiones e historial
 - [x] Instalación y uso sin conexión documentados en el README
 
-Hecho cuando: instalo la app en el móvil, la abro en modo avión y puedo hacer una sesión completa.
+Hecho cuando: instalo la app desde Chrome en Windows, la abro sin conexión y puedo hacer una sesión completa.
 
 ## Fase 3 — Sensores Bluetooth
 
@@ -67,7 +69,7 @@ Objetivo: leer sensores reales, y simularlos para desarrollar sin hardware.
 - [ ] Player: pulso en directo con estado "en zona / por encima / por debajo"
 - [ ] Resumen con tiempo en zona medido por pulsómetro
 
-Hecho cuando: con la banda y el sensor de velocidad veo pulso, velocidad y cadencia en directo.
+Hecho cuando: con la banda y el sensor de velocidad conectados al ordenador veo pulso, velocidad y cadencia en directo.
 
 ## Fase 4 — Potencia estimada y métricas
 
@@ -118,3 +120,15 @@ Solo si compro uno.
 - [ ] FTMS (0x1826): lectura de potencia, cadencia y velocidad reales
 - [ ] Modo ERG: el workout fija la potencia del rodillo
 - [ ] Modo simulación: la pendiente de la ruta ajusta la resistencia
+
+## Fase 9 — Pruebas en móvil (extra, al final)
+
+Objetivo: usar la app en el móvil (Android). Hasta esta fase, el móvil no cuenta para dar ninguna fase por hecha. iPhone queda fuera: Safari no tiene Web Bluetooth.
+
+- [ ] Instalar la PWA desde Chrome en Android y usarla en modo avión
+- [ ] Sesión completa en el móvil: pitidos, voz y pantalla siempre encendida (Wake Lock)
+- [ ] Sensores Bluetooth conectados al móvil
+- [ ] Ajustes de interfaz para pantalla pequeña que salgan de las pruebas
+- [ ] Almacenamiento persistente concedido con la app instalada
+
+Hecho cuando: hago una sesión completa con sensores en el móvil, con la app instalada y en modo avión.

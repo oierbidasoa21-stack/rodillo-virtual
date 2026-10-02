@@ -35,7 +35,8 @@ Aplicación web de entrenamiento en rodillo para **uso personal**, inspirada en 
 - Calidad: **ESLint + Prettier**.
 - Sensores: **Web Bluetooth** (Chrome en ordenador y Android). Requiere HTTPS o `localhost`.
 - 3D (solo a partir de la Fase 7): **Three.js** con **@react-three/fiber**.
-- Despliegue: **GitHub Pages** mediante GitHub Actions (da HTTPS, así funciona Web Bluetooth en el móvil).
+- Despliegue: **GitHub Pages** mediante GitHub Actions (da HTTPS, que necesitan Web Bluetooth y la PWA fuera de `localhost`).
+- PWA con **vite-plugin-pwa**: instalable y funciona sin conexión una vez cargada.
 
 No añadas dependencias nuevas sin explicar para qué sirven y pedirme confirmación.
 
@@ -82,7 +83,7 @@ Cada fórmula vive en `domain/` con tests que incluyan al menos un caso calculad
 - Código, identificadores y commits en **inglés**. Textos de la interfaz y documentación en **español**.
 - Componentes React funcionales con hooks. Un componente por archivo.
 - La interfaz del player se diseña para leerse a 1 metro: números grandes, colores por zona, avisos sonoros.
-- Diseño de escritorio y móvil, tema claro y oscuro.
+- Diseño pensado primero para el **ordenador**, con tema claro y oscuro. Que se vea bien en pantallas estrechas sigue siendo deseable, pero no es requisito hasta la fase de pruebas en móvil.
 
 ## Forma de trabajar
 
@@ -92,6 +93,12 @@ Cada fórmula vive en `domain/` con tests que incluyan al menos un caso calculad
 4. Antes de cada commit: `npm run lint`, `npm run test` y `npm run build` deben pasar.
 5. Al terminar una tarea, marca su casilla en `docs/ROADMAP.md`.
 6. Si una decisión es mía (diseño, prioridades, compras de equipo), pregúntame.
+
+## Dónde se prueba
+
+- Por ahora pruebo la app **solo en el ordenador: Chrome en Windows**. Los criterios de «hecho» de cada fase se comprueban ahí, con la web publicada en GitHub Pages.
+- El **móvil es un extra para el final del proyecto**: tiene su propia fase en `docs/ROADMAP.md`. Hasta entonces no lo tengas en cuenta para dar una fase por hecha ni para priorizar trabajo.
+- Las comprobaciones automáticas (navegador headless, capturas) se hacen a tamaño de escritorio. Una captura en estrecho es opcional.
 
 ## Git y GitHub
 
