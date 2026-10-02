@@ -336,3 +336,11 @@ input[type='number'] {
     animation: none !important;
   }
 }
+.nowrap {
+  white-space: nowrap;
+}
+@media (max-width: 520px) {
+  .feel {
+    display: none;
+  }
+}

@@ -34,7 +34,7 @@ export default function ZonesTable({ zones, onSave }: Props) {
               <th>Desde /10″</th>
               <th>Hasta /10″</th>
               <th>ppm</th>
-              <th>Sensación</th>
+              <th className="feel">Sensación</th>
             </tr>
           </thead>
           <tbody>
@@ -65,8 +65,8 @@ export default function ZonesTable({ zones, onSave }: Props) {
                     />
                   )}
                 </td>
-                <td className="num">{zoneBpmText(z)}</td>
-                <td className="note">{ZONE_META[z.id].feel}</td>
+                <td className="num nowrap">{zoneBpmText(z)}</td>
+                <td className="note feel">{ZONE_META[z.id].feel}</td>
               </tr>
             ))}
           </tbody>
