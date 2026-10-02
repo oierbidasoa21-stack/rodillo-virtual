@@ -45,9 +45,9 @@ Hecho cuando: puedo hacer una sesión completa en el móvil igual que con la v1.
 
 Objetivo: instalar la app en el móvil y usarla sin conexión una vez cargada.
 
-- [ ] Manifest (nombre, iconos, colores, `display: standalone`, `scope` en `/rodillo-virtual/`)
+- [x] Manifest (nombre, iconos, colores, `display: standalone`, `scope` en `/rodillo-virtual/`)
 - [x] Iconos propios (192, 512, maskable y apple-touch-icon)
-- [ ] Service worker que precarga toda la app (JS, CSS, fuentes e iconos)
+- [x] Service worker que precarga toda la app (JS, CSS, fuentes e iconos)
 - [ ] Aviso de nueva versión que nunca recarga a mitad de una sesión
 - [ ] Almacenamiento persistente para que el navegador no borre sesiones e historial
 - [ ] Instalación y uso sin conexión documentados en el README
