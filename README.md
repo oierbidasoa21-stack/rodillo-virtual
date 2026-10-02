@@ -35,7 +35,9 @@ cp config/athlete.example.json config/athlete.local.json
 
 ## Despliegue
 
-Cada push a `main` ejecuta lint, tests y build en GitHub Actions. Si todo pasa, se publica en GitHub Pages.
+Cada push y cada PR ejecutan lint, tests y build en GitHub Actions (workflow `CI`).
+
+Los push a `main` también publican la app en GitHub Pages (workflow `Deploy`), solo si lint, tests y build pasan. Si un push solo cambia `docs/` o archivos `.md`, no se vuelve a desplegar.
 
 ## Documentación
 
