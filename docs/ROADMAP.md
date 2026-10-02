@@ -41,7 +41,20 @@ Objetivo: todo lo que hace `docs/reference/rodillo-pulso-v1.html`, con arquitect
 
 Hecho cuando: puedo hacer una sesión completa en el móvil igual que con la v1.
 
-## Fase 2 — Sensores Bluetooth
+## Fase 2 — PWA
+
+Objetivo: instalar la app en el móvil y usarla sin conexión una vez cargada.
+
+- [ ] Manifest (nombre, iconos, colores, `display: standalone`, `scope` en `/rodillo-virtual/`)
+- [ ] Iconos propios (192, 512, maskable y apple-touch-icon)
+- [ ] Service worker que precarga toda la app (JS, CSS, fuentes e iconos)
+- [ ] Aviso de nueva versión que nunca recarga a mitad de una sesión
+- [ ] Almacenamiento persistente para que el navegador no borre sesiones e historial
+- [ ] Instalación y uso sin conexión documentados en el README
+
+Hecho cuando: instalo la app en el móvil, la abro en modo avión y puedo hacer una sesión completa.
+
+## Fase 3 — Sensores Bluetooth
 
 Objetivo: leer sensores reales, y simularlos para desarrollar sin hardware.
 
@@ -56,7 +69,7 @@ Objetivo: leer sensores reales, y simularlos para desarrollar sin hardware.
 
 Hecho cuando: con la banda y el sensor de velocidad veo pulso, velocidad y cadencia en directo.
 
-## Fase 3 — Potencia estimada y métricas
+## Fase 4 — Potencia estimada y métricas
 
 Objetivo: vatios estimados en rodillo tonto y métricas de potencia.
 
@@ -70,7 +83,7 @@ Objetivo: vatios estimados en rodillo tonto y métricas de potencia.
 
 Hecho cuando: hago un ramp test, obtengo un FTP estimado y las sesiones muestran vatios objetivo.
 
-## Fase 4 — Rutas 2D
+## Fase 5 — Rutas 2D
 
 Objetivo: rodar sobre una ruta con pendiente, al estilo de la vista de carrera.
 
@@ -83,7 +96,7 @@ Objetivo: rodar sobre una ruta con pendiente, al estilo de la vista de carrera.
 
 Hecho cuando: hago una ruta entera viendo cómo avanzo y cómo cambia la pendiente.
 
-## Fase 5 — Grabación y exportación
+## Fase 6 — Grabación y exportación
 
 - [ ] Grabación a 1 Hz de todas las métricas disponibles
 - [ ] Recuperar una sesión si se cierra la pestaña por error
@@ -91,14 +104,14 @@ Hecho cuando: hago una ruta entera viendo cómo avanzo y cómo cambia la pendien
 - [ ] Detalle de cada salida en el historial con gráficas de pulso, potencia y velocidad
 - [ ] Importar y exportar workouts en formato `.zwo`
 
-## Fase 6 — Mundo 3D
+## Fase 7 — Mundo 3D
 
 - [ ] Carretera 3D generada a partir de la altimetría de la ruta
 - [ ] Avatar ciclista sencillo y cámara que lo sigue
 - [ ] Escenario procedural (terreno, árboles, cielo) con buen rendimiento en portátil
 - [ ] HUD de la Fase 4 superpuesto sobre la vista 3D
 
-## Fase 7 — Rodillo inteligente (opcional)
+## Fase 8 — Rodillo inteligente (opcional)
 
 Solo si compro uno.
 

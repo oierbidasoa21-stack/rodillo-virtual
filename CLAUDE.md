@@ -34,7 +34,7 @@ Aplicación web de entrenamiento en rodillo para **uso personal**, inspirada en 
 - Tests: **Vitest** para la lógica de dominio.
 - Calidad: **ESLint + Prettier**.
 - Sensores: **Web Bluetooth** (Chrome en ordenador y Android). Requiere HTTPS o `localhost`.
-- 3D (solo a partir de la Fase 6): **Three.js** con **@react-three/fiber**.
+- 3D (solo a partir de la Fase 7): **Three.js** con **@react-three/fiber**.
 - Despliegue: **GitHub Pages** mediante GitHub Actions (da HTTPS, así funciona Web Bluetooth en el móvil).
 
 No añadas dependencias nuevas sin explicar para qué sirven y pedirme confirmación.
