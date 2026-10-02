@@ -6,6 +6,7 @@ import { useUiStore } from '../../store/uiStore';
 import ConfirmButton from '../ConfirmButton';
 import NumberInput from '../NumberInput';
 import AthleteFile from './AthleteFile';
+import BackupPanel from './BackupPanel';
 import ZonesTable from './ZonesTable';
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
@@ -151,6 +152,7 @@ export default function SettingsView() {
           {persistence === 'unsupported' &&
             'Este navegador no permite pedir almacenamiento persistente.'}
         </p>
+        <BackupPanel />
       </div>
 
       <div className="sectionhead">

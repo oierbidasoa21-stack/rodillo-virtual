@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { type AthleteConfig, parseAthleteConfig } from '../../domain/zones/athleteConfig';
+import { downloadJson, readJsonFile } from '../download';
 
 interface Props {
   athlete: AthleteConfig;
@@ -12,10 +13,8 @@ export default function AthleteFile({ athlete, onImport }: Props) {
   const [errors, setErrors] = useState<string[]>([]);
 
   const importFile = async (file: File) => {
-    let json: unknown;
-    try {
-      json = JSON.parse(await file.text());
-    } catch {
+    const json = await readJsonFile(file);
+    if (json === null) {
       setErrors(['El archivo no es un JSON válido.']);
       return;
     }
@@ -28,17 +27,7 @@ export default function AthleteFile({ athlete, onImport }: Props) {
     onImport(result.value);
   };
 
-  const exportFile = () => {
-    const blob = new Blob([JSON.stringify(athlete, null, 2) + '\n'], {
-      type: 'application/json',
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'athlete.json';
-    link.click();
-    URL.revokeObjectURL(url);
-  };
+  const exportFile = () => downloadJson('athlete.json', athlete);
 
   return (
     <>

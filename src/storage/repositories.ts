@@ -27,6 +27,20 @@ export function createStorage(db: RodilloDb) {
     saveSettings: async (settings: AppSettings): Promise<void> => {
       await db.settings.put({ ...settings, key: SETTINGS_KEY });
     },
+
+    /** Replaces everything in one transaction: all of it lands, or nothing changes. */
+    replaceAll: async (data: {
+      workouts: Workout[];
+      history: SessionSummary[];
+      settings: AppSettings;
+    }): Promise<void> => {
+      await db.transaction('rw', [db.workouts, db.history, db.settings], async () => {
+        await Promise.all([db.workouts.clear(), db.history.clear(), db.settings.clear()]);
+        await db.workouts.bulkPut(data.workouts);
+        await db.history.bulkPut(data.history);
+        await db.settings.put({ ...data.settings, key: SETTINGS_KEY });
+      });
+    },
   };
 }
 
