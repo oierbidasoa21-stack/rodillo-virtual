@@ -54,6 +54,18 @@ const session: SessionSummary = {
     maxBpm: 170,
     simulated: true,
   },
+  power: {
+    avgW: 180,
+    maxW: 320,
+    npW: 195,
+    ifactor: 0.8,
+    tss: 64,
+    kJ: 640,
+    coveredSec: 3550,
+    secByPowerZone: { Z1: 600, Z2: 900, Z3: 1200, Z4: 700, Z5: 150, Z6: 0, Z7: 0 },
+    estimated: true,
+    simulated: true,
+  },
 };
 
 async function filled(): Promise<Storage> {
@@ -134,8 +146,9 @@ describe('backup', () => {
   });
 
   it('keeps older history entries without measured heart rate', () => {
-    const { hrMeasured: _drop, ...older } = session;
-    void _drop;
+    const { hrMeasured: _hr, power: _power, ...older } = session;
+    void _hr;
+    void _power;
     const parsed = parseBackup({ app: BACKUP_APP, format: 1, workouts: [], history: [older] });
     expect(parsed.ok && parsed.value.backup.history[0]).toEqual(older);
   });

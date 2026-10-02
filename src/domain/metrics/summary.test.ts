@@ -118,3 +118,65 @@ describe('recentTotals', () => {
     expect(totals).toEqual({ count: 2, durationSec: 5400, load: 150 });
   });
 });
+
+describe('buildSessionSummary with estimated power', () => {
+  const ridden = () => {
+    const steps = expandWorkout([makeBlock(120, { type: 'power', pctFtp: 100 })]);
+    return tick(togglePlay(createPlayer(steps)).state, 120).state;
+  };
+  const constant = (w: number, sec: number) => Array.from({ length: sec }, () => w);
+
+  it('2′ at 200 W with FTP 200: NP 200, IF 1, TSS 3.33, 24 kJ ≈ 24 kcal, all in Z4', () => {
+    const s = buildSessionSummary({
+      id: 'p',
+      dateMs: 0,
+      workoutName: 'Potencia',
+      player: ridden(),
+      weightKg: 70,
+      powerSamples: constant(200, 120),
+      powerSimulated: true,
+      ftpW: 200,
+    });
+    expect(s.power).toMatchObject({
+      avgW: 200,
+      maxW: 200,
+      kJ: 24,
+      coveredSec: 120,
+      estimated: true,
+      simulated: true,
+    });
+    expect(s.power?.npW).toBeCloseTo(200, 9);
+    expect(s.power?.ifactor).toBeCloseTo(1, 9);
+    // 120·200·1 / (200·3600) · 100 = 3.333
+    expect(s.power?.tss).toBeCloseTo(3.333, 3);
+    expect(s.power?.secByPowerZone?.Z4).toBe(120);
+    expect(s.kcalEstimated).toBeCloseTo(24, 9);
+  });
+
+  it('without FTP there is no IF, TSS or power zones (ramp test)', () => {
+    const s = buildSessionSummary({
+      id: 'p',
+      dateMs: 0,
+      workoutName: 'Ramp',
+      player: ridden(),
+      weightKg: 70,
+      powerSamples: constant(250, 90),
+      ftpW: null,
+    });
+    expect(s.power).toMatchObject({ avgW: 250, ifactor: null, tss: null, secByPowerZone: null });
+    expect(s.power?.kJ).toBeCloseTo(22.5, 9);
+  });
+
+  it('under a minute of power: no power metrics, kcal from MET', () => {
+    const s = buildSessionSummary({
+      id: 'p',
+      dateMs: 0,
+      workoutName: 'Corta',
+      player: ridden(),
+      weightKg: 70,
+      powerSamples: constant(200, 59),
+      ftpW: 200,
+    });
+    expect(s.power).toBeUndefined();
+  });
+});

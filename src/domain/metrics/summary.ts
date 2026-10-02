@@ -6,8 +6,17 @@ import {
   MIN_MEASURED_SEC,
   averageBpm,
 } from './hrTime';
+import { POWER_ZONE_IDS, type PowerZoneId, powerZoneOfWatts } from '../zones/powerZones';
 import { kcalByMet } from './kcal';
 import { zoneLoad } from './load';
+import {
+  averagePowerW,
+  kilojoules,
+  maxPowerW,
+  normalizedPowerW,
+  intensityFactor,
+  trainingStressScore,
+} from './power';
 import { type SecByZone, actualSecByZone, plannedSecByZone } from './timeInZone';
 
 /** Sessions shorter than this are not saved to the history. */
@@ -22,6 +31,56 @@ export interface HrMeasured {
   maxBpm: number;
   /** Came from the simulated sensor, not a real strap. */
   simulated: boolean;
+}
+
+/** Below this much estimated power the summary shows no power metrics. */
+export const MIN_POWER_SEC = 60;
+
+export type SecByPowerZone = Record<PowerZoneId, number>;
+
+/** Power metrics of a session. Always estimated (trainer curve), never measured. */
+export interface PowerSummary {
+  avgW: number;
+  maxW: number;
+  /** Null under 30 s of power. */
+  npW: number | null;
+  /** IF and TSS need an FTP at the time of the session. */
+  ifactor: number | null;
+  tss: number | null;
+  kJ: number;
+  /** Seconds with a power reading. */
+  coveredSec: number;
+  /** Null without an FTP. */
+  secByPowerZone: SecByPowerZone | null;
+  estimated: true;
+  simulated: boolean;
+}
+
+function summarisePower(
+  samples: readonly number[],
+  ftpW: number | null,
+  simulated: boolean,
+): PowerSummary | undefined {
+  if (samples.length < MIN_POWER_SEC) return undefined;
+  const npW = normalizedPowerW(samples);
+  let secByPowerZone: SecByPowerZone | null = null;
+  if (ftpW !== null) {
+    const zones = Object.fromEntries(POWER_ZONE_IDS.map((id) => [id, 0])) as SecByPowerZone;
+    for (const w of samples) zones[powerZoneOfWatts(w, ftpW)] += 1;
+    secByPowerZone = zones;
+  }
+  return {
+    avgW: averagePowerW(samples) ?? 0,
+    maxW: maxPowerW(samples) ?? 0,
+    npW,
+    ifactor: npW !== null && ftpW !== null ? intensityFactor(npW, ftpW) : null,
+    tss: npW !== null && ftpW !== null ? trainingStressScore(samples.length, npW, ftpW) : null,
+    kJ: kilojoules(samples),
+    coveredSec: samples.length,
+    secByPowerZone,
+    estimated: true,
+    simulated,
+  };
 }
 
 /** A finished session, as stored in the history. */
@@ -39,6 +98,8 @@ export interface SessionSummary {
   counts: HrCount[];
   /** Present when there were at least 60 s of heart rate readings. Older entries lack it. */
   hrMeasured?: HrMeasured;
+  /** Present with at least 60 s of estimated power. With it, kcal ≈ kJ. */
+  power?: PowerSummary;
 }
 
 export function buildSessionSummary(args: {
@@ -49,8 +110,20 @@ export function buildSessionSummary(args: {
   weightKg: number;
   hr?: HrTime;
   hrSimulated?: boolean;
+  /** Estimated power, one sample per second. */
+  powerSamples?: readonly number[];
+  powerSimulated?: boolean;
+  ftpW?: number | null;
 }): SessionSummary {
   const { player, hr, weightKg } = args;
+  const power = summarisePower(
+    args.powerSamples ?? [],
+    args.ftpW ?? null,
+    args.powerSimulated ?? false,
+  );
+  // Mechanical work in kJ is close to the kcal burned (human efficiency ~ 24 %).
+  const withPower = (summary: SessionSummary): SessionSummary =>
+    power ? { ...summary, kcalEstimated: power.kJ, power } : summary;
   const actual = actualSecByZone(player.steps, player.actualSecByStep);
   const base = {
     id: args.id,
@@ -63,7 +136,7 @@ export function buildSessionSummary(args: {
   };
 
   if (hr && hr.coveredSec >= MIN_MEASURED_SEC) {
-    return {
+    return withPower({
       ...base,
       load: zoneLoad(hr.secByZone) + (hr.belowSec / 60) * BELOW_ZONES_LOAD_WEIGHT,
       kcalEstimated:
@@ -76,9 +149,13 @@ export function buildSessionSummary(args: {
         maxBpm: hr.maxBpm,
         simulated: args.hrSimulated ?? false,
       },
-    };
+    });
   }
-  return { ...base, load: zoneLoad(actual), kcalEstimated: kcalByMet(actual, weightKg) };
+  return withPower({
+    ...base,
+    load: zoneLoad(actual),
+    kcalEstimated: kcalByMet(actual, weightKg),
+  });
 }
 
 /** Totals over the sessions of the last `days` days before `nowMs`. */

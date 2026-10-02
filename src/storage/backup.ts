@@ -1,4 +1,10 @@
-import type { HrMeasured, SessionSummary } from '../domain/metrics/summary';
+import type {
+  HrMeasured,
+  PowerSummary,
+  SecByPowerZone,
+  SessionSummary,
+} from '../domain/metrics/summary';
+import { POWER_ZONE_IDS } from '../domain/zones/powerZones';
 import { emptySecByZone, type SecByZone } from '../domain/metrics/timeInZone';
 import type { HrCount } from '../domain/workout/player';
 import { migrateWorkout } from '../domain/workout/migrate';
@@ -95,6 +101,45 @@ function parseHrMeasured(v: unknown): HrMeasured | undefined {
   };
 }
 
+const numOrNull = (v: unknown): number | null | undefined =>
+  v === null ? null : isNum(v) ? v : undefined;
+
+function parsePowerZones(v: unknown): SecByPowerZone | null | undefined {
+  if (v === null) return null;
+  if (!isRecord(v)) return undefined;
+  const out = {} as SecByPowerZone;
+  for (const id of POWER_ZONE_IDS) {
+    const sec = v[id];
+    if (!isNum(sec)) return undefined;
+    out[id] = sec;
+  }
+  return out;
+}
+
+function parsePower(v: unknown): PowerSummary | undefined {
+  if (!isRecord(v)) return undefined;
+  const npW = numOrNull(v.npW);
+  const ifactor = numOrNull(v.ifactor);
+  const tss = numOrNull(v.tss);
+  const zones = parsePowerZones(v.secByPowerZone);
+  if (!isNum(v.avgW) || !isNum(v.maxW) || !isNum(v.kJ) || !isNum(v.coveredSec)) return undefined;
+  if (npW === undefined || ifactor === undefined || tss === undefined || zones === undefined) {
+    return undefined;
+  }
+  return {
+    avgW: v.avgW,
+    maxW: v.maxW,
+    npW,
+    ifactor,
+    tss,
+    kJ: v.kJ,
+    coveredSec: v.coveredSec,
+    secByPowerZone: zones,
+    estimated: true,
+    simulated: v.simulated === true,
+  };
+}
+
 /** A history entry, or null if it's missing anything the app needs to show it. */
 function parseSession(v: unknown): SessionSummary | null {
   if (!isRecord(v) || typeof v.id !== 'string' || typeof v.workoutName !== 'string') return null;
@@ -108,6 +153,7 @@ function parseSession(v: unknown): SessionSummary | null {
     ? v.counts.map(parseCount).filter((c): c is HrCount => c !== null)
     : [];
   const hrMeasured = parseHrMeasured(v.hrMeasured);
+  const power = parsePower(v.power);
   return {
     id: v.id,
     dateMs: v.dateMs,
@@ -119,6 +165,7 @@ function parseSession(v: unknown): SessionSummary | null {
     actualSecByZone: actual,
     counts,
     ...(hrMeasured ? { hrMeasured } : {}),
+    ...(power ? { power } : {}),
   };
 }
 
