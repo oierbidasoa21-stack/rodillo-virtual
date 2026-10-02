@@ -68,7 +68,7 @@ Objetivo: leer sensores reales, y simularlos para desarrollar sin hardware.
 - [x] Pantalla de emparejamiento con estado de cada sensor
 - [x] Reconexión automática y aviso si se pierde un sensor durante la sesión
 - [x] Player: pulso en directo con estado "en zona / por encima / por debajo"
-- [ ] Resumen con tiempo en zona medido por pulsómetro
+- [x] Resumen con tiempo en zona medido por pulsómetro
 
 Hecho cuando: con la banda y el sensor de velocidad conectados al ordenador veo pulso, velocidad y cadencia en directo.
 

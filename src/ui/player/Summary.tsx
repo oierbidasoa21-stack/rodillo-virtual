@@ -13,7 +13,9 @@ interface Props {
 }
 
 export default function Summary({ summary, saved, onClose }: Props) {
-  const { plannedSecByZone: plan, actualSecByZone: done, counts } = summary;
+  const { plannedSecByZone: plan, counts, hrMeasured: hr } = summary;
+  // Measured by the heart rate sensor when there was enough of it, else the blocks ridden.
+  const done = hr?.secByZone ?? summary.actualSecByZone;
   const maxSec = Math.max(1, ...ZONE_IDS.map((id) => Math.max(plan[id], done[id])));
   const inZone = counts.filter((c) => c.status === 'in').length;
 
@@ -39,6 +41,18 @@ export default function Summary({ summary, saved, onClose }: Props) {
           <div className="v num">{Math.round(summary.kcalEstimated)}</div>
           <div className="l">kcal estimadas (±{Math.round(KCAL_MET_UNCERTAINTY * 100)} %)</div>
         </div>
+        {hr && (
+          <>
+            <div className="stat">
+              <div className="v num">{Math.round(hr.avgBpm)}</div>
+              <div className="l">Pulso medio (ppm)</div>
+            </div>
+            <div className="stat">
+              <div className="v num">{hr.maxBpm}</div>
+              <div className="l">Pulso máximo (ppm)</div>
+            </div>
+          </>
+        )}
         {counts.length > 0 && (
           <div className="stat">
             <div className="v num">
@@ -56,7 +70,10 @@ export default function Summary({ summary, saved, onClose }: Props) {
 
       <div className="sectionhead">
         <h2>Tiempo en cada zona</h2>
-        <span className="tag">Según los bloques realizados</span>
+        <span className="tag">
+          {hr ? 'Medido por pulsómetro' : 'Según los bloques realizados'}
+          {hr?.simulated && <span className="sim-tag">SIMULADO</span>}
+        </span>
       </div>
       <div className="card">
         {ZONE_IDS.map((id) => (
@@ -78,7 +95,13 @@ export default function Summary({ summary, saved, onClose }: Props) {
             </span>
           </div>
         ))}
-        <p className="note">Barra de color: lo realizado. Línea gris: lo planificado.</p>
+        <p className="note">
+          Barra de color: lo realizado{hr ? ', según tu pulso' : ''}. Línea gris: lo planificado.
+          {hr && hr.belowSec >= 1 && ` Además, ${formatClock(hr.belowSec)} por debajo de L1.`}
+          {hr &&
+            hr.coveredSec < summary.durationSec - 30 &&
+            ` Hubo pulso durante ${formatClock(hr.coveredSec)} de ${formatClock(summary.durationSec)}.`}
+        </p>
       </div>
 
       {counts.length > 0 && (

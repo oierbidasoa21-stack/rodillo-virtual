@@ -62,7 +62,14 @@ export default function HistoryView() {
             {[...sessions].reverse().map((s) => (
               <tr key={s.id}>
                 <td className="num nowrap">{dateFormat.format(s.dateMs)}</td>
-                <td>{s.workoutName}</td>
+                <td>
+                  {s.workoutName}
+                  {s.hrMeasured?.simulated && (
+                    <span className="sim-tag" title="Pulso de un sensor simulado">
+                      SIM.
+                    </span>
+                  )}
+                </td>
                 <td className="num">{formatMinutes(s.durationSec)}</td>
                 <td className="num">{Math.round(s.load)}</td>
                 <td className="num">{Math.round(s.kcalEstimated)}</td>

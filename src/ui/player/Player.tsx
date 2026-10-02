@@ -6,6 +6,7 @@ import {
   type SessionSummary,
   buildSessionSummary,
 } from '../../domain/metrics/summary';
+import { addHrSample, emptyHrTime } from '../../domain/metrics/hrTime';
 import { expandWorkout } from '../../domain/workout/expand';
 import {
   type Transition,
@@ -22,7 +23,9 @@ import {
 } from '../../domain/workout/player';
 import { BLOCK_KIND_LABELS, type Workout } from '../../domain/workout/types';
 import { type HrZone, ZONE_META, findZone } from '../../domain/zones/zones';
+import { isFresh } from '../../sensors/freshness';
 import { useHistoryStore } from '../../store/historyStore';
+import { useSensorsStore } from '../../store/sensorsStore';
 import { useSimulationStore } from '../../store/simulationStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useUiStore } from '../../store/uiStore';
@@ -47,6 +50,9 @@ export default function Player({ workout }: { workout: Workout }) {
 
   const [player, setPlayer] = useState(() => createPlayer(expandWorkout(workout.blocks)));
   const playerRef = useRef(player);
+  // Heart rate measured while the clock runs, and whether any of it was simulated.
+  const hrTime = useRef(emptyHrTime());
+  const hrSimulated = useRef(false);
   // Target zone when the count was opened; the step may change while counting.
   const [countTarget, setCountTarget] = useState<HrZone | null>(null);
   const [result, setResult] = useState<{ summary: SessionSummary; saved: boolean } | null>(null);
@@ -64,6 +70,8 @@ export default function Player({ workout }: { workout: Workout }) {
           workoutName: workout.name,
           player: t.state,
           weightKg: settings.athlete.weightKg,
+          hr: hrTime.current,
+          hrSimulated: hrSimulated.current,
         });
         const saved = summary.durationSec >= MIN_SAVED_SESSION_SEC;
         if (saved) void addHistory(summary);
@@ -75,7 +83,18 @@ export default function Player({ workout }: { workout: Workout }) {
   );
 
   const running = player.status === 'running';
-  usePlayerClock(running, (dt) => apply(tick(playerRef.current, dt)));
+  usePlayerClock(running, (dt) => {
+    const { hr } = useSensorsStore.getState();
+    const bpm = hr.last && isFresh(hr.last, Date.now()) ? hr.last.bpm : null;
+    if (bpm !== null && hr.source === 'simulated') hrSimulated.current = true;
+    hrTime.current = addHrSample(
+      hrTime.current,
+      bpm,
+      dt,
+      useSettingsStore.getState().settings.athlete.hrZonesPer10s,
+    );
+    apply(tick(playerRef.current, dt));
+  });
   useWakeLock(running);
 
   // Simulated heart rate aims at the middle of the current block's zone.

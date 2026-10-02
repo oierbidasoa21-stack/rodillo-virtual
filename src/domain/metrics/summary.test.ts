@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { expandWorkout } from '../workout/expand';
 import { createPlayer, skip, tick, togglePlay } from '../workout/player';
 import { makeBlock } from '../workout/types';
+import type { HrZone } from '../zones/zones';
+import { addHrSample, emptyHrTime } from './hrTime';
 import { type SessionSummary, buildSessionSummary, recentTotals } from './summary';
 import { emptySecByZone } from './timeInZone';
 
@@ -28,6 +30,64 @@ describe('buildSessionSummary', () => {
     expect(s.load).toBeCloseTo(20, 9);
     // kcal: 5.0·80·(600/3600) + 6.8·80·(300/3600) = 66.667 + 45.333 = 112
     expect(s.kcalEstimated).toBeCloseTo(112, 6);
+  });
+});
+
+describe('buildSessionSummary with heart rate', () => {
+  const zones: HrZone[] = [
+    { id: 'L1', label: 'L1', min: 20, max: 21 },
+    { id: 'L2', label: 'L2', min: 22, max: 23 },
+    { id: 'L3', label: 'L3', min: 24, max: 25 },
+    { id: 'UA', label: 'UA', min: 26, max: 27 },
+    { id: 'UA+', label: 'UA+', min: 28, max: 28 },
+    { id: 'VO2', label: 'VO2', min: 29, max: null },
+  ];
+  const ridden = () => {
+    const steps = expandWorkout([makeBlock(180, 'L2')]);
+    return tick(togglePlay(createPlayer(steps)).state, 180).state;
+  };
+
+  it('uses measured time in zone when there is at least a minute of readings', () => {
+    let hr = emptyHrTime();
+    hr = addHrSample(hr, 150, 120, zones); // L3
+    hr = addHrSample(hr, 114, 60, zones); // below L1
+    const s = buildSessionSummary({
+      id: 'x',
+      dateMs: 0,
+      workoutName: 'HR',
+      player: ridden(),
+      weightKg: 70,
+      hr,
+      hrSimulated: true,
+    });
+    // load: 2′ × 3 + 1′ × 0.5 = 6.5
+    expect(s.load).toBeCloseTo(6.5, 9);
+    // kcal: 8.8·70·(120/3600) + 3.5·70·(60/3600) = 20.533 + 4.083 = 24.617
+    expect(s.kcalEstimated).toBeCloseTo(24.617, 3);
+    expect(s.hrMeasured).toMatchObject({
+      belowSec: 60,
+      coveredSec: 180,
+      avgBpm: 138,
+      maxBpm: 150,
+      simulated: true,
+    });
+    // The block-based time is still kept for planned vs ridden
+    expect(s.actualSecByZone.L2).toBe(180);
+  });
+
+  it('falls back to the blocks with under a minute of readings', () => {
+    const hr = addHrSample(emptyHrTime(), 150, 59, zones);
+    const s = buildSessionSummary({
+      id: 'x',
+      dateMs: 0,
+      workoutName: 'HR',
+      player: ridden(),
+      weightKg: 70,
+      hr,
+    });
+    expect(s.hrMeasured).toBeUndefined();
+    // 3′ in L2 × 2 = 6
+    expect(s.load).toBeCloseTo(6, 9);
   });
 });
 
