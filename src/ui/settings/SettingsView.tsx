@@ -1,3 +1,4 @@
+import { WHEEL_CIRCUMFERENCE_RANGE_MM } from '../../domain/zones/athleteConfig';
 import type { ThemePreference } from '../../storage/settings';
 import { defaultSettings } from '../../storage/settings';
 import { useSettingsStore } from '../../store/settingsStore';
@@ -50,6 +51,23 @@ export default function SettingsView() {
             onCommit={(v) => void updateAthlete({ bikeWeightKg: clamp(v, 0, 40) })}
           />
           kg
+        </div>
+        <div className="field">
+          <label htmlFor="wheel">Circunferencia de rueda</label>
+          <NumberInput
+            id="wheel"
+            min={WHEEL_CIRCUMFERENCE_RANGE_MM.min}
+            max={WHEEL_CIRCUMFERENCE_RANGE_MM.max}
+            value={athlete.wheelCircumferenceMm}
+            onCommit={(v) =>
+              void updateAthlete({
+                wheelCircumferenceMm: Math.round(
+                  clamp(v, WHEEL_CIRCUMFERENCE_RANGE_MM.min, WHEEL_CIRCUMFERENCE_RANGE_MM.max),
+                ),
+              })
+            }
+          />
+          mm <span className="note">700×32 ≈ 2155 mm · 700×25 ≈ 2105 mm</span>
         </div>
         <div className="field">
           <label htmlFor="voice">Avisos por voz</label>

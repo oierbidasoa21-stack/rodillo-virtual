@@ -13,6 +13,17 @@ describe('parseAthleteConfig', () => {
     }
   });
 
+  it('defaults the wheel to 2155 mm (700×32) when the file has none', () => {
+    const older: Record<string, unknown> = { ...example };
+    delete older.wheelCircumferenceMm;
+    const result = parseAthleteConfig(older);
+    expect(result.ok && result.value.wheelCircumferenceMm).toBe(2155);
+  });
+
+  it('rejects an implausible wheel circumference', () => {
+    expect(parseAthleteConfig({ ...example, wheelCircumferenceMm: 500 }).ok).toBe(false);
+  });
+
   it('falls back to the id when a label is missing', () => {
     const zones = example.hrZonesPer10s.map(({ id, min, max }) => ({ id, min, max }));
     const result = parseAthleteConfig({ ...example, hrZonesPer10s: zones });

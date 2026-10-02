@@ -24,6 +24,7 @@ Aplicación web de entrenamiento en rodillo para **uso personal**, inspirada en 
   - Zonas: `L1`, `L2`, `L3`, `UA` (umbral), `UA+`, `VO2`, contadas en 10 segundos (ppm = valor × 6). `max: null` = sin límite superior.
 - Entreno **por pulso y sensaciones**. Aún no tengo FTP medido.
 
+- Bici: Van Rysel EDR AF, ruedas 700×32.
 - Equipo previsto: **rodillo "tonto"** + banda de pulso BLE + sensor de velocidad BLE en la rueda trasera. Puede que más adelante haya rodillo inteligente (FTMS). El diseño soporta ambos.
 - Regla: **la app nunca inventa datos**. Si un sensor no está conectado, la métrica que depende de él no se muestra. Las métricas estimadas (potencia en rodillo tonto, kcal) se marcan siempre como estimadas.
 
@@ -71,7 +72,7 @@ Reglas:
 - **Velocidad virtual**: resolver `v` en
   `P · η = (0.5 · ρ · CdA · v² + Crr · m · g · cos θ + m · g · sin θ) · v`
   con η = 0.975, ρ = 1.225, CdA = 0.32, Crr = 0.005, m = peso + bici. Usar bisección o Newton.
-- **Potencia en rodillo tonto**: `P = f(velocidad de rueda)` según la curva del modelo de rodillo (polinomio, normalmente `a·v + b·v³`). La circunferencia de rueda es configurable (por defecto 2105 mm para 700×25).
+- **Potencia en rodillo tonto**: `P = f(velocidad de rueda)` según la curva del modelo de rodillo (polinomio, normalmente `a·v + b·v³`). La circunferencia de rueda es configurable (por defecto 2155 mm para 700×32).
 - **NP**: media móvil de 30 s, elevar a la 4ª, media, raíz 4ª. **IF** = NP / FTP. **TSS** = (s · NP · IF) / (FTP · 3600) · 100.
 - **Carga por pulso**: minutos en zona × peso (L1 1, L2 2, L3 3, UA 4, UA+ 5, VO2 6).
 - **kcal**: con potencia, kJ ≈ kcal. Sin potencia, MET por zona × peso × horas (±20 %).

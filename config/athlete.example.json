@@ -1,6 +1,7 @@
 {
   "weightKg": 70,
   "bikeWeightKg": 9,
+  "wheelCircumferenceMm": 2155,
   "hrZonesPer10s": [
     { "id": "L1", "label": "L1", "min": 20, "max": 21 },
     { "id": "L2", "label": "L2", "min": 22, "max": 23 },

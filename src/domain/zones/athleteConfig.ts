@@ -4,8 +4,14 @@ import { type HrZone, isZoneId, validateZones } from './zones';
 export interface AthleteConfig {
   weightKg: number;
   bikeWeightKg: number;
+  /** Rolling circumference of the rear wheel, for speed from a wheel sensor. */
+  wheelCircumferenceMm: number;
   hrZonesPer10s: HrZone[];
 }
+
+/** 700×32 road tyre. Used when an athlete file has no wheel circumference. */
+export const DEFAULT_WHEEL_CIRCUMFERENCE_MM = 2155;
+export const WHEEL_CIRCUMFERENCE_RANGE_MM = { min: 1000, max: 3000 } as const;
 
 export type ParseResult<T> = { ok: true; value: T } | { ok: false; errors: string[] };
 
@@ -21,10 +27,15 @@ export function parseAthleteConfig(input: unknown): ParseResult<AthleteConfig> {
 
   const errors: string[] = [];
   const { weightKg, bikeWeightKg, hrZonesPer10s } = input;
+  const wheelCircumferenceMm = input.wheelCircumferenceMm ?? DEFAULT_WHEEL_CIRCUMFERENCE_MM;
 
   if (!inRange(weightKg, 30, 200)) errors.push('weightKg: tiene que ser un número entre 30 y 200.');
   if (!inRange(bikeWeightKg, 0, 40)) {
     errors.push('bikeWeightKg: tiene que ser un número entre 0 y 40.');
+  }
+  const wheel = WHEEL_CIRCUMFERENCE_RANGE_MM;
+  if (!inRange(wheelCircumferenceMm, wheel.min, wheel.max)) {
+    errors.push(`wheelCircumferenceMm: tiene que ser un número entre ${wheel.min} y ${wheel.max}.`);
   }
 
   const zones: HrZone[] = [];
@@ -57,6 +68,7 @@ export function parseAthleteConfig(input: unknown): ParseResult<AthleteConfig> {
     value: {
       weightKg: weightKg as number,
       bikeWeightKg: bikeWeightKg as number,
+      wheelCircumferenceMm: wheelCircumferenceMm as number,
       hrZonesPer10s: zones,
     },
   };

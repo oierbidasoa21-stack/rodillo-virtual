@@ -63,6 +63,7 @@ Objetivo: leer sensores reales, y simularlos para desarrollar sin hardware.
 - [ ] Interfaz común de sensor (conectar, desconectar, lecturas con timestamp, estado)
 - [ ] Sensor simulado de pulso, velocidad y cadencia (activable en ajustes de desarrollo)
 - [ ] Heart Rate Service (0x180D)
+- [ ] Circunferencia de rueda configurable (2155 mm por defecto, 700×32)
 - [ ] Cycling Speed and Cadence (0x1816): velocidad de rueda y cadencia a partir de revoluciones acumuladas
 - [ ] Pantalla de emparejamiento con estado de cada sensor
 - [ ] Reconexión automática y aviso si se pierde un sensor durante la sesión
@@ -76,7 +77,6 @@ Hecho cuando: con la banda y el sensor de velocidad conectados al ordenador veo 
 Objetivo: vatios estimados en rodillo tonto y métricas de potencia.
 
 - [ ] `domain/trainer`: curvas velocidad→potencia de varios modelos de rodillo, seleccionable en ajustes
-- [ ] Circunferencia de rueda configurable
 - [ ] `domain/physics`: velocidad virtual según potencia, pendiente y peso (con tests)
 - [ ] `domain/metrics`: NP, IF, TSS, kJ (con tests)
 - [ ] Ramp test guiado que calcula FTP estimado y zonas de potencia
