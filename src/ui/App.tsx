@@ -3,6 +3,7 @@ import { loadAll } from '../store/loadAll';
 import { useUiStore } from '../store/uiStore';
 import EditorSheet from './editor/EditorSheet';
 import { useTheme } from './hooks/useTheme';
+import SettingsView from './settings/SettingsView';
 import Tabs from './Tabs';
 import Toast from './Toast';
 import LibraryView from './library/LibraryView';
@@ -45,7 +46,7 @@ export default function App() {
             <main>
               {tab === 'library' && <LibraryView />}
               {tab === 'history' && <p className="note">Historial</p>}
-              {tab === 'settings' && <p className="note">Ajustes</p>}
+              {tab === 'settings' && <SettingsView />}
             </main>
           </>
         )}
