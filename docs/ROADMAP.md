@@ -87,6 +87,8 @@ Objetivo: vatios estimados en rodillo tonto y métricas de potencia.
 
 Hecho cuando: hago un ramp test, obtengo un FTP estimado y las sesiones muestran vatios objetivo.
 
+Pendiente: prueba con el rodillo real (elegir su modelo o meter su curva), cuando lo tenga. Hasta entonces, la fase está comprobada con los sensores simulados.
+
 ## Fase 5 — Rutas 2D
 
 Objetivo: rodar sobre una ruta con pendiente, al estilo de la vista de carrera.

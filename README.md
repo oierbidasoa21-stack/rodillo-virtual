@@ -61,6 +61,20 @@ Durante la sesión verás el pulso con «En zona / Por encima / Por debajo», ad
 
 **Sin hardware:** en Ajustes → Desarrollo, activa **Sensores simulados**. Aparecen un pulsómetro y un sensor de velocidad de mentira, con un panel para moverlos o simular una caída. Todo lo simulado va marcado como **SIMULADO**, también en el historial.
 
+## Potencia y ramp test
+
+Con un rodillo «tonto» no hay medidor de potencia: la app la **estima** a partir de la velocidad de rueda y la curva velocidad → potencia de tu rodillo. Todas las cifras de potencia van marcadas como estimadas.
+
+1. **Ajustes → Rodillo y potencia:** elige tu rodillo o escribe una curva personalizada (P = a·v + b·v³, v en km/h). La lista incluye rodillos de fluido con curva publicada y su fuente; los magnéticos no están, porque su curva depende del nivel de resistencia. Sin rodillo elegido, la app no muestra potencia.
+2. **Ramp test** (Sesiones → Pruebas): 5′ suaves y después +20 W cada minuto desde 100 W. Pulsa **No puedo más** cuando no puedas mantener el escalón. Tu FTP estimado es el 75 % de tu mejor minuto. Pulsa **Guardar como mi FTP**, o escribe el FTP a mano en Ajustes.
+3. **Sesiones por potencia:** en el editor, cada bloque puede ir por pulso o por % del FTP. Durante la sesión verás los vatios objetivo con una banda de ±5 % y si vas en objetivo, por encima o por debajo. La biblioteca trae «Sweet spot 3×12′» y «Umbral 2×20′ (potencia)».
+
+Con al menos un minuto de potencia, el resumen muestra potencia media, NP, máxima, trabajo (kJ), IF y TSS (si hay FTP) y el tiempo en zonas de potencia (Coggan Z1–Z7). Las kcal pasan a salir de los kJ. El historial añade una columna TSS.
+
+## Copia de seguridad
+
+**Ajustes → Datos en este dispositivo → Exportar copia** guarda en un archivo JSON tus sesiones, el historial y los ajustes. **Importar copia** te enseña qué contiene el archivo y, si confirmas, reemplaza todo lo guardado en ese navegador. Sirve para pasar tus datos a otro ordenador o recuperarlos si borras el navegador. La copia incluye datos personales: guárdala fuera del repositorio, por ejemplo en `data/`.
+
 ## Despliegue
 
 Cada push y cada PR ejecutan lint, tests y build en GitHub Actions (workflow `CI`).

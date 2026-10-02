@@ -50,10 +50,10 @@ src/
     workout/         # Modelo de sesión (bloques y repeticiones), expansión, import/export .zwo
     metrics/         # NP, IF, TSS, kJ, TRIMP por zonas, kcal
     physics/         # Velocidad virtual a partir de potencia y pendiente
-    trainer/         # Curvas velocidad→potencia de rodillos tontos
+    trainer/         # Curvas velocidad→potencia de rodillos tontos (cada una con su fuente)
     route/           # Parseo de GPX, remuestreo, suavizado de pendiente
   sensors/           # Web Bluetooth: HR (0x180D), CSC (0x1816), Cycling Power (0x1818), FTMS (0x1826)
-    simulated/       # Sensores simulados para desarrollar sin hardware
+    simulated/       # Sensores simulados para desarrollar sin hardware (Ajustes → Desarrollo)
   recording/         # Grabación a 1 Hz y exportación TCX
   storage/           # Dexie: sesiones, historial, ajustes, rutas
   audio/             # Pitidos y voz
@@ -65,6 +65,8 @@ Reglas:
 
 - `domain/` no importa nada de `ui/`, `sensors/` ni APIs del navegador. Debe poder testearse en Node.
 - Cada sensor implementa la misma interfaz (`connect`, `disconnect`, flujo de lecturas con timestamp). La UI no sabe si el dato viene de un sensor real o simulado.
+- Una curva de rodillo solo entra en `domain/trainer` si tiene fuente verificable; si no, el usuario puede meterla como personalizada.
+- Los cambios de modelo de datos guardados suben la versión de Dexie con su migración (y su test con una base de la versión anterior).
 - Las unidades van en el nombre cuando no son obvias: `durationSec`, `speedKmh`, `powerW`, `distanceM`.
 
 ## Física y cálculos (referencia)
