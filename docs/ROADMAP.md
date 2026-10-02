@@ -79,7 +79,7 @@ Pendiente: prueba con hardware real (banda de pulso y sensor de velocidad), cuan
 Objetivo: vatios estimados en rodillo tonto y métricas de potencia.
 
 - [ ] `domain/trainer`: curvas velocidad→potencia de varios modelos de rodillo, seleccionable en ajustes
-- [ ] `domain/physics`: velocidad virtual según potencia, pendiente y peso (con tests)
+- [x] `domain/physics`: velocidad virtual según potencia, pendiente y peso (con tests)
 - [x] `domain/metrics`: NP, IF, TSS, kJ (con tests)
 - [ ] Ramp test guiado que calcula FTP estimado y zonas de potencia
 - [ ] Bloques de workout con objetivo por pulso **o** por potencia
