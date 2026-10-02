@@ -7,7 +7,9 @@ import {
   buildSessionSummary,
 } from '../../domain/metrics/summary';
 import { addHrSample, emptyHrTime } from '../../domain/metrics/hrTime';
+import { curveFor, speedForPowerKmh } from '../../domain/trainer/curves';
 import { expandWorkout } from '../../domain/workout/expand';
+import { targetWatts } from '../../domain/workout/targets';
 import {
   type Transition,
   addCount,
@@ -24,6 +26,11 @@ import {
 import { BLOCK_KIND_LABELS, type Workout, hrZoneOf } from '../../domain/workout/types';
 import { type HrZone, ZONE_META, findZone } from '../../domain/zones/zones';
 import { isFresh } from '../../sensors/freshness';
+import {
+  SIM_REFERENCE_FTP_W,
+  simulatedBpmForEffort,
+  zoneMidBpm,
+} from '../../sensors/simulated/follow';
 import { useHistoryStore } from '../../store/historyStore';
 import { useSensorsStore } from '../../store/sensorsStore';
 import { useSimulationStore } from '../../store/simulationStore';
@@ -98,15 +105,33 @@ export default function Player({ workout }: { workout: Workout }) {
   });
   useWakeLock(running);
 
-  // Simulated heart rate aims at the middle of the current block's zone.
+  // With simulated sensors and follow-zone on, the simulator rides the current block.
   const simulate = useSettingsStore((s) => s.settings.simulateSensors);
   const followZone = useSimulationStore((s) => s.followZone);
+  // In power blocks, the simulated wheel spins at the speed that gives the target
+  // watts on the chosen trainer, and heart rate drifts towards a matching zone.
+  const trainer = useSettingsStore((s) => s.settings.trainer);
+  const ftpW = useSettingsStore((s) => s.settings.athlete.ftp?.watts ?? null);
+  const stepTarget = currentStep(player).target;
+  useEffect(() => {
+    if (!simulate || !followZone) return;
+    const watts = targetWatts(stepTarget, ftpW);
+    const curve = curveFor(trainer);
+    if (watts === null || !curve) return;
+    const speed = speedForPowerKmh(curve, watts);
+    const effort = watts / (ftpW ?? SIM_REFERENCE_FTP_W);
+    useSimulationStore.getState().set({
+      ...(speed === null ? {} : { speedKmh: Math.round(speed * 10) / 10 }),
+      targetBpm: simulatedBpmForEffort(effort, zones),
+    });
+  }, [simulate, followZone, stepTarget, ftpW, trainer, zones]);
+
+  // In heart rate blocks, simulated heart rate aims at the middle of the block's zone.
   const stepHrZoneId = hrZoneOf(currentStep(player));
   const stepZone = stepHrZoneId ? findZone(zones, stepHrZoneId) : null;
   useEffect(() => {
     if (!simulate || !followZone || !stepZone) return;
-    const top = stepZone.max ?? stepZone.min + 1;
-    useSimulationStore.getState().set({ targetBpm: Math.round(((stepZone.min + top) / 2) * 6) });
+    useSimulationStore.getState().set({ targetBpm: zoneMidBpm(stepZone) });
   }, [simulate, followZone, stepZone]);
 
   const close = () => {

@@ -53,3 +53,28 @@ export function bestAverageW(samples: readonly number[], windowSec: number): num
   const rolling = rollingMeans(samples, windowSec);
   return rolling.length ? Math.max(...rolling) : null;
 }
+
+/** Builds a 1 Hz power series from irregular clock ticks. */
+export interface PowerSampler {
+  /** Time since the last whole second, carried to the next tick. */
+  carrySec: number;
+  samples: number[];
+}
+
+export function emptyPowerSampler(): PowerSampler {
+  return { carrySec: 0, samples: [] };
+}
+
+/**
+ * Adds `dtSec` at `watts`: one sample per whole second crossed. Seconds without a
+ * reading (null) are skipped, not filled in. Appends to `samples` in place, since
+ * a long session ticks thousands of times.
+ */
+export function samplePower(s: PowerSampler, dtSec: number, watts: number | null): PowerSampler {
+  let carrySec = s.carrySec + Math.max(0, dtSec);
+  while (carrySec >= 1) {
+    carrySec -= 1;
+    if (watts !== null) s.samples.push(watts);
+  }
+  return { carrySec, samples: s.samples };
+}

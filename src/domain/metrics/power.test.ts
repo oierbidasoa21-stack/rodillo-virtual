@@ -2,10 +2,12 @@ import { describe, expect, it } from 'vitest';
 import {
   averagePowerW,
   bestAverageW,
+  emptyPowerSampler,
   intensityFactor,
   kilojoules,
   maxPowerW,
   normalizedPowerW,
+  samplePower,
   trainingStressScore,
 } from './power';
 
@@ -49,5 +51,22 @@ describe('power metrics', () => {
     expect(averagePowerW([])).toBeNull();
     expect(maxPowerW([])).toBeNull();
     expect(kilojoules([])).toBe(0);
+  });
+});
+
+describe('samplePower', () => {
+  it('takes one sample per whole second from 200 ms ticks', () => {
+    let s = emptyPowerSampler();
+    for (let i = 0; i < 25; i++) s = samplePower(s, 0.2, 180); // 5 s
+    expect(s.samples).toEqual([180, 180, 180, 180, 180]);
+    expect(s.carrySec).toBeCloseTo(0, 9);
+  });
+
+  it('skips seconds without a reading and handles long gaps', () => {
+    let s = emptyPowerSampler();
+    s = samplePower(s, 2.5, null);
+    s = samplePower(s, 0.5, 200); // crosses the 3rd second
+    s = samplePower(s, 3, 250);
+    expect(s.samples).toEqual([200, 250, 250, 250]);
   });
 });

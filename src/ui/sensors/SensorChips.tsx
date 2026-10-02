@@ -1,6 +1,7 @@
 import { isFresh } from '../../sensors/freshness';
 import { useSensorsStore } from '../../store/sensorsStore';
 import { useUiStore } from '../../store/uiStore';
+import { useEstimatedPower } from '../hooks/useEstimatedPower';
 import { useNow } from '../hooks/useNow';
 import { formatSpeed } from './sensorText';
 
@@ -10,6 +11,7 @@ export default function SensorChips() {
   const csc = useSensorsStore((s) => s.csc);
   const setTab = useUiStore((s) => s.setTab);
   const now = useNow();
+  const power = useEstimatedPower();
 
   const hrLast = isFresh(hr.last, now) ? hr.last : null;
   const cscLast = isFresh(csc.last, now) ? csc.last : null;
@@ -22,7 +24,8 @@ export default function SensorChips() {
       : 'Sin pulsómetro';
   const cscText =
     cscLast?.speedKmh != null
-      ? formatSpeed(cscLast.speedKmh)
+      ? formatSpeed(cscLast.speedKmh) +
+        (power.watts === null ? '' : ` · ${Math.round(power.watts)} W`)
       : csc.status === 'reconnecting'
         ? 'Velocidad: reconectando…'
         : 'Sin velocidad';

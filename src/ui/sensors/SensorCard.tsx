@@ -2,6 +2,7 @@ import { isFresh } from '../../sensors/freshness';
 import { sensorManager } from '../../sensors/manager';
 import type { SensorKind } from '../../sensors/types';
 import { useSensorsStore } from '../../store/sensorsStore';
+import { useEstimatedPower } from '../hooks/useEstimatedPower';
 import { useNow } from '../hooks/useNow';
 import { SENSOR_NAME, STATUS_LABEL, formatPer10s, formatSpeed } from './sensorText';
 
@@ -14,6 +15,7 @@ interface Props {
 export default function SensorCard({ kind, simulate }: Props) {
   const state = useSensorsStore((s) => s[kind]);
   const now = useNow();
+  const power = useEstimatedPower();
   const busy = state.status === 'connecting';
   const linked = state.status === 'connected' || state.status === 'reconnecting';
   const fresh = isFresh(state.last, now);
@@ -27,6 +29,7 @@ export default function SensorCard({ kind, simulate }: Props) {
       live = [
         speedKmh === null ? 'Velocidad: —' : formatSpeed(speedKmh),
         cadenceRpm === null ? 'Sin cadencia' : `${Math.round(cadenceRpm)} rpm`,
+        ...(power.watts === null ? [] : [`${Math.round(power.watts)} W est.`]),
       ].join(' · ');
     }
   }

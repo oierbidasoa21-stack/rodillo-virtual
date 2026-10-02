@@ -273,3 +273,17 @@
 .sensor-alert p {
   margin: 0;
 }
+.live-power {
+  font-size: 30px;
+  font-weight: 600;
+}
+.live-power b {
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1;
+}
+.est {
+  font-size: 0.6em;
+  color: var(--muted);
+  font-weight: 600;
+}
