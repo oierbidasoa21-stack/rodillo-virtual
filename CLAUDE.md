@@ -19,18 +19,10 @@ Aplicación web de entrenamiento en rodillo para **uso personal**, inspirada en 
 
 ## Atleta y equipo
 
-- Peso: **80 kg**. Bici: asumir 9 kg salvo que se configure otra cosa.
+- Los datos personales (peso, peso de la bici y zonas de pulso) **no se versionan**. Están en `config/athlete.local.json` (ignorado por git). Si no existe, usa `config/athlete.example.json`, que tiene el mismo esquema y valores de ejemplo.
+  - Para conocer mis valores reales, lee `config/athlete.local.json`. No los copies a código, tests, documentación ni commits.
+  - Zonas: `L1`, `L2`, `L3`, `UA` (umbral), `UA+`, `VO2`, contadas en 10 segundos (ppm = valor × 6). `max: null` = sin límite superior.
 - Entreno **por pulso y sensaciones**. Aún no tengo FTP medido.
-- Zonas de pulso, contadas en 10 segundos (ppm = valor × 6):
-
-| Zona        | /10″  | ppm     |
-| ----------- | ----- | ------- |
-| L1          | 21–22 | 126–132 |
-| L2          | 23–24 | 138–144 |
-| L3          | 25–26 | 150–156 |
-| UA (umbral) | 27–28 | 162–168 |
-| UA+         | 29    | 174     |
-| VO2         | 30+   | 180+    |
 
 - Equipo previsto: **rodillo "tonto"** + banda de pulso BLE + sensor de velocidad BLE en la rueda trasera. Puede que más adelante haya rodillo inteligente (FTMS). El diseño soporta ambos.
 - Regla: **la app nunca inventa datos**. Si un sensor no está conectado, la métrica que depende de él no se muestra. Las métricas estimadas (potencia en rodillo tonto, kcal) se marcan siempre como estimadas.
