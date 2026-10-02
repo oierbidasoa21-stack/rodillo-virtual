@@ -28,7 +28,7 @@ Objetivo: todo lo que hace `docs/reference/rodillo-pulso-v1.html`, con arquitect
 
 - [x] `domain/zones`: zonas de pulso /10″ configurables, clasificación de un valor
 - [x] `domain/workout`: modelo de bloques y repeticiones, expansión a lista plana, duración total (con tests)
-- [ ] `domain/metrics`: carga por zonas y kcal por MET (con tests)
+- [x] `domain/metrics`: carga por zonas y kcal por MET (con tests)
 - [ ] `storage`: Dexie con sesiones propias, historial y ajustes
 - [ ] Biblioteca con las 8 sesiones de la v1
 - [ ] Editor de sesiones (bloques, repeticiones, mover, borrar)
@@ -63,7 +63,7 @@ Objetivo: vatios estimados en rodillo tonto y métricas de potencia.
 - [ ] `domain/trainer`: curvas velocidad→potencia de varios modelos de rodillo, seleccionable en ajustes
 - [ ] Circunferencia de rueda configurable
 - [ ] `domain/physics`: velocidad virtual según potencia, pendiente y peso (con tests)
-- [ ] `domain/metrics`: NP, IF, TSS, kJ (con tests)
+- [x] `domain/metrics`: NP, IF, TSS, kJ (con tests)
 - [ ] Ramp test guiado que calcula FTP estimado y zonas de potencia
 - [ ] Bloques de workout con objetivo por pulso **o** por potencia
 - [ ] Todas las cifras estimadas marcadas como "estimado"
