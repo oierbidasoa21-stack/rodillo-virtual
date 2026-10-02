@@ -7,8 +7,10 @@ import {
   buildSessionSummary,
 } from '../../domain/metrics/summary';
 import { addHrSample, emptyHrTime } from '../../domain/metrics/hrTime';
+import { emptyPowerSampler, samplePower } from '../../domain/metrics/power';
 import { curveFor, speedForPowerKmh } from '../../domain/trainer/curves';
 import { expandWorkout } from '../../domain/workout/expand';
+import { type RampResult, ftpFromRamp, rampStepsCompleted } from '../../domain/workout/ramp';
 import { targetWatts } from '../../domain/workout/targets';
 import {
   type Transition,
@@ -25,6 +27,7 @@ import {
 } from '../../domain/workout/player';
 import { BLOCK_KIND_LABELS, type Workout, hrZoneOf } from '../../domain/workout/types';
 import { type HrZone, ZONE_META, findZone } from '../../domain/zones/zones';
+import { estimatePowerW } from '../../sensors/estimatedPower';
 import { isFresh } from '../../sensors/freshness';
 import {
   SIM_REFERENCE_FTP_W,
@@ -43,13 +46,21 @@ import { useWakeLock } from '../hooks/useWakeLock';
 import { targetColor, targetShortLabel } from '../targetStyle';
 import WorkoutProfile from '../WorkoutProfile';
 import { needsDarkText } from '../zoneStyle';
+import RampResultCard from '../ramp/RampResultCard';
 import HrCounter from './HrCounter';
 import LiveMetrics from './LiveMetrics';
 import SensorAlerts from './SensorAlerts';
 import Summary from './Summary';
 
 /** Full-screen workout player, readable from a metre away. Ends in the summary. */
-export default function Player({ workout }: { workout: Workout }) {
+export default function Player({
+  workout,
+  mode = 'normal',
+}: {
+  workout: Workout;
+  /** 'ramp': one-press stop and an FTP estimate at the end. */
+  mode?: 'normal' | 'ramp';
+}) {
   const zones = useSettingsStore((s) => s.settings.athlete.hrZonesPer10s);
   const addHistory = useHistoryStore((s) => s.add);
   const stopPlayer = useUiStore((s) => s.stopPlayer);
@@ -61,9 +72,17 @@ export default function Player({ workout }: { workout: Workout }) {
   // Heart rate measured while the clock runs, and whether any of it was simulated.
   const hrTime = useRef(emptyHrTime());
   const hrSimulated = useRef(false);
+  // Estimated power, one sample per second, and whether it came from a simulated sensor.
+  const power = useRef(emptyPowerSampler());
+  const powerSimulated = useRef(false);
   // Target zone when the count was opened; the step may change while counting.
   const [countTarget, setCountTarget] = useState<HrZone | null>(null);
-  const [result, setResult] = useState<{ summary: SessionSummary; saved: boolean } | null>(null);
+  const [result, setResult] = useState<{
+    summary: SessionSummary;
+    saved: boolean;
+    ramp: RampResult | null;
+    powerSimulated: boolean;
+  } | null>(null);
 
   const apply = useCallback(
     (t: Transition) => {
@@ -83,11 +102,15 @@ export default function Player({ workout }: { workout: Workout }) {
         });
         const saved = summary.durationSec >= MIN_SAVED_SESSION_SEC;
         if (saved) void addHistory(summary);
+        const ramp =
+          mode === 'ramp'
+            ? ftpFromRamp(power.current.samples, rampStepsCompleted(t.state.index))
+            : null;
         setCountTarget(null);
-        setResult({ summary, saved });
+        setResult({ summary, saved, ramp, powerSimulated: powerSimulated.current });
       }
     },
-    [workout.name, addHistory],
+    [workout.name, addHistory, mode],
   );
 
   const running = player.status === 'running';
@@ -101,6 +124,11 @@ export default function Player({ workout }: { workout: Workout }) {
       dt,
       useSettingsStore.getState().settings.athlete.hrZonesPer10s,
     );
+    const { settings } = useSettingsStore.getState();
+    const { csc } = useSensorsStore.getState();
+    const watts = estimatePowerW(csc.last, curveFor(settings.trainer), Date.now());
+    if (watts !== null && csc.source === 'simulated') powerSimulated.current = true;
+    power.current = samplePower(power.current, dt, watts);
     apply(tick(playerRef.current, dt));
   });
   useWakeLock(running);
@@ -142,7 +170,11 @@ export default function Player({ workout }: { workout: Workout }) {
   if (result) {
     return (
       <div className="overlay">
-        <Summary summary={result.summary} saved={result.saved} onClose={close} />
+        <Summary summary={result.summary} saved={result.saved} onClose={close}>
+          {mode === 'ramp' && (
+            <RampResultCard result={result.ramp} simulated={result.powerSimulated} />
+          )}
+        </Summary>
       </div>
     );
   }
@@ -179,7 +211,9 @@ export default function Player({ workout }: { workout: Workout }) {
           style={{ background: targetColor(step.target) }}
         >
           <span className="k">
-            {BLOCK_KIND_LABELS[step.kind]}
+            {mode === 'ramp' && player.index > 0
+              ? `Escalón ${player.index}`
+              : BLOCK_KIND_LABELS[step.kind]}
             {step.repeat && ` · ${step.repeat.index}/${step.repeat.times}`}
           </span>
           <span className="zn">{zone ? zone.id : targetShortLabel(step.target)}</span>
@@ -201,7 +235,7 @@ export default function Player({ workout }: { workout: Workout }) {
           {formatClock(Math.ceil(p.remainingInStepSec))}
         </div>
 
-        <LiveMetrics zone={zone} />
+        <LiveMetrics zone={zone} targetW={targetWatts(step.target, ftpW)} />
 
         <div className="next">
           {next ? (
@@ -263,12 +297,23 @@ export default function Player({ workout }: { workout: Workout }) {
           <button type="button" className="btn" onClick={() => apply(skip(playerRef.current))}>
             Saltar
           </button>
-          <ConfirmButton
-            label="Terminar"
-            armedLabel="¿Terminar? Pulsa otra vez"
-            className="btn danger wide"
-            onConfirm={() => apply(finish(playerRef.current))}
-          />
+          {mode === 'ramp' ? (
+            // At exhaustion a second press is too much to ask: one press ends the test.
+            <button
+              type="button"
+              className="btn danger wide"
+              onClick={() => apply(finish(playerRef.current))}
+            >
+              No puedo más
+            </button>
+          ) : (
+            <ConfirmButton
+              label="Terminar"
+              armedLabel="¿Terminar? Pulsa otra vez"
+              className="btn danger wide"
+              onConfirm={() => apply(finish(playerRef.current))}
+            />
+          )}
         </div>
       </div>
 

@@ -81,7 +81,7 @@ Objetivo: vatios estimados en rodillo tonto y métricas de potencia.
 - [x] `domain/trainer`: curvas velocidad→potencia de varios modelos de rodillo, seleccionable en ajustes
 - [x] `domain/physics`: velocidad virtual según potencia, pendiente y peso (con tests)
 - [x] `domain/metrics`: NP, IF, TSS, kJ (con tests)
-- [ ] Ramp test guiado que calcula FTP estimado y zonas de potencia
+- [x] Ramp test guiado que calcula FTP estimado y zonas de potencia
 - [ ] Bloques de workout con objetivo por pulso **o** por potencia
 - [ ] Todas las cifras estimadas marcadas como "estimado"
 

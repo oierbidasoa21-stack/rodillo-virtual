@@ -2,6 +2,7 @@ import { BUILTIN_WORKOUTS } from '../../domain/workout/library';
 import { makeBlock } from '../../domain/workout/types';
 import { useUiStore } from '../../store/uiStore';
 import { useWorkoutsStore } from '../../store/workoutsStore';
+import RampTestCard from '../ramp/RampTestCard';
 import WorkoutCard from './WorkoutCard';
 
 const NEW_WORKOUT = {
@@ -48,6 +49,13 @@ export default function LibraryView() {
             ajustarla.
           </p>
         )}
+      </div>
+
+      <div className="sectionhead">
+        <h2>Pruebas</h2>
+      </div>
+      <div className="list">
+        <RampTestCard />
       </div>
 
       <div className="sectionhead">

@@ -1,5 +1,5 @@
 import type { PlayerEvent } from '../domain/workout/player';
-import { announceStep, announceWarning } from './announcements';
+import { announceRampStep, announceStep, announceWarning } from './announcements';
 import { beep } from './beeper';
 import { say } from './speech';
 
@@ -26,15 +26,17 @@ export function playCues(events: readonly PlayerEvent[], { beeps, voice }: CueSe
         break;
       case 'warn10s':
         tone(740, 160);
-        speak(announceWarning(event.next));
+        // Fixed-watt steps (ramp test) are announced when they start instead.
+        if (event.next?.target.type !== 'watts') speak(announceWarning(event.next));
         break;
       case 'countdown':
         tone(880, 110);
         break;
       case 'stepChanged':
         tone(1175, 260);
-        // Automatic changes were already announced by the 10 s warning.
-        if (event.manual) speak(announceStep(event.step));
+        if (event.step.target.type === 'watts') speak(announceRampStep(event.step.target.watts));
+        // Other automatic changes were already announced by the 10 s warning.
+        else if (event.manual) speak(announceStep(event.step));
         break;
       case 'finished':
         tone(880, 150);

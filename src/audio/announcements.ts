@@ -34,6 +34,11 @@ export function announceStep(step: Step): string {
   return `${BLOCK_KIND_LABELS[step.kind]}, ${spokenTarget(step.target)}, ${spokenDuration(step.durationSec)}`;
 }
 
+/** Each new ramp test step. */
+export function announceRampStep(watts: number): string {
+  return `Sube a ${Math.round(watts)} vatios`;
+}
+
 /** Said 10 seconds before a step ends. */
 export function announceWarning(next: Step | null): string {
   if (!next) return 'Diez segundos para terminar';

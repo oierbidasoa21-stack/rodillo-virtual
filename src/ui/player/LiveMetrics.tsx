@@ -1,17 +1,25 @@
+import { powerStatus } from '../../domain/workout/targets';
 import { type HrZone, zoneStatus } from '../../domain/zones/zones';
 import { isFresh } from '../../sensors/freshness';
 import { useSensorsStore } from '../../store/sensorsStore';
 import { useEstimatedPower } from '../hooks/useEstimatedPower';
 import { useNow } from '../hooks/useNow';
 import { formatPer10s, formatSpeed } from '../sensors/sensorText';
-import { STATUS_CLASS, STATUS_TEXT } from './zoneStatusText';
+import { POWER_STATUS_TEXT, STATUS_CLASS, STATUS_TEXT } from './zoneStatusText';
 
 /**
  * Live heart rate against the block's zone, plus speed and cadence. Only fresh
  * readings are shown; nothing appears for a sensor that isn't sending.
  */
 /** `zone` is the block's heart rate zone; null for power blocks (no in/out status). */
-export default function LiveMetrics({ zone }: { zone: HrZone | null }) {
+export default function LiveMetrics({
+  zone,
+  targetW = null,
+}: {
+  zone: HrZone | null;
+  /** Power target of the block in watts, if any. */
+  targetW?: number | null;
+}) {
   const hr = useSensorsStore((s) => s.hr);
   const csc = useSensorsStore((s) => s.csc);
   const now = useNow(500);
@@ -23,6 +31,8 @@ export default function LiveMetrics({ zone }: { zone: HrZone | null }) {
 
   // Rounded like a hand count, so e.g. 135 ppm (22.5) reads as 23.
   const status = hrLast && zone ? zoneStatus(Math.round(hrLast.bpm / 6), zone) : null;
+  const powerState =
+    power.watts !== null && targetW !== null ? powerStatus(power.watts, targetW) : null;
   const simulated = hr.source === 'simulated' || csc.source === 'simulated';
 
   return (
@@ -38,7 +48,16 @@ export default function LiveMetrics({ zone }: { zone: HrZone | null }) {
       )}
       {power.watts !== null && (
         <div className="live-power num">
-          <b>{Math.round(power.watts)}</b> W <span className="est">est.</span>
+          <b className={powerState ? STATUS_CLASS[powerState] : undefined}>
+            {Math.round(power.watts)}
+          </b>{' '}
+          W <span className="est">est.</span>
+          {powerState && (
+            <span className={`live-status ${STATUS_CLASS[powerState]}`}>
+              {' '}
+              {POWER_STATUS_TEXT[powerState]}
+            </span>
+          )}
         </div>
       )}
       {cscLast && (cscLast.speedKmh !== null || cscLast.cadenceRpm !== null) && (

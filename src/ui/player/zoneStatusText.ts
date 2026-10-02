@@ -6,6 +6,12 @@ export const STATUS_CLASS: Readonly<Record<ZoneStatus, string>> = {
   below: 'st-lo',
 };
 
+export const POWER_STATUS_TEXT: Readonly<Record<ZoneStatus, string>> = {
+  in: 'En objetivo',
+  above: 'Por encima',
+  below: 'Por debajo',
+};
+
 export const STATUS_TEXT: Readonly<Record<ZoneStatus, string>> = {
   in: 'En zona',
   above: 'Por encima',

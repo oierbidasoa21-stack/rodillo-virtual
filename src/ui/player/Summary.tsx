@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { KCAL_MET_UNCERTAINTY } from '../../domain/metrics/kcal';
 import type { SessionSummary } from '../../domain/metrics/summary';
 import { hrPer10sToBpm } from '../../domain/zones/heartRate';
@@ -10,9 +11,11 @@ interface Props {
   summary: SessionSummary;
   saved: boolean;
   onClose: () => void;
+  /** Extra result shown first, e.g. the ramp test FTP. */
+  children?: ReactNode;
 }
 
-export default function Summary({ summary, saved, onClose }: Props) {
+export default function Summary({ summary, saved, onClose, children }: Props) {
   const { plannedSecByZone: plan, counts, hrMeasured: hr } = summary;
   // Measured by the heart rate sensor when there was enough of it, else the blocks ridden.
   const done = hr?.secByZone ?? summary.actualSecByZone;
@@ -27,6 +30,8 @@ export default function Summary({ summary, saved, onClose }: Props) {
           Volver a sesiones
         </button>
       </div>
+
+      {children}
 
       <div className="stats" style={{ marginTop: 14 }}>
         <div className="stat">

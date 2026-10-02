@@ -287,3 +287,15 @@
   color: var(--muted);
   font-weight: 600;
 }
+
+/* Ramp test result */
+.ramp-ftp {
+  font-family: var(--f-display);
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1;
+}
+.ramp-ftp span {
+  font-size: 0.45em;
+  color: var(--muted);
+}

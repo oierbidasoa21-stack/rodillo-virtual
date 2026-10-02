@@ -21,6 +21,7 @@ export default function App() {
   const tab = useUiStore((s) => s.tab);
   const editing = useUiStore((s) => s.editing);
   const playing = useUiStore((s) => s.playing);
+  const playingMode = useUiStore((s) => s.playingMode);
   useTheme();
 
   useEffect(() => {
@@ -66,7 +67,7 @@ export default function App() {
         )}
       </div>
       {editing && <EditorSheet key={editing.id ?? 'new'} initial={editing} />}
-      {playing && <Player key={playing.id} workout={playing} />}
+      {playing && <Player key={playing.id} workout={playing} mode={playingMode} />}
       <UpdatePrompt />
       <Toast />
     </>

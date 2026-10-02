@@ -13,7 +13,9 @@ interface UiStore {
   closeEditor: () => void;
   /** Workout being played, full screen. */
   playing: Workout | null;
-  startWorkout: (workout: Workout) => void;
+  /** 'ramp' adds the FTP estimate at the end and a one-press stop. */
+  playingMode: 'normal' | 'ramp';
+  startWorkout: (workout: Workout, mode?: 'normal' | 'ramp') => void;
   stopPlayer: () => void;
   /** Result of asking the browser to keep our data; null until asked. */
   storagePersistence: StoragePersistence | null;
@@ -31,7 +33,8 @@ export const useUiStore = create<UiStore>()((set) => ({
   openEditor: (draft) => set({ editing: structuredClone(draft) }),
   closeEditor: () => set({ editing: null }),
   playing: null,
-  startWorkout: (workout) => set({ playing: workout }),
+  playingMode: 'normal',
+  startWorkout: (workout, mode = 'normal') => set({ playing: workout, playingMode: mode }),
   stopPlayer: () => set({ playing: null }),
   storagePersistence: null,
   setStoragePersistence: (value) => set({ storagePersistence: value }),

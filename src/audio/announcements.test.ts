@@ -1,12 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { makeBlock } from '../domain/workout/types';
-import { announceStep, announceWarning } from './announcements';
+import { announceRampStep, announceStep, announceWarning } from './announcements';
 
 describe('announcements', () => {
   it('reads kind, zone and duration', () => {
     expect(announceStep(makeBlock(600, 'UA', 'work'))).toBe('Serie, umbral, 10 minutos');
     expect(announceStep(makeBlock(60, 'L1', 'rec'))).toBe('Recuperación, L uno, 1 minuto');
     expect(announceStep(makeBlock(30, 'VO2', 'work'))).toBe('Serie, VO dos, 30 segundos');
+  });
+
+  it('reads power targets', () => {
+    expect(announceStep(makeBlock(600, { type: 'power', pctFtp: 88 }, 'work'))).toBe(
+      'Serie, 88 por ciento, 10 minutos',
+    );
+    expect(announceRampStep(240)).toBe('Sube a 240 vatios');
   });
 
   it('warns about the next step or the end', () => {
