@@ -48,6 +48,7 @@ import WorkoutProfile from '../WorkoutProfile';
 import { needsDarkText } from '../zoneStyle';
 import RampResultCard from '../ramp/RampResultCard';
 import HrCounter from './HrCounter';
+import PowerTargetDetail from './PowerTargetDetail';
 import LiveMetrics from './LiveMetrics';
 import SensorAlerts from './SensorAlerts';
 import Summary from './Summary';
@@ -77,6 +78,12 @@ export default function Player({
   const powerSimulated = useRef(false);
   // Target zone when the count was opened; the step may change while counting.
   const [countTarget, setCountTarget] = useState<HrZone | null>(null);
+  // The simulator as it was before this session, restored when it ends or the player closes.
+  const [simBefore] = useState(() => {
+    const { targetBpm, speedKmh, cadenceRpm } = useSimulationStore.getState();
+    return { targetBpm, speedKmh, cadenceRpm };
+  });
+  useEffect(() => () => useSimulationStore.getState().set(simBefore), [simBefore]);
   const [result, setResult] = useState<{
     summary: SessionSummary;
     saved: boolean;
@@ -91,6 +98,7 @@ export default function Player({
       const { settings } = useSettingsStore.getState();
       playCues(t.events, { ...settings, ftpW: settings.athlete.ftp?.watts ?? null });
       if (t.events.some((e) => e.type === 'finished')) {
+        useSimulationStore.getState().set(simBefore);
         const summary = buildSessionSummary({
           id: crypto.randomUUID(),
           dateMs: Date.now(),
@@ -99,6 +107,9 @@ export default function Player({
           weightKg: settings.athlete.weightKg,
           hr: hrTime.current,
           hrSimulated: hrSimulated.current,
+          powerSamples: power.current.samples,
+          powerSimulated: powerSimulated.current,
+          ftpW: settings.athlete.ftp?.watts ?? null,
         });
         const saved = summary.durationSec >= MIN_SAVED_SESSION_SEC;
         if (saved) void addHistory(summary);
@@ -110,7 +121,7 @@ export default function Player({
         setResult({ summary, saved, ramp, powerSimulated: powerSimulated.current });
       }
     },
-    [workout.name, addHistory, mode],
+    [workout.name, addHistory, mode, simBefore],
   );
 
   const running = player.status === 'running';
@@ -201,14 +212,14 @@ export default function Player({
 
         <SensorAlerts />
 
-        <WorkoutProfile steps={player.steps} big>
+        <WorkoutProfile steps={player.steps} ftpW={ftpW} big>
           <div className="shade" style={{ width: `${share}%` }} />
           <div className="cursor" style={{ left: `${share}%` }} />
         </WorkoutProfile>
 
         <div
           className={zone && needsDarkText(zone.id) ? 'zonecard zt-dark' : 'zonecard'}
-          style={{ background: targetColor(step.target) }}
+          style={{ background: targetColor(step.target, ftpW) }}
         >
           <span className="k">
             {mode === 'ramp' && player.index > 0
@@ -225,6 +236,7 @@ export default function Player({
               <span className="rpe">{ZONE_META[zone.id].feel}</span>
             </>
           )}
+          {!zone && <PowerTargetDetail target={step.target} ftpW={ftpW} />}
           {step.note && <span className="bnote">{step.note}</span>}
         </div>
 

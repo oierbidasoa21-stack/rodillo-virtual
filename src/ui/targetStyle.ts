@@ -1,5 +1,5 @@
 import type { BlockTarget } from '../domain/workout/types';
-import { POWER_ZONE_IDS, powerZoneOfPct } from '../domain/zones/powerZones';
+import { POWER_ZONE_IDS, type PowerZoneId, powerZoneOfPct } from '../domain/zones/powerZones';
 import { ZONE_IDS, type ZoneId } from '../domain/zones/zones';
 import { zoneColor } from './zoneStyle';
 
@@ -46,4 +46,10 @@ export function targetShortLabel(target: BlockTarget): string {
     case 'watts':
       return `${Math.round(target.watts)} W`;
   }
+}
+
+/** Colour of a power zone (Z1–Z6 share the six zone colours; Z7 reuses the top one). */
+export function powerZoneColor(id: PowerZoneId): string {
+  const index = Math.min(POWER_ZONE_IDS.indexOf(id), ZONE_IDS.length - 1);
+  return zoneColor(ZONE_IDS[index] ?? 'VO2');
 }

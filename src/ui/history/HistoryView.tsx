@@ -55,6 +55,7 @@ export default function HistoryView() {
               <th>Sesión</th>
               <th>Tiempo</th>
               <th>Carga</th>
+              <th>TSS (est.)</th>
               <th>kcal (est.)</th>
             </tr>
           </thead>
@@ -64,14 +65,15 @@ export default function HistoryView() {
                 <td className="num nowrap">{dateFormat.format(s.dateMs)}</td>
                 <td>
                   {s.workoutName}
-                  {s.hrMeasured?.simulated && (
-                    <span className="sim-tag" title="Pulso de un sensor simulado">
+                  {(s.hrMeasured?.simulated || s.power?.simulated) && (
+                    <span className="sim-tag" title="Datos de sensores simulados">
                       SIM.
                     </span>
                   )}
                 </td>
                 <td className="num">{formatMinutes(s.durationSec)}</td>
                 <td className="num">{Math.round(s.load)}</td>
+                <td className="num">{s.power?.tss == null ? '—' : Math.round(s.power.tss)}</td>
                 <td className="num">{Math.round(s.kcalEstimated)}</td>
               </tr>
             ))}

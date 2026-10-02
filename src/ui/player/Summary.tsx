@@ -5,6 +5,7 @@ import { hrPer10sToBpm } from '../../domain/zones/heartRate';
 import { ZONE_IDS } from '../../domain/zones/zones';
 import { formatClock } from '../format';
 import { zoneColor } from '../zoneStyle';
+import PowerSummaryCard from './PowerSummaryCard';
 import { STATUS_CLASS, STATUS_TEXT } from './zoneStatusText';
 
 interface Props {
@@ -21,6 +22,8 @@ export default function Summary({ summary, saved, onClose, children }: Props) {
   const done = hr?.secByZone ?? summary.actualSecByZone;
   const maxSec = Math.max(1, ...ZONE_IDS.map((id) => Math.max(plan[id], done[id])));
   const inZone = counts.filter((c) => c.status === 'in').length;
+  // A power-only session without a heart rate sensor has nothing to show per heart rate zone.
+  const showHrZones = !!hr || ZONE_IDS.some((id) => plan[id] > 0);
 
   return (
     <div className="sheet">
@@ -44,7 +47,11 @@ export default function Summary({ summary, saved, onClose, children }: Props) {
         </div>
         <div className="stat">
           <div className="v num">{Math.round(summary.kcalEstimated)}</div>
-          <div className="l">kcal estimadas (±{Math.round(KCAL_MET_UNCERTAINTY * 100)} %)</div>
+          <div className="l">
+            {summary.power
+              ? 'kcal estimadas (≈ kJ)'
+              : `kcal estimadas (±${Math.round(KCAL_MET_UNCERTAINTY * 100)} %)`}
+          </div>
         </div>
         {hr && (
           <>
@@ -73,41 +80,48 @@ export default function Summary({ summary, saved, onClose, children }: Props) {
         </p>
       )}
 
-      <div className="sectionhead">
-        <h2>Tiempo en cada zona</h2>
-        <span className="tag">
-          {hr ? 'Medido por pulsómetro' : 'Según los bloques realizados'}
-          {hr?.simulated && <span className="sim-tag">SIMULADO</span>}
-        </span>
-      </div>
-      <div className="card">
-        {ZONE_IDS.map((id) => (
-          <div className="zbar" key={id}>
-            <b style={{ color: zoneColor(id) }}>{id}</b>
-            <div className="bars">
-              <div className="track">
-                <div
-                  className="fill"
-                  style={{ width: `${(done[id] / maxSec) * 100}%`, background: zoneColor(id) }}
-                />
-              </div>
-              <div className="track plan">
-                <div className="fill" style={{ width: `${(plan[id] / maxSec) * 100}%` }} />
-              </div>
-            </div>
-            <span className="t num">
-              {formatClock(done[id])} <span className="note">/ {formatClock(plan[id])}</span>
+      {summary.power && <PowerSummaryCard power={summary.power} />}
+
+      {showHrZones && (
+        <>
+          <div className="sectionhead">
+            <h2>Tiempo en cada zona</h2>
+            <span className="tag">
+              {hr ? 'Medido por pulsómetro' : 'Según los bloques realizados'}
+              {hr?.simulated && <span className="sim-tag">SIMULADO</span>}
             </span>
           </div>
-        ))}
-        <p className="note">
-          Barra de color: lo realizado{hr ? ', según tu pulso' : ''}. Línea gris: lo planificado.
-          {hr && hr.belowSec >= 1 && ` Además, ${formatClock(hr.belowSec)} por debajo de L1.`}
-          {hr &&
-            hr.coveredSec < summary.durationSec - 30 &&
-            ` Hubo pulso durante ${formatClock(hr.coveredSec)} de ${formatClock(summary.durationSec)}.`}
-        </p>
-      </div>
+          <div className="card">
+            {ZONE_IDS.map((id) => (
+              <div className="zbar" key={id}>
+                <b style={{ color: zoneColor(id) }}>{id}</b>
+                <div className="bars">
+                  <div className="track">
+                    <div
+                      className="fill"
+                      style={{ width: `${(done[id] / maxSec) * 100}%`, background: zoneColor(id) }}
+                    />
+                  </div>
+                  <div className="track plan">
+                    <div className="fill" style={{ width: `${(plan[id] / maxSec) * 100}%` }} />
+                  </div>
+                </div>
+                <span className="t num">
+                  {formatClock(done[id])} <span className="note">/ {formatClock(plan[id])}</span>
+                </span>
+              </div>
+            ))}
+            <p className="note">
+              Barra de color: lo realizado{hr ? ', según tu pulso' : ''}. Línea gris: lo
+              planificado.
+              {hr && hr.belowSec >= 1 && ` Además, ${formatClock(hr.belowSec)} por debajo de L1.`}
+              {hr &&
+                hr.coveredSec < summary.durationSec - 30 &&
+                ` Hubo pulso durante ${formatClock(hr.coveredSec)} de ${formatClock(summary.durationSec)}.`}
+            </p>
+          </div>
+        </>
+      )}
 
       {counts.length > 0 && (
         <>
