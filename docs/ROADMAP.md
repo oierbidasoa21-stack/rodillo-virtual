@@ -29,7 +29,7 @@ Objetivo: todo lo que hace `docs/reference/rodillo-pulso-v1.html`, con arquitect
 - [x] `domain/zones`: zonas de pulso /10″ configurables, clasificación de un valor
 - [x] `domain/workout`: modelo de bloques y repeticiones, expansión a lista plana, duración total (con tests)
 - [x] `domain/metrics`: carga por zonas y kcal por MET (con tests)
-- [ ] `storage`: Dexie con sesiones propias, historial y ajustes
+- [x] `storage`: Dexie con sesiones propias, historial y ajustes
 - [ ] Biblioteca con las 8 sesiones de la v1
 - [ ] Editor de sesiones (bloques, repeticiones, mover, borrar)
 - [ ] Player: zona actual, cuenta atrás, perfil con cursor, siguiente bloque, pausa, +1′, saltar, terminar
