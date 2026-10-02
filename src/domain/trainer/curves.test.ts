@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
+  DEFAULT_TRAINER_CHOICE,
   TRAINER_CURVES,
+  curveFor,
   customCurve,
   findTrainerCurve,
   speedForPowerKmh,
@@ -52,5 +54,25 @@ describe('speedForPowerKmh', () => {
   it('handles zero and unreachable targets', () => {
     expect(speedForPowerKmh(roadMachine, 0)).toBe(0);
     expect(speedForPowerKmh(customCurve(1, 0), 5000)).toBeNull();
+  });
+});
+
+describe('curveFor', () => {
+  it('maps a settings choice to a curve, or none', () => {
+    expect(curveFor({ ...DEFAULT_TRAINER_CHOICE })).toBeNull();
+    expect(curveFor({ ...DEFAULT_TRAINER_CHOICE, modelId: 'kurt-cyclone' })?.name).toBe(
+      'Kurt Kinetic Cyclone',
+    );
+    expect(curveFor({ modelId: 'custom', customA: 2, customB: 0.01 })?.coefficients).toEqual([
+      0, 2, 0, 0.01,
+    ]);
+    expect(curveFor({ ...DEFAULT_TRAINER_CHOICE, modelId: 'gone' })).toBeNull();
+  });
+
+  it('the custom default is the Road Machine in km/h (within 0.5 %)', () => {
+    const custom = curveFor({ ...DEFAULT_TRAINER_CHOICE, modelId: 'custom' });
+    if (!custom) throw new Error('missing');
+    const ratio = trainerPowerW(custom, 32) / trainerPowerW(roadMachine, 32);
+    expect(Math.abs(ratio - 1)).toBeLessThan(0.005);
   });
 });

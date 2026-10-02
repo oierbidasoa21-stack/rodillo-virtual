@@ -7,6 +7,7 @@ import ConfirmButton from '../ConfirmButton';
 import NumberInput from '../NumberInput';
 import AthleteFile from './AthleteFile';
 import BackupPanel from './BackupPanel';
+import TrainerSettings from './TrainerSettings';
 import ZonesTable from './ZonesTable';
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
@@ -106,6 +107,11 @@ export default function SettingsView() {
           </select>
         </div>
       </div>
+
+      <div className="sectionhead">
+        <h2>Rodillo y potencia</h2>
+      </div>
+      <TrainerSettings />
 
       <div className="sectionhead">
         <h2>Zonas de pulso</h2>

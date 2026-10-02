@@ -20,6 +20,25 @@ describe('parseAthleteConfig', () => {
     expect(result.ok && result.value.wheelCircumferenceMm).toBe(2155);
   });
 
+  it('has no FTP unless the file brings one', () => {
+    expect(
+      parseAthleteConfig(example).ok &&
+        (parseAthleteConfig(example) as { value: { ftp: unknown } }).value.ftp,
+    ).toBeNull();
+    const withFtp = parseAthleteConfig({
+      ...example,
+      ftp: { watts: 245.4, source: 'ramp', dateMs: 5 },
+    });
+    expect(withFtp.ok && withFtp.value.ftp).toEqual({ watts: 245, source: 'ramp', dateMs: 5 });
+    const manual = parseAthleteConfig({ ...example, ftp: { watts: 200 } });
+    expect(manual.ok && manual.value.ftp).toEqual({ watts: 200, source: 'manual', dateMs: 0 });
+  });
+
+  it('rejects an implausible FTP', () => {
+    expect(parseAthleteConfig({ ...example, ftp: { watts: 20 } }).ok).toBe(false);
+    expect(parseAthleteConfig({ ...example, ftp: 250 }).ok).toBe(false);
+  });
+
   it('rejects an implausible wheel circumference', () => {
     expect(parseAthleteConfig({ ...example, wheelCircumferenceMm: 500 }).ok).toBe(false);
   });

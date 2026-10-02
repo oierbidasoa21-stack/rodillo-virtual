@@ -7,7 +7,20 @@ export interface AthleteConfig {
   /** Rolling circumference of the rear wheel, for speed from a wheel sensor. */
   wheelCircumferenceMm: number;
   hrZonesPer10s: HrZone[];
+  /** Functional threshold power, or null while unknown (no power targets in watts). */
+  ftp: Ftp | null;
 }
+
+export type FtpSource = 'ramp' | 'manual';
+
+export interface Ftp {
+  watts: number;
+  source: FtpSource;
+  /** When it was set (ms since epoch); 0 if unknown. */
+  dateMs: number;
+}
+
+export const FTP_RANGE_W = { min: 50, max: 600 } as const;
 
 /** 700×32 road tyre. Used when an athlete file has no wheel circumference. */
 export const DEFAULT_WHEEL_CIRCUMFERENCE_MM = 2155;
@@ -62,6 +75,11 @@ export function parseAthleteConfig(input: unknown): ParseResult<AthleteConfig> {
     if (zones.length === hrZonesPer10s.length) errors.push(...validateZones(zones));
   }
 
+  const ftp = parseFtp(input.ftp);
+  if (ftp === undefined) {
+    errors.push(`ftp: null, o un objeto con watts entre ${FTP_RANGE_W.min} y ${FTP_RANGE_W.max}.`);
+  }
+
   if (errors.length) return { ok: false, errors };
   return {
     ok: true,
@@ -70,6 +88,18 @@ export function parseAthleteConfig(input: unknown): ParseResult<AthleteConfig> {
       bikeWeightKg: bikeWeightKg as number,
       wheelCircumferenceMm: wheelCircumferenceMm as number,
       hrZonesPer10s: zones,
+      ftp: ftp ?? null,
     },
+  };
+}
+
+/** Missing or null → null (unknown); malformed → undefined (an error). */
+function parseFtp(v: unknown): Ftp | null | undefined {
+  if (v === undefined || v === null) return null;
+  if (!isRecord(v) || !inRange(v.watts, FTP_RANGE_W.min, FTP_RANGE_W.max)) return undefined;
+  return {
+    watts: Math.round(v.watts),
+    source: v.source === 'ramp' ? 'ramp' : 'manual',
+    dateMs: typeof v.dateMs === 'number' && Number.isFinite(v.dateMs) ? v.dateMs : 0,
   };
 }

@@ -78,6 +78,7 @@ describe('settings', () => {
     expect(settings.beeps).toBe(false);
     expect(settings.voice).toBe(true);
     expect(settings.simulateSensors).toBe(false);
+    expect(settings.trainer.modelId).toBe('none');
     expect(settings.athlete).toEqual(defaultSettings().athlete);
   });
 });

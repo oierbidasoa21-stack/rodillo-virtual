@@ -118,3 +118,25 @@ export function speedForPowerKmh(curve: TrainerCurve, watts: number): number | n
   }
   return (lo + hi) / 2;
 }
+
+/** The athlete's trainer as chosen in settings. */
+export interface TrainerChoice {
+  /** 'none', 'custom' or the id of a listed curve. */
+  modelId: string;
+  /** Custom curve P = a·v + b·v³ (v in km/h). */
+  customA: number;
+  customB: number;
+}
+
+/** Starting point for a custom curve: the Kurt Road Machine converted to km/h. */
+export const DEFAULT_TRAINER_CHOICE: TrainerChoice = {
+  modelId: 'none',
+  customA: 3.26,
+  customB: 0.0046,
+};
+
+/** The curve to estimate power with, or null when no trainer is chosen (no power at all). */
+export function curveFor(choice: TrainerChoice): TrainerCurve | null {
+  if (choice.modelId === 'custom') return customCurve(choice.customA, choice.customB);
+  return findTrainerCurve(choice.modelId);
+}
