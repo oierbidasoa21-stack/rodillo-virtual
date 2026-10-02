@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { Workout } from '../domain/workout/types';
+import type { StoragePersistence } from '../storage/persist';
 
 export type Tab = 'library' | 'history' | 'settings';
 
@@ -14,6 +15,9 @@ interface UiStore {
   playing: Workout | null;
   startWorkout: (workout: Workout) => void;
   stopPlayer: () => void;
+  /** Result of asking the browser to keep our data; null until asked. */
+  storagePersistence: StoragePersistence | null;
+  setStoragePersistence: (value: StoragePersistence) => void;
   toast: { id: number; text: string } | null;
   showToast: (text: string) => void;
   hideToast: () => void;
@@ -29,6 +33,8 @@ export const useUiStore = create<UiStore>()((set) => ({
   playing: null,
   startWorkout: (workout) => set({ playing: workout }),
   stopPlayer: () => set({ playing: null }),
+  storagePersistence: null,
+  setStoragePersistence: (value) => set({ storagePersistence: value }),
   toast: null,
   showToast: (text) => set({ toast: { id: Date.now(), text } }),
   hideToast: () => set({ toast: null }),

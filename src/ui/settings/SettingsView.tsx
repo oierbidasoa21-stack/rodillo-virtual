@@ -20,6 +20,7 @@ export default function SettingsView() {
   const update = useSettingsStore((s) => s.update);
   const updateAthlete = useSettingsStore((s) => s.updateAthlete);
   const showToast = useUiStore((s) => s.showToast);
+  const persistence = useUiStore((s) => s.storagePersistence);
   const { athlete } = settings;
 
   return (
@@ -117,6 +118,21 @@ export default function SettingsView() {
             showToast('Peso y zonas importados');
           }}
         />
+      </div>
+
+      <div className="sectionhead">
+        <h2>Datos en este dispositivo</h2>
+      </div>
+      <div className="card">
+        <p className="note" style={{ margin: 0 }}>
+          Sesiones, historial y ajustes se guardan solo en este navegador.{' '}
+          {persistence === 'persisted' &&
+            'Guardado de forma persistente: el navegador no los borrará para liberar espacio.'}
+          {persistence === 'best-effort' &&
+            'El navegador podría borrarlos si le falta espacio. Instalar la app suele evitarlo.'}
+          {persistence === 'unsupported' &&
+            'Este navegador no permite pedir almacenamiento persistente.'}
+        </p>
       </div>
 
       <div className="sectionhead">

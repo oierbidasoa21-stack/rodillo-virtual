@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { requestPersistentStorage } from '../storage/persist';
 import { loadAll } from '../store/loadAll';
 import { useUiStore } from '../store/uiStore';
 import EditorSheet from './editor/EditorSheet';
@@ -21,7 +22,10 @@ export default function App() {
 
   useEffect(() => {
     loadAll()
-      .then(() => setStatus('ready'))
+      .then(() => {
+        setStatus('ready');
+        void requestPersistentStorage().then(useUiStore.getState().setStoragePersistence);
+      })
       .catch((error: unknown) => {
         console.error(error);
         setStatus('error');
