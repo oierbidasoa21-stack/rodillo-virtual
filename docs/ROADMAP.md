@@ -64,7 +64,7 @@ Objetivo: leer sensores reales, y simularlos para desarrollar sin hardware.
 - [ ] Cycling Speed and Cadence (0x1816): velocidad de rueda y cadencia a partir de revoluciones acumuladas
 - [ ] Pantalla de emparejamiento con estado de cada sensor
 - [ ] Reconexión automática y aviso si se pierde un sensor durante la sesión
-- [x] Player: pulso en directo con estado "en zona / por encima / por debajo"
+- [ ] Player: pulso en directo con estado "en zona / por encima / por debajo"
 - [ ] Resumen con tiempo en zona medido por pulsómetro
 
 Hecho cuando: con la banda y el sensor de velocidad veo pulso, velocidad y cadencia en directo.
@@ -76,7 +76,7 @@ Objetivo: vatios estimados en rodillo tonto y métricas de potencia.
 - [ ] `domain/trainer`: curvas velocidad→potencia de varios modelos de rodillo, seleccionable en ajustes
 - [ ] Circunferencia de rueda configurable
 - [ ] `domain/physics`: velocidad virtual según potencia, pendiente y peso (con tests)
-- [x] `domain/metrics`: NP, IF, TSS, kJ (con tests)
+- [ ] `domain/metrics`: NP, IF, TSS, kJ (con tests)
 - [ ] Ramp test guiado que calcula FTP estimado y zonas de potencia
 - [ ] Bloques de workout con objetivo por pulso **o** por potencia
 - [ ] Todas las cifras estimadas marcadas como "estimado"
@@ -109,7 +109,7 @@ Hecho cuando: hago una ruta entera viendo cómo avanzo y cómo cambia la pendien
 - [ ] Carretera 3D generada a partir de la altimetría de la ruta
 - [ ] Avatar ciclista sencillo y cámara que lo sigue
 - [ ] Escenario procedural (terreno, árboles, cielo) con buen rendimiento en portátil
-- [ ] HUD de la Fase 4 superpuesto sobre la vista 3D
+- [ ] HUD de la Fase 5 superpuesto sobre la vista 3D
 
 ## Fase 8 — Rodillo inteligente (opcional)
 
