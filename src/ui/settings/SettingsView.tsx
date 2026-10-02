@@ -168,6 +168,26 @@ export default function SettingsView() {
           Sin pulsómetro, el tiempo en zona sale de los bloques que has hecho, no de tu pulso real.
         </p>
       </div>
+
+      <div className="sectionhead">
+        <h2>Desarrollo</h2>
+      </div>
+      <div className="card">
+        <div className="field">
+          <label htmlFor="simulate">Sensores simulados</label>
+          <input
+            id="simulate"
+            type="checkbox"
+            checked={settings.simulateSensors}
+            onChange={(e) => void update({ simulateSensors: e.target.checked })}
+          />
+        </div>
+        <p className="note" style={{ margin: 0 }}>
+          Sustituye el Bluetooth por un pulsómetro y un sensor de velocidad y cadencia de mentira,
+          para probar la app sin hardware. Todo lo que muestran va marcado como <b>SIMULADO</b>, y
+          las sesiones hechas con ellos se marcan en el historial.
+        </p>
+      </div>
     </>
   );
 }

@@ -61,7 +61,7 @@ Hecho cuando: instalo la app desde Chrome en Windows, la abro sin conexión y pu
 Objetivo: leer sensores reales, y simularlos para desarrollar sin hardware.
 
 - [x] Interfaz común de sensor (conectar, desconectar, lecturas con timestamp, estado)
-- [ ] Sensor simulado de pulso, velocidad y cadencia (activable en ajustes de desarrollo)
+- [x] Sensor simulado de pulso, velocidad y cadencia (activable en ajustes de desarrollo)
 - [ ] Heart Rate Service (0x180D)
 - [ ] Circunferencia de rueda configurable (2155 mm por defecto, 700×32)
 - [ ] Cycling Speed and Cadence (0x1816): velocidad de rueda y cadencia a partir de revoluciones acumuladas

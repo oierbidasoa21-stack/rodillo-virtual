@@ -8,6 +8,8 @@ export interface AppSettings {
   voice: boolean;
   beeps: boolean;
   theme: ThemePreference;
+  /** Use simulated sensors instead of Bluetooth (Ajustes → Desarrollo). Data is always labelled. */
+  simulateSensors: boolean;
 }
 
 function exampleAthlete(): AthleteConfig {
@@ -18,7 +20,13 @@ function exampleAthlete(): AthleteConfig {
 
 /** Defaults: example athlete (never personal data), voice and beeps on, system theme. */
 export function defaultSettings(): AppSettings {
-  return { athlete: exampleAthlete(), voice: true, beeps: true, theme: 'system' };
+  return {
+    athlete: exampleAthlete(),
+    voice: true,
+    beeps: true,
+    theme: 'system',
+    simulateSensors: false,
+  };
 }
 
 /**
@@ -37,5 +45,9 @@ export function normalizeSettings(stored: Partial<AppSettings> | undefined): App
       stored.theme === 'light' || stored.theme === 'dark' || stored.theme === 'system'
         ? stored.theme
         : defaults.theme,
+    simulateSensors:
+      typeof stored.simulateSensors === 'boolean'
+        ? stored.simulateSensors
+        : defaults.simulateSensors,
   };
 }

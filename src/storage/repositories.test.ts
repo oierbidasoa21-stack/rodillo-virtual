@@ -77,6 +77,7 @@ describe('settings', () => {
     const settings = await storage.getSettings();
     expect(settings.beeps).toBe(false);
     expect(settings.voice).toBe(true);
+    expect(settings.simulateSensors).toBe(false);
     expect(settings.athlete).toEqual(defaultSettings().athlete);
   });
 });
