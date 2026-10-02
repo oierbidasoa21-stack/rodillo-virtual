@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import type { Step } from '../domain/workout/types';
-import { ZONE_IDS } from '../domain/zones/zones';
-import { zoneColor } from './zoneStyle';
+import { targetColor, targetHeightPct } from './targetStyle';
 
 interface Props {
   steps: readonly Step[];
@@ -19,8 +18,8 @@ export default function WorkoutProfile({ steps, big = false, children }: Props) 
           key={i}
           style={{
             flex: `${step.durationSec} 1 0`,
-            height: `${22 + ZONE_IDS.indexOf(step.zoneId) * 15.6}%`,
-            background: zoneColor(step.zoneId),
+            height: `${targetHeightPct(step.target)}%`,
+            background: targetColor(step.target),
           }}
         />
       ))}

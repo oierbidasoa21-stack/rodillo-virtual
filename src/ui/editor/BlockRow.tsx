@@ -1,5 +1,6 @@
 import { joinDuration, splitDuration } from '../../domain/workout/edit';
 import { BLOCK_KINDS, BLOCK_KIND_LABELS, type Block } from '../../domain/workout/types';
+import { targetColor, targetShortLabel } from '../targetStyle';
 import { ZONE_IDS, isZoneId } from '../../domain/zones/zones';
 import NumberInput from '../NumberInput';
 import { zoneColor } from '../zoneStyle';
@@ -38,21 +39,29 @@ export default function BlockRow({ block, idPrefix, onChange, onMove, onRemove }
         />
         ″
       </span>
-      <select
-        className="zsel"
-        aria-label="Zona"
-        value={block.zoneId}
-        style={{ color: zoneColor(block.zoneId) }}
-        onChange={(e) => {
-          if (isZoneId(e.target.value)) onChange({ zoneId: e.target.value });
-        }}
-      >
-        {ZONE_IDS.map((id) => (
-          <option key={id} value={id}>
-            {id}
-          </option>
-        ))}
-      </select>
+      {block.target.type === 'hr' ? (
+        <select
+          className="zsel"
+          aria-label="Zona"
+          value={block.target.zoneId}
+          style={{ color: zoneColor(block.target.zoneId) }}
+          onChange={(e) => {
+            if (isZoneId(e.target.value)) {
+              onChange({ target: { type: 'hr', zoneId: e.target.value } });
+            }
+          }}
+        >
+          {ZONE_IDS.map((id) => (
+            <option key={id} value={id}>
+              {id}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <span className="zsel" style={{ color: targetColor(block.target) }}>
+          {targetShortLabel(block.target)}
+        </span>
+      )}
       <span className="meta">
         <select
           aria-label="Tipo de bloque"

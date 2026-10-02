@@ -71,7 +71,7 @@ describe('player', () => {
       'stepChanged',
     ]);
     const warn = events[0];
-    expect(warn?.type === 'warn10s' && warn.next?.zoneId).toBe('UA');
+    expect(warn?.type === 'warn10s' && warn.next?.target).toEqual({ type: 'hr', zoneId: 'UA' });
     expect(state.index).toBe(1);
   });
 

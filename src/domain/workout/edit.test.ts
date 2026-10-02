@@ -43,12 +43,15 @@ describe('editor operations', () => {
   });
 
   it('updates a block without touching the source', () => {
-    const next = updateBlock(blocks, [1, 0], { zoneId: 'VO2', note: 'fuerte' });
-    expect(next[1]?.type === 'repeat' && next[1].items[0]).toMatchObject({
-      zoneId: 'VO2',
+    const next = updateBlock(blocks, [1, 0], {
+      target: { type: 'hr', zoneId: 'VO2' },
       note: 'fuerte',
     });
-    expect(x.zoneId).toBe('UA');
+    expect(next[1]?.type === 'repeat' && next[1].items[0]).toMatchObject({
+      target: { type: 'hr', zoneId: 'VO2' },
+      note: 'fuerte',
+    });
+    expect(x.target).toEqual({ type: 'hr', zoneId: 'UA' });
   });
 
   it('clamps repeat times to a positive integer', () => {

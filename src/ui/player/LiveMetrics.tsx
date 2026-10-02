@@ -9,7 +9,8 @@ import { STATUS_CLASS, STATUS_TEXT } from './zoneStatusText';
  * Live heart rate against the block's zone, plus speed and cadence. Only fresh
  * readings are shown; nothing appears for a sensor that isn't sending.
  */
-export default function LiveMetrics({ zone }: { zone: HrZone }) {
+/** `zone` is the block's heart rate zone; null for power blocks (no in/out status). */
+export default function LiveMetrics({ zone }: { zone: HrZone | null }) {
   const hr = useSensorsStore((s) => s.hr);
   const csc = useSensorsStore((s) => s.csc);
   const now = useNow(500);
@@ -19,16 +20,18 @@ export default function LiveMetrics({ zone }: { zone: HrZone }) {
   if (!hrLast && !cscLast) return null;
 
   // Rounded like a hand count, so e.g. 135 ppm (22.5) reads as 23.
-  const status = hrLast ? zoneStatus(Math.round(hrLast.bpm / 6), zone) : null;
+  const status = hrLast && zone ? zoneStatus(Math.round(hrLast.bpm / 6), zone) : null;
   const simulated = hr.source === 'simulated' || csc.source === 'simulated';
 
   return (
     <div className="live" aria-live="polite">
-      {hrLast && status && (
+      {hrLast && (
         <div className="live-hr">
-          <span className={`bpm num ${STATUS_CLASS[status]}`}>{hrLast.bpm}</span>
+          <span className={`bpm num ${status ? STATUS_CLASS[status] : ''}`}>{hrLast.bpm}</span>
           <span className="num">ppm · {formatPer10s(hrLast.bpm)} /10″</span>
-          <span className={`live-status ${STATUS_CLASS[status]}`}>{STATUS_TEXT[status]}</span>
+          {status && (
+            <span className={`live-status ${STATUS_CLASS[status]}`}>{STATUS_TEXT[status]}</span>
+          )}
         </div>
       )}
       {cscLast && (cscLast.speedKmh !== null || cscLast.cadenceRpm !== null) && (

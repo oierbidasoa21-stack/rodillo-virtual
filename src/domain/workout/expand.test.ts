@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { expandWorkout, totalDurationSec } from './expand';
 import { BUILTIN_WORKOUTS } from './library';
-import { makeBlock, makeRepeat } from './types';
+import { hrZoneOf, makeBlock, makeRepeat } from './types';
 
 describe('expandWorkout', () => {
   it('unrolls repeats in order and tags each step with its repetition', () => {
@@ -10,7 +10,7 @@ describe('expandWorkout', () => {
       makeRepeat(2, [makeBlock(60, 'UA', 'work'), makeBlock(30, 'L1', 'rec')]),
     ]);
     expect(
-      steps.map((s) => `${s.zoneId}:${s.repeat ? `${s.repeat.index}/${s.repeat.times}` : '-'}`),
+      steps.map((s) => `${hrZoneOf(s)}:${s.repeat ? `${s.repeat.index}/${s.repeat.times}` : '-'}`),
     ).toEqual(['L1:-', 'UA:1/2', 'L1:1/2', 'UA:2/2', 'L1:2/2']);
   });
 
@@ -53,7 +53,7 @@ describe('built-in library', () => {
 
   it('30/30 blocks are exactly 30 s', () => {
     const w = BUILTIN_WORKOUTS.find((x) => x.id === 'b-3030');
-    const vo2 = expandWorkout(w?.blocks ?? []).filter((s) => s.zoneId === 'VO2');
+    const vo2 = expandWorkout(w?.blocks ?? []).filter((s) => hrZoneOf(s) === 'VO2');
     expect(vo2).toHaveLength(20);
     expect(vo2.every((s) => s.durationSec === 30)).toBe(true);
   });

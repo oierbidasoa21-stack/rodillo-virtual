@@ -21,7 +21,7 @@ import {
   tick,
   togglePlay,
 } from '../../domain/workout/player';
-import { BLOCK_KIND_LABELS, type Workout } from '../../domain/workout/types';
+import { BLOCK_KIND_LABELS, type Workout, hrZoneOf } from '../../domain/workout/types';
 import { type HrZone, ZONE_META, findZone } from '../../domain/zones/zones';
 import { isFresh } from '../../sensors/freshness';
 import { useHistoryStore } from '../../store/historyStore';
@@ -33,8 +33,9 @@ import ConfirmButton from '../ConfirmButton';
 import { formatClock, zoneBpmText, zoneRangeText } from '../format';
 import { usePlayerClock } from '../hooks/usePlayerClock';
 import { useWakeLock } from '../hooks/useWakeLock';
+import { targetColor, targetShortLabel } from '../targetStyle';
 import WorkoutProfile from '../WorkoutProfile';
-import { needsDarkText, zoneColor } from '../zoneStyle';
+import { needsDarkText } from '../zoneStyle';
 import HrCounter from './HrCounter';
 import LiveMetrics from './LiveMetrics';
 import SensorAlerts from './SensorAlerts';
@@ -100,9 +101,10 @@ export default function Player({ workout }: { workout: Workout }) {
   // Simulated heart rate aims at the middle of the current block's zone.
   const simulate = useSettingsStore((s) => s.settings.simulateSensors);
   const followZone = useSimulationStore((s) => s.followZone);
-  const stepZone = findZone(zones, currentStep(player).zoneId);
+  const stepHrZoneId = hrZoneOf(currentStep(player));
+  const stepZone = stepHrZoneId ? findZone(zones, stepHrZoneId) : null;
   useEffect(() => {
-    if (!simulate || !followZone) return;
+    if (!simulate || !followZone || !stepZone) return;
     const top = stepZone.max ?? stepZone.min + 1;
     useSimulationStore.getState().set({ targetBpm: Math.round(((stepZone.min + top) / 2) * 6) });
   }, [simulate, followZone, stepZone]);
@@ -122,7 +124,9 @@ export default function Player({ workout }: { workout: Workout }) {
 
   const step = currentStep(player);
   const next = nextStep(player);
-  const zone = findZone(zones, step.zoneId);
+  const hrZoneId = hrZoneOf(step);
+  // Heart rate zone of the block; null for power blocks.
+  const zone = hrZoneId ? findZone(zones, hrZoneId) : null;
   const p = progress(player);
   const share = (p.doneSec / p.totalSec) * 100;
   const playLabel = running ? 'Pausa' : player.status === 'ready' ? 'Empezar' : 'Reanudar';
@@ -146,18 +150,22 @@ export default function Player({ workout }: { workout: Workout }) {
         </WorkoutProfile>
 
         <div
-          className={needsDarkText(zone.id) ? 'zonecard zt-dark' : 'zonecard'}
-          style={{ background: zoneColor(zone.id) }}
+          className={zone && needsDarkText(zone.id) ? 'zonecard zt-dark' : 'zonecard'}
+          style={{ background: targetColor(step.target) }}
         >
           <span className="k">
             {BLOCK_KIND_LABELS[step.kind]}
             {step.repeat && ` · ${step.repeat.index}/${step.repeat.times}`}
           </span>
-          <span className="zn">{zone.id}</span>
-          <span className="rng num">
-            {zoneRangeText(zone)} · {zoneBpmText(zone)}
-          </span>
-          <span className="rpe">{ZONE_META[zone.id].feel}</span>
+          <span className="zn">{zone ? zone.id : targetShortLabel(step.target)}</span>
+          {zone && (
+            <>
+              <span className="rng num">
+                {zoneRangeText(zone)} · {zoneBpmText(zone)}
+              </span>
+              <span className="rpe">{ZONE_META[zone.id].feel}</span>
+            </>
+          )}
           {step.note && <span className="bnote">{step.note}</span>}
         </div>
 
@@ -174,11 +182,11 @@ export default function Player({ workout }: { workout: Workout }) {
           {next ? (
             <>
               <span className="t">
-                <span className="sw" style={{ background: zoneColor(next.zoneId) }} />
+                <span className="sw" style={{ background: targetColor(next.target) }} />
                 <span>
                   <span className="tag">Siguiente</span>
                   <br />
-                  <b>{next.zoneId}</b> · {BLOCK_KIND_LABELS[next.kind]}
+                  <b>{targetShortLabel(next.target)}</b> · {BLOCK_KIND_LABELS[next.kind]}
                 </span>
               </span>
               <span className="dur num">{formatClock(next.durationSec)}</span>
@@ -208,6 +216,8 @@ export default function Player({ workout }: { workout: Workout }) {
           <button
             type="button"
             className="btn wide"
+            disabled={!zone}
+            title={zone ? undefined : 'Solo en bloques por pulso'}
             onClick={() => {
               unlockAudio();
               setCountTarget(zone);

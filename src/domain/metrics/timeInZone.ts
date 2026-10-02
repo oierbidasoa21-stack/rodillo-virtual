@@ -7,21 +7,23 @@ export function emptySecByZone(): SecByZone {
   return Object.fromEntries(ZONE_IDS.map((id) => [id, 0])) as SecByZone;
 }
 
-/** Planned seconds per zone, from step durations. */
+/** Planned seconds per heart rate zone, from step durations (power blocks don't count). */
 export function plannedSecByZone(steps: readonly Step[]): SecByZone {
   const out = emptySecByZone();
-  for (const step of steps) out[step.zoneId] += step.durationSec;
+  for (const step of steps) {
+    if (step.target.type === 'hr') out[step.target.zoneId] += step.durationSec;
+  }
   return out;
 }
 
-/** Seconds actually ridden per zone, from per-step timings (same order as `steps`). */
+/** Seconds ridden per heart rate zone of the blocks, from per-step timings (same order as `steps`). */
 export function actualSecByZone(
   steps: readonly Step[],
   actualSecByStep: readonly number[],
 ): SecByZone {
   const out = emptySecByZone();
   steps.forEach((step, i) => {
-    out[step.zoneId] += actualSecByStep[i] ?? 0;
+    if (step.target.type === 'hr') out[step.target.zoneId] += actualSecByStep[i] ?? 0;
   });
   return out;
 }
