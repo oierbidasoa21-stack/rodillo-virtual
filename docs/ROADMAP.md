@@ -37,7 +37,7 @@ Objetivo: todo lo que hace `docs/reference/rodillo-pulso-v1.html`, con arquitect
 - [x] Wake Lock para mantener la pantalla encendida
 - [x] Contador de pulso de 10″ con teclado numérico
 - [x] Resumen: tiempo en zona realizado frente a planificado, carga, kcal, conteos
-- [ ] Historial con totales de 7 días
+- [x] Historial con totales de 7 días
 
 Hecho cuando: puedo hacer una sesión completa en el móvil igual que con la v1.
 
