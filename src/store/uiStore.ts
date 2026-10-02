@@ -10,6 +10,10 @@ interface UiStore {
   editing: (Omit<Workout, 'id'> & { id: string | null }) | null;
   openEditor: (draft: Omit<Workout, 'id'> & { id: string | null }) => void;
   closeEditor: () => void;
+  /** Workout being played, full screen. */
+  playing: Workout | null;
+  startWorkout: (workout: Workout) => void;
+  stopPlayer: () => void;
   toast: { id: number; text: string } | null;
   showToast: (text: string) => void;
   hideToast: () => void;
@@ -22,6 +26,9 @@ export const useUiStore = create<UiStore>()((set) => ({
   editing: null,
   openEditor: (draft) => set({ editing: structuredClone(draft) }),
   closeEditor: () => set({ editing: null }),
+  playing: null,
+  startWorkout: (workout) => set({ playing: workout }),
+  stopPlayer: () => set({ playing: null }),
   toast: null,
   showToast: (text) => set({ toast: { id: Date.now(), text } }),
   hideToast: () => set({ toast: null }),

@@ -17,8 +17,7 @@ export default function LibraryView() {
   const openEditor = useUiStore((s) => s.openEditor);
   const showToast = useUiStore((s) => s.showToast);
 
-  // The player arrives in the next block of phase 1.
-  const start = () => showToast('El player llega en el siguiente bloque');
+  const startWorkout = useUiStore((s) => s.startWorkout);
 
   return (
     <>
@@ -35,7 +34,7 @@ export default function LibraryView() {
               key={w.id}
               workout={w}
               isCustom
-              onStart={start}
+              onStart={() => startWorkout(w)}
               onEdit={() => openEditor(w)}
               onDelete={() => {
                 void remove(w.id);
@@ -60,7 +59,7 @@ export default function LibraryView() {
             key={w.id}
             workout={w}
             isCustom={false}
-            onStart={start}
+            onStart={() => startWorkout(w)}
             onEdit={() => openEditor({ ...w, id: null, name: `${w.name} (mía)` })}
           />
         ))}

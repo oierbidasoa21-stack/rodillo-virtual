@@ -32,7 +32,7 @@ Objetivo: todo lo que hace `docs/reference/rodillo-pulso-v1.html`, con arquitect
 - [x] `storage`: Dexie con sesiones propias, historial y ajustes
 - [x] Biblioteca con las 8 sesiones de la v1
 - [x] Editor de sesiones (bloques, repeticiones, mover, borrar)
-- [ ] Player: zona actual, cuenta atrás, perfil con cursor, siguiente bloque, pausa, +1′, saltar, terminar
+- [x] Player: zona actual, cuenta atrás, perfil con cursor, siguiente bloque, pausa, +1′, saltar, terminar
 - [x] Audio: pitidos (10 s y 3-2-1) y voz en español, activables
 - [x] Wake Lock para mantener la pantalla encendida
 - [x] Contador de pulso de 10″ con teclado numérico
@@ -51,7 +51,7 @@ Objetivo: leer sensores reales, y simularlos para desarrollar sin hardware.
 - [ ] Cycling Speed and Cadence (0x1816): velocidad de rueda y cadencia a partir de revoluciones acumuladas
 - [ ] Pantalla de emparejamiento con estado de cada sensor
 - [ ] Reconexión automática y aviso si se pierde un sensor durante la sesión
-- [ ] Player: pulso en directo con estado "en zona / por encima / por debajo"
+- [x] Player: pulso en directo con estado "en zona / por encima / por debajo"
 - [ ] Resumen con tiempo en zona medido por pulsómetro
 
 Hecho cuando: con la banda y el sensor de velocidad veo pulso, velocidad y cadencia en directo.

@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { loadAll } from '../store/loadAll';
 import { useUiStore } from '../store/uiStore';
 import EditorSheet from './editor/EditorSheet';
+import HistoryView from './history/HistoryView';
 import { useTheme } from './hooks/useTheme';
+import Player from './player/Player';
 import SettingsView from './settings/SettingsView';
 import Tabs from './Tabs';
 import Toast from './Toast';
@@ -13,6 +15,7 @@ export default function App() {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const tab = useUiStore((s) => s.tab);
   const editing = useUiStore((s) => s.editing);
+  const playing = useUiStore((s) => s.playing);
   useTheme();
 
   useEffect(() => {
@@ -45,13 +48,14 @@ export default function App() {
             <ZoneStrip />
             <main>
               {tab === 'library' && <LibraryView />}
-              {tab === 'history' && <p className="note">Historial</p>}
+              {tab === 'history' && <HistoryView />}
               {tab === 'settings' && <SettingsView />}
             </main>
           </>
         )}
       </div>
       {editing && <EditorSheet key={editing.id ?? 'new'} initial={editing} />}
+      {playing && <Player key={playing.id} workout={playing} />}
       <Toast />
     </>
   );
