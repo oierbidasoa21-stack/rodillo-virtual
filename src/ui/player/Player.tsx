@@ -89,7 +89,7 @@ export default function Player({
       playerRef.current = t.state;
       setPlayer(t.state);
       const { settings } = useSettingsStore.getState();
-      playCues(t.events, settings);
+      playCues(t.events, { ...settings, ftpW: settings.athlete.ftp?.watts ?? null });
       if (t.events.some((e) => e.type === 'finished')) {
         const summary = buildSessionSummary({
           id: crypto.randomUUID(),

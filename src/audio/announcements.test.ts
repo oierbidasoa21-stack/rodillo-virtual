@@ -13,6 +13,10 @@ describe('announcements', () => {
     expect(announceStep(makeBlock(600, { type: 'power', pctFtp: 88 }, 'work'))).toBe(
       'Serie, 88 por ciento, 10 minutos',
     );
+    // 88 % of 240 W = 211.2 → 211
+    expect(announceStep(makeBlock(600, { type: 'power', pctFtp: 88 }, 'work'), 240)).toBe(
+      'Serie, 88 por ciento, 211 vatios, 10 minutos',
+    );
     expect(announceRampStep(240)).toBe('Sube a 240 vatios');
   });
 

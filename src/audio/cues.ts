@@ -6,10 +6,15 @@ import { say } from './speech';
 export interface CueSettings {
   beeps: boolean;
   voice: boolean;
+  /** To say the watts of % FTP blocks. */
+  ftpW?: number | null;
 }
 
 /** Turns player events into beeps and speech, honouring the user's settings. */
-export function playCues(events: readonly PlayerEvent[], { beeps, voice }: CueSettings): void {
+export function playCues(
+  events: readonly PlayerEvent[],
+  { beeps, voice, ftpW = null }: CueSettings,
+): void {
   const tone = (freq: number, ms: number, delay = 0) => {
     if (beeps) beep(freq, ms, delay);
   };
@@ -22,12 +27,12 @@ export function playCues(events: readonly PlayerEvent[], { beeps, voice }: CueSe
       case 'started':
         tone(660, 120);
         tone(990, 220, 0.15);
-        speak(announceStep(event.step));
+        speak(announceStep(event.step, ftpW));
         break;
       case 'warn10s':
         tone(740, 160);
         // Fixed-watt steps (ramp test) are announced when they start instead.
-        if (event.next?.target.type !== 'watts') speak(announceWarning(event.next));
+        if (event.next?.target.type !== 'watts') speak(announceWarning(event.next, ftpW));
         break;
       case 'countdown':
         tone(880, 110);
@@ -36,7 +41,7 @@ export function playCues(events: readonly PlayerEvent[], { beeps, voice }: CueSe
         tone(1175, 260);
         if (event.step.target.type === 'watts') speak(announceRampStep(event.step.target.watts));
         // Other automatic changes were already announced by the 10 s warning.
-        else if (event.manual) speak(announceStep(event.step));
+        else if (event.manual) speak(announceStep(event.step, ftpW));
         break;
       case 'finished':
         tone(880, 150);

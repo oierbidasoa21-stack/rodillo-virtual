@@ -36,9 +36,11 @@ describe('built-in library', () => {
     'b-vo2x5': 15 + 2 + 3 + 5 * (3 + 3) + 10, // 60
     'b-3030': 15 + 10 * 1 + 6 + 10 * 1 + 10, // 51
     'b-piramide': 15 + (4 + 2 + 4 + 2 + 3 + 2 + 2 + 2 + 3 + 2 + 4 + 2 + 4) + 8, // 59
+    'b-sweetspot': 15 + 3 * (12 + 4) + 8, // 71
+    'b-ftp2x20': 15 + 2 * (20 + 5) + 10, // 75
   };
 
-  it('has the 8 sessions from v1 with unique ids', () => {
+  it('has the 8 sessions from v1 plus 2 power sessions, with unique ids', () => {
     expect(BUILTIN_WORKOUTS.map((w) => w.id).sort()).toEqual(Object.keys(expectedMin).sort());
   });
 

@@ -5,9 +5,15 @@ import { type Block, type BlockKind, type Workout, makeBlock, makeRepeat } from 
 const B = (min: number, zone: ZoneId, kind: BlockKind = 'steady', note = ''): Block =>
   makeBlock(Math.round(min * 60), zone, kind, note);
 
+/** Block at a % of FTP, from a duration in minutes. */
+const P = (min: number, pctFtp: number, kind: BlockKind = 'steady', note = ''): Block =>
+  makeBlock(Math.round(min * 60), { type: 'power', pctFtp }, kind, note);
+
 const R = makeRepeat;
 
 const WARM_UP = [B(10, 'L1', 'warm'), B(5, 'L2', 'warm', 'Sube cadencia poco a poco')];
+
+const POWER_WARM_UP = [P(10, 55, 'warm'), P(5, 70, 'warm', 'Sube cadencia poco a poco')];
 
 /** Built-in sessions. Read-only: users duplicate them to edit. */
 export const BUILTIN_WORKOUTS: readonly Workout[] = [
@@ -99,6 +105,26 @@ export const BUILTIN_WORKOUTS: readonly Workout[] = [
       B(2, 'L1', 'rec'),
       B(4, 'L3', 'work'),
       B(8, 'L1', 'cool'),
+    ],
+  },
+  {
+    id: 'b-sweetspot',
+    name: 'Sweet spot 3×12′',
+    description: 'Por potencia. Series al 90 % del FTP: mucho estímulo con poca fatiga.',
+    blocks: [
+      ...POWER_WARM_UP,
+      R(3, [P(12, 90, 'work', 'Cadencia 85–95 rpm'), P(4, 55, 'rec')]),
+      P(8, 50, 'cool'),
+    ],
+  },
+  {
+    id: 'b-ftp2x20',
+    name: 'Umbral 2×20′ (potencia)',
+    description: 'Por potencia. Dos bloques largos al 97 % del FTP.',
+    blocks: [
+      ...POWER_WARM_UP,
+      R(2, [P(20, 97, 'work', 'Constante, sin picos'), P(5, 55, 'rec')]),
+      P(10, 50, 'cool'),
     ],
   },
 ];
