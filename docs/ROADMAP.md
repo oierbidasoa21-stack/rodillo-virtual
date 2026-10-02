@@ -66,8 +66,8 @@ Objetivo: leer sensores reales, y simularlos para desarrollar sin hardware.
 - [x] Circunferencia de rueda configurable (2155 mm por defecto, 700×32)
 - [x] Cycling Speed and Cadence (0x1816): velocidad de rueda y cadencia a partir de revoluciones acumuladas
 - [x] Pantalla de emparejamiento con estado de cada sensor
-- [ ] Reconexión automática y aviso si se pierde un sensor durante la sesión
-- [ ] Player: pulso en directo con estado "en zona / por encima / por debajo"
+- [x] Reconexión automática y aviso si se pierde un sensor durante la sesión
+- [x] Player: pulso en directo con estado "en zona / por encima / por debajo"
 - [ ] Resumen con tiempo en zona medido por pulsómetro
 
 Hecho cuando: con la banda y el sensor de velocidad conectados al ordenador veo pulso, velocidad y cadencia en directo.

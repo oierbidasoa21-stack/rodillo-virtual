@@ -231,3 +231,45 @@
   font-size: 14px;
   text-align: right;
 }
+
+/* Live sensor data */
+.live {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 8px 28px;
+  font-family: var(--f-display);
+}
+.live-hr {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 24px;
+}
+.live-hr .bpm {
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1;
+}
+.live-status {
+  font-weight: 700;
+}
+.live-csc {
+  display: flex;
+  gap: 20px;
+  font-size: 30px;
+  font-weight: 600;
+}
+.sensor-alert {
+  border: 2px solid var(--bad);
+  color: var(--bad);
+  background: color-mix(in srgb, var(--bad) 10%, var(--surface));
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  text-align: center;
+}
+.sensor-alert p {
+  margin: 0;
+}

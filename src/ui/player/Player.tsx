@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { unlockAudio } from '../../audio/beeper';
 import { playCues } from '../../audio/cues';
 import {
@@ -23,6 +23,7 @@ import {
 import { BLOCK_KIND_LABELS, type Workout } from '../../domain/workout/types';
 import { type HrZone, ZONE_META, findZone } from '../../domain/zones/zones';
 import { useHistoryStore } from '../../store/historyStore';
+import { useSimulationStore } from '../../store/simulationStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useUiStore } from '../../store/uiStore';
 import ConfirmButton from '../ConfirmButton';
@@ -32,6 +33,8 @@ import { useWakeLock } from '../hooks/useWakeLock';
 import WorkoutProfile from '../WorkoutProfile';
 import { needsDarkText, zoneColor } from '../zoneStyle';
 import HrCounter from './HrCounter';
+import LiveMetrics from './LiveMetrics';
+import SensorAlerts from './SensorAlerts';
 import Summary from './Summary';
 
 /** Full-screen workout player, readable from a metre away. Ends in the summary. */
@@ -75,6 +78,16 @@ export default function Player({ workout }: { workout: Workout }) {
   usePlayerClock(running, (dt) => apply(tick(playerRef.current, dt)));
   useWakeLock(running);
 
+  // Simulated heart rate aims at the middle of the current block's zone.
+  const simulate = useSettingsStore((s) => s.settings.simulateSensors);
+  const followZone = useSimulationStore((s) => s.followZone);
+  const stepZone = findZone(zones, currentStep(player).zoneId);
+  useEffect(() => {
+    if (!simulate || !followZone) return;
+    const top = stepZone.max ?? stepZone.min + 1;
+    useSimulationStore.getState().set({ targetBpm: Math.round(((stepZone.min + top) / 2) * 6) });
+  }, [simulate, followZone, stepZone]);
+
   const close = () => {
     stopPlayer();
     setTab('library');
@@ -106,6 +119,8 @@ export default function Player({ workout }: { workout: Workout }) {
           </span>
         </div>
 
+        <SensorAlerts />
+
         <WorkoutProfile steps={player.steps} big>
           <div className="shade" style={{ width: `${share}%` }} />
           <div className="cursor" style={{ left: `${share}%` }} />
@@ -133,6 +148,8 @@ export default function Player({ workout }: { workout: Workout }) {
         >
           {formatClock(Math.ceil(p.remainingInStepSec))}
         </div>
+
+        <LiveMetrics zone={zone} />
 
         <div className="next">
           {next ? (
