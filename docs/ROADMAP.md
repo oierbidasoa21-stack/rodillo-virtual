@@ -16,8 +16,8 @@ Objetivo: repositorio limpio, herramientas configuradas y despliegue automático
 - [x] Vitest configurado, con un test de ejemplo en `src/domain/`
 - [x] Estructura de carpetas de `CLAUDE.md` creada
 - [x] `.gitignore` con `node_modules/`, `dist/`, `data/`
-- [ ] GitHub Actions: lint + test + build en cada push y PR
-- [ ] Despliegue en GitHub Pages desde `main`
+- [x] GitHub Actions: lint + test + build en cada push y PR
+- [x] Despliegue en GitHub Pages desde `main`
 - [x] `README.md` con descripción y comandos
 
 Hecho cuando: la página vacía se abre desde la URL de GitHub Pages y el workflow pasa en verde.
