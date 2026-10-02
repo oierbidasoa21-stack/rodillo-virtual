@@ -23,14 +23,14 @@ Aplicación web de entrenamiento en rodillo para **uso personal**, inspirada en 
 - Entreno **por pulso y sensaciones**. Aún no tengo FTP medido.
 - Zonas de pulso, contadas en 10 segundos (ppm = valor × 6):
 
-| Zona | /10″ | ppm |
-|------|------|-----|
-| L1 | 21–22 | 126–132 |
-| L2 | 23–24 | 138–144 |
-| L3 | 25–26 | 150–156 |
+| Zona        | /10″  | ppm     |
+| ----------- | ----- | ------- |
+| L1          | 21–22 | 126–132 |
+| L2          | 23–24 | 138–144 |
+| L3          | 25–26 | 150–156 |
 | UA (umbral) | 27–28 | 162–168 |
-| UA+ | 29 | 174 |
-| VO2 | 30+ | 180+ |
+| UA+         | 29    | 174     |
+| VO2         | 30+   | 180+    |
 
 - Equipo previsto: **rodillo "tonto"** + banda de pulso BLE + sensor de velocidad BLE en la rueda trasera. Puede que más adelante haya rodillo inteligente (FTMS). El diseño soporta ambos.
 - Regla: **la app nunca inventa datos**. Si un sensor no está conectado, la métrica que depende de él no se muestra. Las métricas estimadas (potencia en rodillo tonto, kcal) se marcan siempre como estimadas.
@@ -68,6 +68,7 @@ src/
 ```
 
 Reglas:
+
 - `domain/` no importa nada de `ui/`, `sensors/` ni APIs del navegador. Debe poder testearse en Node.
 - Cada sensor implementa la misma interfaz (`connect`, `disconnect`, flujo de lecturas con timestamp). La UI no sabe si el dato viene de un sensor real o simulado.
 - Las unidades van en el nombre cuando no son obvias: `durationSec`, `speedKmh`, `powerW`, `distanceM`.
