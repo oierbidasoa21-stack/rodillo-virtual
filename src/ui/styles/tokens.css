@@ -1,0 +1,65 @@
+/* Colour and type tokens. Light by default; dark follows the system unless
+   a theme is forced with data-theme on <html>. */
+:root {
+  --bg: #f2f4f7;
+  --surface: #ffffff;
+  --ink: #16202b;
+  --muted: #5b6977;
+  --line: #d8dee5;
+  --accent: #1f5fd1;
+  --accent-ink: #ffffff;
+  --z1: #6b8fb5;
+  --z2: #2b9888;
+  --z3: #c2aa1a;
+  --z4: #e07b1f;
+  --z5: #d6461e;
+  --z6: #ad1650;
+  --ok: #22865a;
+  --warn: #c0661a;
+  --bad: #c23030;
+  --f-display: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  --f-body: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0f151c;
+    --surface: #18212b;
+    --ink: #e7ecf1;
+    --muted: #93a1b0;
+    --line: #2a3643;
+    --accent: #6f9fff;
+    --accent-ink: #0b1220;
+    --z1: #84a7ce;
+    --z2: #38b6a4;
+    --z3: #d4bf38;
+    --z4: #f08f37;
+    --z5: #f0623a;
+    --z6: #de3f78;
+    --ok: #41b57e;
+    --warn: #e58b3c;
+    --bad: #ec5a5a;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: #0f151c;
+  --surface: #18212b;
+  --ink: #e7ecf1;
+  --muted: #93a1b0;
+  --line: #2a3643;
+  --accent: #6f9fff;
+  --accent-ink: #0b1220;
+  --z1: #84a7ce;
+  --z2: #38b6a4;
+  --z3: #d4bf38;
+  --z4: #f08f37;
+  --z5: #f0623a;
+  --z6: #de3f78;
+  --ok: #41b57e;
+  --warn: #e58b3c;
+  --bad: #ec5a5a;
+  color-scheme: dark;
+}
