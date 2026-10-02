@@ -4,6 +4,7 @@ import { useUiStore } from '../store/uiStore';
 import { useTheme } from './hooks/useTheme';
 import Tabs from './Tabs';
 import Toast from './Toast';
+import LibraryView from './library/LibraryView';
 import ZoneStrip from './ZoneStrip';
 
 export default function App() {
@@ -40,7 +41,7 @@ export default function App() {
             <Tabs />
             <ZoneStrip />
             <main>
-              {tab === 'library' && <p className="note">Sesiones</p>}
+              {tab === 'library' && <LibraryView />}
               {tab === 'history' && <p className="note">Historial</p>}
               {tab === 'settings' && <p className="note">Ajustes</p>}
             </main>
