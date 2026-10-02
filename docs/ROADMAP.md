@@ -27,7 +27,7 @@ Hecho cuando: la página vacía se abre desde la URL de GitHub Pages y el workfl
 Objetivo: todo lo que hace `docs/reference/rodillo-pulso-v1.html`, con arquitectura modular.
 
 - [x] `domain/zones`: zonas de pulso /10″ configurables, clasificación de un valor
-- [ ] `domain/workout`: modelo de bloques y repeticiones, expansión a lista plana, duración total (con tests)
+- [x] `domain/workout`: modelo de bloques y repeticiones, expansión a lista plana, duración total (con tests)
 - [ ] `domain/metrics`: carga por zonas y kcal por MET (con tests)
 - [ ] `storage`: Dexie con sesiones propias, historial y ajustes
 - [ ] Biblioteca con las 8 sesiones de la v1
