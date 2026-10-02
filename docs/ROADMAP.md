@@ -35,7 +35,7 @@ Objetivo: todo lo que hace `docs/reference/rodillo-pulso-v1.html`, con arquitect
 - [ ] Player: zona actual, cuenta atrás, perfil con cursor, siguiente bloque, pausa, +1′, saltar, terminar
 - [x] Audio: pitidos (10 s y 3-2-1) y voz en español, activables
 - [x] Wake Lock para mantener la pantalla encendida
-- [ ] Contador de pulso de 10″ con teclado numérico
+- [x] Contador de pulso de 10″ con teclado numérico
 - [ ] Resumen: tiempo en zona realizado frente a planificado, carga, kcal, conteos
 - [ ] Historial con totales de 7 días
 
