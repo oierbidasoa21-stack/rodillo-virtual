@@ -18,6 +18,7 @@ export interface RoutePoint {
 export interface Route {
   id: string;
   name: string;
+  description?: string;
   source: 'builtin' | 'gpx';
   /** First → last point; a loop route also starts where it ends. */
   distanceM: number;
