@@ -4,7 +4,14 @@ import { createPlayer, skip, tick, togglePlay } from '../workout/player';
 import { makeBlock } from '../workout/types';
 import type { HrZone } from '../zones/zones';
 import { addHrSample, emptyHrTime } from './hrTime';
-import { type SessionSummary, buildSessionSummary, recentTotals } from './summary';
+import {
+  type SessionSummary,
+  buildRideSummary,
+  buildSessionSummary,
+  hasKcal,
+  hasLoad,
+  recentTotals,
+} from './summary';
 import { emptySecByZone } from './timeInZone';
 
 describe('buildSessionSummary', () => {
@@ -178,5 +185,83 @@ describe('buildSessionSummary with estimated power', () => {
       ftpW: 200,
     });
     expect(s.power).toBeUndefined();
+  });
+});
+
+describe('buildRideSummary', () => {
+  const route = { id: 'ej-puerto', name: 'Puerto' };
+  const ride = { distanceM: 12_000, ascentM: 480, elapsedSec: 2400 };
+
+  it('records distance, climbing and average speed: 12 km in 40′ = 18 km/h', () => {
+    const s = buildRideSummary({ id: 'r', dateMs: 0, route, ride, mode: 'power', weightKg: 70 });
+    expect(s.workoutName).toBe('Puerto');
+    expect(s.durationSec).toBe(2400);
+    expect(s.ride).toEqual({
+      routeId: 'ej-puerto',
+      routeName: 'Puerto',
+      distanceM: 12_000,
+      ascentM: 480,
+      avgSpeedKmh: 18,
+      mode: 'power',
+      laps: 0,
+    });
+  });
+
+  it('without heart rate or power has no load or kcal to show', () => {
+    const s = buildRideSummary({ id: 'r', dateMs: 0, route, ride, mode: 'wheel', weightKg: 70 });
+    expect(hasLoad(s)).toBe(false);
+    expect(hasKcal(s)).toBe(false);
+  });
+
+  it('with power has kcal (≈ kJ) but still no load without heart rate', () => {
+    const s = buildRideSummary({
+      id: 'r',
+      dateMs: 0,
+      route,
+      ride,
+      mode: 'power',
+      weightKg: 70,
+      powerSamples: Array.from({ length: 120 }, () => 200),
+      ftpW: 200,
+    });
+    expect(hasLoad(s)).toBe(false);
+    expect(hasKcal(s)).toBe(true);
+    expect(s.kcalEstimated).toBeCloseTo(24, 9);
+  });
+
+  it('with a minute of heart rate gets load from it', () => {
+    const zones: HrZone[] = [
+      { id: 'L1', label: 'L1', min: 20, max: 21 },
+      { id: 'L2', label: 'L2', min: 22, max: 23 },
+      { id: 'L3', label: 'L3', min: 24, max: 25 },
+      { id: 'UA', label: 'UA', min: 26, max: 27 },
+      { id: 'UA+', label: 'UA+', min: 28, max: 28 },
+      { id: 'VO2', label: 'VO2', min: 29, max: null },
+    ];
+    const hr = addHrSample(emptyHrTime(), 150, 120, zones); // 2′ in L3
+    const s = buildRideSummary({
+      id: 'r',
+      dateMs: 0,
+      route,
+      ride,
+      mode: 'power',
+      weightKg: 70,
+      hr,
+    });
+    expect(hasLoad(s)).toBe(true);
+    expect(s.load).toBeCloseTo(6, 9); // 2′ × 3
+  });
+
+  it('workout sessions always have load (from blocks)', () => {
+    const steps = expandWorkout([makeBlock(600, 'L2')]);
+    const p = tick(togglePlay(createPlayer(steps)).state, 600).state;
+    const s = buildSessionSummary({
+      id: 'x',
+      dateMs: 0,
+      workoutName: 'W',
+      player: p,
+      weightKg: 70,
+    });
+    expect(hasLoad(s)).toBe(true);
   });
 });

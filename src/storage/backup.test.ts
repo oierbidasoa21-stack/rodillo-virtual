@@ -67,6 +67,15 @@ const session: SessionSummary = {
     estimated: true,
     simulated: true,
   },
+  ride: {
+    routeId: 'ej-puerto',
+    routeName: 'Puerto',
+    distanceM: 20_000,
+    ascentM: 480,
+    avgSpeedKmh: 20,
+    mode: 'power',
+    laps: 0,
+  },
 };
 
 const builtRoute = buildRoute(
@@ -177,9 +186,10 @@ describe('backup', () => {
   });
 
   it('keeps older history entries without measured heart rate', () => {
-    const { hrMeasured: _hr, power: _power, ...older } = session;
+    const { hrMeasured: _hr, power: _power, ride: _ride, ...older } = session;
     void _hr;
     void _power;
+    void _ride;
     const parsed = parseBackup({ app: BACKUP_APP, format: 1, workouts: [], history: [older] });
     expect(parsed.ok && parsed.value.backup.history[0]).toEqual(older);
   });

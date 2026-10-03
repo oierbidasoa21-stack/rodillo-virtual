@@ -17,7 +17,8 @@ import {
   intensityFactor,
   trainingStressScore,
 } from './power';
-import { type SecByZone, actualSecByZone, plannedSecByZone } from './timeInZone';
+import { ZONE_IDS } from '../zones/zones';
+import { type SecByZone, actualSecByZone, emptySecByZone, plannedSecByZone } from './timeInZone';
 
 /** Sessions shorter than this are not saved to the history. */
 export const MIN_SAVED_SESSION_SEC = 60;
@@ -100,6 +101,54 @@ export interface SessionSummary {
   hrMeasured?: HrMeasured;
   /** Present with at least 60 s of estimated power. With it, kcal ≈ kJ. */
   power?: PowerSummary;
+  /** Present when the session was ridden on a route. */
+  ride?: RideSummary;
+}
+
+/** How a session went on a route. */
+export interface RideSummary {
+  routeId: string;
+  routeName: string;
+  distanceM: number;
+  ascentM: number;
+  avgSpeedKmh: number;
+  /** 'wheel': no trainer curve, moved by wheel speed, no power. */
+  mode: 'power' | 'wheel';
+  /** Completed laps (only when the route looped under a workout). */
+  laps: number;
+}
+
+/** Load needs heart rate or planned blocks; a free ride without a strap has none. */
+export function hasLoad(s: SessionSummary): boolean {
+  return !!s.hrMeasured || !s.ride || ZONE_IDS.some((id) => s.plannedSecByZone[id] > 0);
+}
+
+/** kcal need heart rate, power or planned blocks. */
+export function hasKcal(s: SessionSummary): boolean {
+  return !!s.power || hasLoad(s);
+}
+
+/** Load, kcal and the measured record when there's at least a minute of heart rate. */
+function fromHeartRate(hr: HrTime | undefined, weightKg: number, simulated: boolean) {
+  if (!hr || hr.coveredSec < MIN_MEASURED_SEC) return null;
+  return {
+    load: zoneLoad(hr.secByZone) + (hr.belowSec / 60) * BELOW_ZONES_LOAD_WEIGHT,
+    kcalEstimated:
+      kcalByMet(hr.secByZone, weightKg) + BELOW_ZONES_MET * weightKg * (hr.belowSec / 3600),
+    hrMeasured: {
+      secByZone: hr.secByZone,
+      belowSec: hr.belowSec,
+      coveredSec: hr.coveredSec,
+      avgBpm: averageBpm(hr) ?? 0,
+      maxBpm: hr.maxBpm,
+      simulated,
+    },
+  };
+}
+
+/** Mechanical work in kJ is close to the kcal burned (human efficiency ~ 24 %). */
+function withPower(summary: SessionSummary, power: PowerSummary | undefined): SessionSummary {
+  return power ? { ...summary, kcalEstimated: power.kJ, power } : summary;
 }
 
 export function buildSessionSummary(args: {
@@ -115,15 +164,12 @@ export function buildSessionSummary(args: {
   powerSimulated?: boolean;
   ftpW?: number | null;
 }): SessionSummary {
-  const { player, hr, weightKg } = args;
+  const { player, weightKg } = args;
   const power = summarisePower(
     args.powerSamples ?? [],
     args.ftpW ?? null,
     args.powerSimulated ?? false,
   );
-  // Mechanical work in kJ is close to the kcal burned (human efficiency ~ 24 %).
-  const withPower = (summary: SessionSummary): SessionSummary =>
-    power ? { ...summary, kcalEstimated: power.kJ, power } : summary;
   const actual = actualSecByZone(player.steps, player.actualSecByStep);
   const base = {
     id: args.id,
@@ -135,27 +181,60 @@ export function buildSessionSummary(args: {
     counts: player.counts,
   };
 
-  if (hr && hr.coveredSec >= MIN_MEASURED_SEC) {
-    return withPower({
-      ...base,
-      load: zoneLoad(hr.secByZone) + (hr.belowSec / 60) * BELOW_ZONES_LOAD_WEIGHT,
-      kcalEstimated:
-        kcalByMet(hr.secByZone, weightKg) + BELOW_ZONES_MET * weightKg * (hr.belowSec / 3600),
-      hrMeasured: {
-        secByZone: hr.secByZone,
-        belowSec: hr.belowSec,
-        coveredSec: hr.coveredSec,
-        avgBpm: averageBpm(hr) ?? 0,
-        maxBpm: hr.maxBpm,
-        simulated: args.hrSimulated ?? false,
-      },
-    });
-  }
-  return withPower({
-    ...base,
-    load: zoneLoad(actual),
-    kcalEstimated: kcalByMet(actual, weightKg),
-  });
+  const measured = fromHeartRate(args.hr, weightKg, args.hrSimulated ?? false);
+  return withPower(
+    measured
+      ? { ...base, ...measured }
+      : { ...base, load: zoneLoad(actual), kcalEstimated: kcalByMet(actual, weightKg) },
+    power,
+  );
+}
+
+/** Summary of a free ride on a route (no workout blocks). */
+export function buildRideSummary(args: {
+  id: string;
+  dateMs: number;
+  route: { id: string; name: string };
+  ride: { distanceM: number; ascentM: number; elapsedSec: number };
+  mode: RideSummary['mode'];
+  laps?: number;
+  weightKg: number;
+  hr?: HrTime;
+  hrSimulated?: boolean;
+  powerSamples?: readonly number[];
+  powerSimulated?: boolean;
+  ftpW?: number | null;
+}): SessionSummary {
+  const { ride } = args;
+  const power = summarisePower(
+    args.powerSamples ?? [],
+    args.ftpW ?? null,
+    args.powerSimulated ?? false,
+  );
+  const base = {
+    id: args.id,
+    dateMs: args.dateMs,
+    workoutName: args.route.name,
+    durationSec: ride.elapsedSec,
+    plannedSecByZone: emptySecByZone(),
+    actualSecByZone: emptySecByZone(),
+    counts: [],
+    ride: {
+      routeId: args.route.id,
+      routeName: args.route.name,
+      distanceM: ride.distanceM,
+      ascentM: ride.ascentM,
+      avgSpeedKmh: ride.elapsedSec > 0 ? (ride.distanceM / ride.elapsedSec) * 3.6 : 0,
+      mode: args.mode,
+      laps: args.laps ?? 0,
+    },
+  };
+  // Without heart rate there are no zones to weigh: load and kcal stay at 0 and show as "—".
+  const measured = fromHeartRate(args.hr, args.weightKg, args.hrSimulated ?? false);
+  return withPower(
+    measured ? { ...base, ...measured } : { ...base, load: 0, kcalEstimated: 0 },
+    power,
+  );
 }
 
 /** Totals over the sessions of the last `days` days before `nowMs`. */

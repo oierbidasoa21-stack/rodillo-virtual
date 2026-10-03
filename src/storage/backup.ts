@@ -1,6 +1,7 @@
 import type {
   HrMeasured,
   PowerSummary,
+  RideSummary,
   SecByPowerZone,
   SessionSummary,
 } from '../domain/metrics/summary';
@@ -146,6 +147,23 @@ function parsePower(v: unknown): PowerSummary | undefined {
   };
 }
 
+function parseRide(v: unknown): RideSummary | undefined {
+  if (!isRecord(v) || typeof v.routeId !== 'string' || typeof v.routeName !== 'string') {
+    return undefined;
+  }
+  if (!isNum(v.distanceM) || !isNum(v.ascentM) || !isNum(v.avgSpeedKmh)) return undefined;
+  if (v.mode !== 'power' && v.mode !== 'wheel') return undefined;
+  return {
+    routeId: v.routeId,
+    routeName: v.routeName,
+    distanceM: v.distanceM,
+    ascentM: v.ascentM,
+    avgSpeedKmh: v.avgSpeedKmh,
+    mode: v.mode,
+    laps: isNum(v.laps) ? v.laps : 0,
+  };
+}
+
 /** An imported route, or null if any point or total is unreadable. */
 function parseRoute(v: unknown): Route | null {
   if (!isRecord(v) || typeof v.id !== 'string' || typeof v.name !== 'string') return null;
@@ -187,6 +205,7 @@ function parseSession(v: unknown): SessionSummary | null {
     : [];
   const hrMeasured = parseHrMeasured(v.hrMeasured);
   const power = parsePower(v.power);
+  const ride = parseRide(v.ride);
   return {
     id: v.id,
     dateMs: v.dateMs,
@@ -199,6 +218,7 @@ function parseSession(v: unknown): SessionSummary | null {
     counts,
     ...(hrMeasured ? { hrMeasured } : {}),
     ...(power ? { power } : {}),
+    ...(ride ? { ride } : {}),
   };
 }
 
