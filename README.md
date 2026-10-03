@@ -71,6 +71,20 @@ Con un rodillo «tonto» no hay medidor de potencia: la app la **estima** a part
 
 Con al menos un minuto de potencia, el resumen muestra potencia media, NP, máxima, trabajo (kJ), IF y TSS (si hay FTP) y el tiempo en zonas de potencia (Coggan Z1–Z7). Las kcal pasan a salir de los kJ. El historial añade una columna TSS.
 
+## Rutas
+
+En la pestaña **Rutas** hay 3 rutas de ejemplo inventadas (un llano, un puerto de 8 km al 6 % y un rompepiernas). También puedes **importar tus GPX**, que se guardan solo en el navegador. Cada ruta se remuestrea cada 10 m y su altitud se suaviza para que el ruido del GPS no dé pendientes falsas.
+
+- **Rodar:** vista de carrera con la pendiente, la velocidad, la potencia, el pulso, la cadencia, la distancia, lo que queda, el desnivel y el tiempo. Debajo, el perfil de altimetría con tu posición y los próximos 500 m, y el minimapa del recorrido (sin mapa de fondo, funciona sin conexión).
+- **Con una sesión…:** haces cualquier sesión de la biblioteca o tuya sobre la ruta. La ruta da vueltas hasta que acaba la sesión, y el resumen dice cuántas.
+
+Siempre se ve con qué modo estás rodando:
+
+- **Modo potencia** (con un rodillo elegido en Ajustes): la velocidad virtual sale de tu potencia estimada, tu peso más el de la bici, y la pendiente. En las subidas vas más despacio y en las bajadas ruedas sin pedalear.
+- **Modo velocidad de rueda · sin potencia** (sin rodillo elegido): avanzas a la velocidad real de tu rueda y la pendiente solo se muestra.
+
+Las rutas necesitan el sensor de velocidad. El resumen y el historial guardan la distancia, la velocidad media y el desnivel.
+
 ## Copia de seguridad
 
 **Ajustes → Datos en este dispositivo → Exportar copia** guarda en un archivo JSON tus sesiones, el historial y los ajustes. **Importar copia** te enseña qué contiene el archivo y, si confirmas, reemplaza todo lo guardado en ese navegador. Sirve para pasar tus datos a otro ordenador o recuperarlos si borras el navegador. La copia incluye datos personales: guárdala fuera del repositorio, por ejemplo en `data/`.

@@ -5,7 +5,7 @@ Marca `[x]` al completar cada tarea.
 
 Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. Las pruebas en móvil van aparte, en la Fase 9.
 
-**Fase actual: 5**
+**Fase actual: 6**
 
 ---
 
@@ -101,6 +101,8 @@ Objetivo: rodar sobre una ruta con pendiente, al estilo de la vista de carrera.
 - [x] Modo workout sobre ruta
 
 Hecho cuando: hago una ruta entera viendo cómo avanzo y cómo cambia la pendiente.
+
+Pendiente: probarlo con sensores reales cuando tenga el hardware. Hasta entonces, la fase está comprobada con los sensores simulados.
 
 ## Fase 6 — Grabación y exportación
 

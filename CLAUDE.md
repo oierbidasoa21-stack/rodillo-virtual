@@ -66,6 +66,7 @@ Reglas:
 - `domain/` no importa nada de `ui/`, `sensors/` ni APIs del navegador. Debe poder testearse en Node.
 - Cada sensor implementa la misma interfaz (`connect`, `disconnect`, flujo de lecturas con timestamp). La UI no sabe si el dato viene de un sensor real o simulado.
 - Una curva de rodillo solo entra en `domain/trainer` si tiene fuente verificable; si no, el usuario puede meterla como personalizada.
+- Las rutas de ejemplo son inventadas (nada de Zwift ni de sitios reales). Los GPX del usuario se importan en la app y no van al repo; si hay que guardarlos en disco, en `data/`.
 - Los cambios de modelo de datos guardados suben la versión de Dexie con su migración (y su test con una base de la versión anterior).
 - Las unidades van en el nombre cuando no son obvias: `durationSec`, `speedKmh`, `powerW`, `distanceM`.
 
