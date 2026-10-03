@@ -1,4 +1,5 @@
 import type { SessionSummary } from '../domain/metrics/summary';
+import type { Route } from '../domain/route/route';
 import { migrateWorkout } from '../domain/workout/migrate';
 import type { Workout } from '../domain/workout/types';
 import { RodilloDb, SETTINGS_KEY } from './db';
@@ -22,6 +23,12 @@ export function createStorage(db: RodilloDb) {
     },
     clearHistory: (): Promise<void> => db.history.clear(),
 
+    listRoutes: (): Promise<Route[]> => db.routes.toArray(),
+    saveRoute: async (route: Route): Promise<void> => {
+      await db.routes.put(route);
+    },
+    deleteRoute: (id: string): Promise<void> => db.routes.delete(id),
+
     getSettings: async (): Promise<AppSettings> =>
       normalizeSettings(await db.settings.get(SETTINGS_KEY)),
     saveSettings: async (settings: AppSettings): Promise<void> => {
@@ -33,11 +40,14 @@ export function createStorage(db: RodilloDb) {
       workouts: Workout[];
       history: SessionSummary[];
       settings: AppSettings;
+      routes: Route[];
     }): Promise<void> => {
-      await db.transaction('rw', [db.workouts, db.history, db.settings], async () => {
-        await Promise.all([db.workouts.clear(), db.history.clear(), db.settings.clear()]);
+      const tables = [db.workouts, db.history, db.settings, db.routes];
+      await db.transaction('rw', tables, async () => {
+        await Promise.all(tables.map((t) => t.clear()));
         await db.workouts.bulkPut(data.workouts);
         await db.history.bulkPut(data.history);
+        await db.routes.bulkPut(data.routes);
         await db.settings.put({ ...data.settings, key: SETTINGS_KEY });
       });
     },

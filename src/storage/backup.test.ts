@@ -2,6 +2,7 @@ import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { SessionSummary } from '../domain/metrics/summary';
 import { emptySecByZone } from '../domain/metrics/timeInZone';
+import { buildRoute } from '../domain/route/route';
 import { makeBlock, makeRepeat } from '../domain/workout/types';
 import {
   BACKUP_APP,
@@ -68,8 +69,19 @@ const session: SessionSummary = {
   },
 };
 
+const builtRoute = buildRoute(
+  [
+    { lat: 0, lon: 0, ele: 100 },
+    { lat: 0.001, lon: 0, ele: 105 },
+  ],
+  { id: 'gpx-1', name: 'Mi subida', source: 'gpx' },
+);
+if (!builtRoute) throw new Error('route');
+const route = builtRoute;
+
 async function filled(): Promise<Storage> {
   const s = freshStorage();
+  await s.saveRoute(route);
   await s.saveWorkout(workout);
   await s.addHistory(session);
   const settings = defaultSettings();
@@ -89,19 +101,38 @@ describe('backup', () => {
     expect(backup.history).toEqual([session]);
     expect(backup.settings.beeps).toBe(false);
     expect(backup.settings.athlete.weightKg).toBe(66);
+    expect(backup.routes).toEqual([route]);
   });
 
   it('round-trips through JSON into another browser', async () => {
     const backup = await exportBackup(await filled(), 1234);
     const parsed = parseBackup(JSON.parse(JSON.stringify(backup)));
     if (!parsed.ok) throw new Error(parsed.errors.join(' '));
-    expect(parsed.value.skipped).toEqual({ workouts: 0, history: 0 });
+    expect(parsed.value.skipped).toEqual({ workouts: 0, history: 0, routes: 0 });
 
     const target = freshStorage();
     await importBackup(target, parsed.value.backup);
     expect(await target.listWorkouts()).toEqual([workout]);
     expect(await target.listHistory()).toEqual([session]);
     expect((await target.getSettings()).athlete.weightKg).toBe(66);
+    expect(await target.listRoutes()).toEqual([route]);
+  });
+
+  it('still reads format 1 backups (before routes existed)', () => {
+    const parsed = parseBackup({ app: BACKUP_APP, format: 1, workouts: [], history: [] });
+    expect(parsed.ok && parsed.value.backup.routes).toEqual([]);
+  });
+
+  it('skips a route with a broken point', () => {
+    const broken = { ...route, points: [...route.points, { distanceM: 'x' }] };
+    const parsed = parseBackup({
+      app: BACKUP_APP,
+      format: BACKUP_FORMAT,
+      workouts: [],
+      history: [],
+      routes: [route, broken],
+    });
+    expect(parsed.ok && parsed.value.skipped.routes).toBe(1);
   });
 
   it('replaces what was there before', async () => {
@@ -141,7 +172,7 @@ describe('backup', () => {
       settings: 'nope',
     });
     if (!parsed.ok) throw new Error('should parse');
-    expect(parsed.value.skipped).toEqual({ workouts: 1, history: 1 });
+    expect(parsed.value.skipped).toEqual({ workouts: 1, history: 1, routes: 0 });
     expect(parsed.value.backup.settings).toEqual(defaultSettings());
   });
 

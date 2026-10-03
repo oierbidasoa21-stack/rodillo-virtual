@@ -4,6 +4,7 @@ import type {
   SecByPowerZone,
   SessionSummary,
 } from '../domain/metrics/summary';
+import type { Route, RoutePoint } from '../domain/route/route';
 import { POWER_ZONE_IDS } from '../domain/zones/powerZones';
 import { emptySecByZone, type SecByZone } from '../domain/metrics/timeInZone';
 import type { HrCount } from '../domain/workout/player';
@@ -15,7 +16,9 @@ import type { Storage } from './repositories';
 import { type AppSettings, normalizeSettings } from './settings';
 
 export const BACKUP_APP = 'rodillo-virtual';
-export const BACKUP_FORMAT = 1;
+/** 2 added imported routes; format 1 files (no routes) are still accepted. */
+export const BACKUP_FORMAT = 2;
+const READABLE_FORMATS: readonly number[] = [1, 2];
 
 /** Everything the app stores in this browser, as one JSON file. */
 export interface Backup {
@@ -25,19 +28,21 @@ export interface Backup {
   workouts: Workout[];
   history: SessionSummary[];
   settings: AppSettings;
+  routes: Route[];
 }
 
 /** A parsed backup plus what had to be left out. */
 export interface ParsedBackup {
   backup: Backup;
-  skipped: { workouts: number; history: number };
+  skipped: { workouts: number; history: number; routes: number };
 }
 
 export async function exportBackup(storage: Storage, nowMs: number): Promise<Backup> {
-  const [workouts, history, settings] = await Promise.all([
+  const [workouts, history, settings, routes] = await Promise.all([
     storage.listWorkouts(),
     storage.listHistory(),
     storage.getSettings(),
+    storage.listRoutes(),
   ]);
   return {
     app: BACKUP_APP,
@@ -46,6 +51,7 @@ export async function exportBackup(storage: Storage, nowMs: number): Promise<Bac
     workouts,
     history,
     settings,
+    routes,
   };
 }
 
@@ -140,6 +146,33 @@ function parsePower(v: unknown): PowerSummary | undefined {
   };
 }
 
+/** An imported route, or null if any point or total is unreadable. */
+function parseRoute(v: unknown): Route | null {
+  if (!isRecord(v) || typeof v.id !== 'string' || typeof v.name !== 'string') return null;
+  if (!isNum(v.distanceM) || !isNum(v.ascentM) || !isNum(v.descentM) || !isNum(v.maxGrade)) {
+    return null;
+  }
+  if (!Array.isArray(v.points) || v.points.length < 2) return null;
+  const points: RoutePoint[] = [];
+  for (const p of v.points as unknown[]) {
+    if (!isRecord(p) || !isNum(p.distanceM) || !isNum(p.lat) || !isNum(p.lon) || !isNum(p.ele)) {
+      return null;
+    }
+    points.push({ distanceM: p.distanceM, lat: p.lat, lon: p.lon, ele: p.ele });
+  }
+  return {
+    id: v.id,
+    name: v.name,
+    ...(typeof v.description === 'string' ? { description: v.description } : {}),
+    source: 'gpx',
+    distanceM: v.distanceM,
+    ascentM: v.ascentM,
+    descentM: v.descentM,
+    maxGrade: v.maxGrade,
+    points,
+  };
+}
+
 /** A history entry, or null if it's missing anything the app needs to show it. */
 function parseSession(v: unknown): SessionSummary | null {
   if (!isRecord(v) || typeof v.id !== 'string' || typeof v.workoutName !== 'string') return null;
@@ -177,7 +210,7 @@ export function parseBackup(input: unknown): ParseResult<ParsedBackup> {
   if (!isRecord(input) || input.app !== BACKUP_APP) {
     return { ok: false, errors: ['El archivo no es una copia de Rodillo Virtual.'] };
   }
-  if (input.format !== BACKUP_FORMAT) {
+  if (typeof input.format !== 'number' || !READABLE_FORMATS.includes(input.format)) {
     return {
       ok: false,
       errors: [`Formato de copia no compatible (${String(input.format)}). Actualiza la app.`],
@@ -189,6 +222,8 @@ export function parseBackup(input: unknown): ParseResult<ParsedBackup> {
 
   const workouts = input.workouts.map(migrateWorkout).filter((w): w is Workout => w !== null);
   const history = input.history.map(parseSession).filter((s): s is SessionSummary => s !== null);
+  const rawRoutes: unknown[] = Array.isArray(input.routes) ? input.routes : [];
+  const routes = rawRoutes.map(parseRoute).filter((r): r is Route => r !== null);
   return {
     ok: true,
     value: {
@@ -199,10 +234,12 @@ export function parseBackup(input: unknown): ParseResult<ParsedBackup> {
         workouts,
         history,
         settings: normalizeSettings(isRecord(input.settings) ? input.settings : undefined),
+        routes,
       },
       skipped: {
         workouts: input.workouts.length - workouts.length,
         history: input.history.length - history.length,
+        routes: rawRoutes.length - routes.length,
       },
     },
   };

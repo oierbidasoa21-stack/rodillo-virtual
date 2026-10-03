@@ -86,10 +86,13 @@ export default function BackupPanel() {
             {pending.backup.exportedAtMs > 0 &&
               ` del ${dateFormat.format(pending.backup.exportedAtMs)}`}
             : {plural(pending.backup.workouts.length, 'sesión propia', 'sesiones propias')},{' '}
-            {plural(pending.backup.history.length, 'entrada de historial', 'entradas de historial')}{' '}
-            y los ajustes (peso, zonas y demás).
+            {plural(pending.backup.history.length, 'entrada de historial', 'entradas de historial')}
+            , {plural(pending.backup.routes.length, 'ruta importada', 'rutas importadas')} y los
+            ajustes (peso, zonas y demás).
           </p>
-          {(pending.skipped.workouts > 0 || pending.skipped.history > 0) && (
+          {(pending.skipped.workouts > 0 ||
+            pending.skipped.history > 0 ||
+            pending.skipped.routes > 0) && (
             <p style={{ margin: '0 0 6px' }}>
               No se pueden leer {plural(pending.skipped.workouts, 'sesión', 'sesiones')} y{' '}
               {plural(pending.skipped.history, 'entrada de historial', 'entradas de historial')} del
