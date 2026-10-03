@@ -16,7 +16,7 @@ function checkForUpdate(registration: ServiceWorkerRegistration): void {
  * editor is open.
  */
 export default function UpdatePrompt() {
-  const playing = useUiStore((s) => s.playing !== null);
+  const playing = useUiStore((s) => s.playing !== null || s.riding !== null);
   const editing = useUiStore((s) => s.editing !== null);
   const showToast = useUiStore((s) => s.showToast);
   const [dismissed, setDismissed] = useState(false);

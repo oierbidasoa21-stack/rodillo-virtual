@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
 import { KCAL_MET_UNCERTAINTY } from '../../domain/metrics/kcal';
-import type { SessionSummary } from '../../domain/metrics/summary';
+import { type SessionSummary, hasKcal, hasLoad } from '../../domain/metrics/summary';
 import { hrPer10sToBpm } from '../../domain/zones/heartRate';
 import { ZONE_IDS } from '../../domain/zones/zones';
 import { formatClock } from '../format';
 import { zoneColor } from '../zoneStyle';
+import RideSummaryCard from '../ride/RideSummaryCard';
 import PowerSummaryCard from './PowerSummaryCard';
 import { STATUS_CLASS, STATUS_TEXT } from './zoneStatusText';
 
@@ -42,11 +43,11 @@ export default function Summary({ summary, saved, onClose, children }: Props) {
           <div className="l">Tiempo de sesión</div>
         </div>
         <div className="stat">
-          <div className="v num">{Math.round(summary.load)}</div>
+          <div className="v num">{hasLoad(summary) ? Math.round(summary.load) : '—'}</div>
           <div className="l">Carga (TRIMP por zonas)</div>
         </div>
         <div className="stat">
-          <div className="v num">{Math.round(summary.kcalEstimated)}</div>
+          <div className="v num">{hasKcal(summary) ? Math.round(summary.kcalEstimated) : '—'}</div>
           <div className="l">
             {summary.power
               ? 'kcal estimadas (≈ kJ)'
@@ -79,6 +80,8 @@ export default function Summary({ summary, saved, onClose, children }: Props) {
           La sesión ha durado menos de 1 minuto y no se guarda en el historial.
         </p>
       )}
+
+      {summary.ride && <RideSummaryCard ride={summary.ride} />}
 
       {summary.power && <PowerSummaryCard power={summary.power} />}
 

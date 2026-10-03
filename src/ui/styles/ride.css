@@ -1,0 +1,140 @@
+/* Race view on a route */
+.ride {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 14px;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+}
+.mode-badge.mode-wheel {
+  border-color: var(--warn);
+  color: var(--warn);
+}
+.hud {
+  display: grid;
+  grid-template-columns: 1.3fr repeat(4, 1fr);
+  gap: 8px;
+}
+.hud-cell,
+.hud-grade {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+}
+.hud-grade {
+  grid-row: span 2;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff;
+  border: 0;
+}
+.hud-l {
+  width: 100%;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+.hud-grade .hud-l {
+  color: inherit;
+  opacity: 0.9;
+}
+.hud-v {
+  font-family: var(--f-display);
+  font-size: 36px;
+  white-space: nowrap;
+  font-weight: 700;
+  line-height: 1;
+}
+.hud-grade .hud-v {
+  font-size: clamp(40px, 5vw, 60px);
+  white-space: nowrap;
+}
+.hud-u {
+  color: var(--muted);
+  font-weight: 600;
+}
+.hud-none {
+  font-size: 22px;
+  color: var(--muted);
+}
+.ride-graphs {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 10px;
+}
+.ride-graphs .card {
+  gap: 6px;
+}
+.elevation-wrap {
+  position: relative;
+  width: 100%;
+}
+.elevation {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.elevation-area {
+  fill: var(--line);
+  opacity: 0.6;
+}
+.elevation-ahead {
+  stroke: var(--ink);
+  opacity: 0.35;
+}
+.elevation-cursor {
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+.elevation-dot {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--surface);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.minimap {
+  display: block;
+  width: 100%;
+}
+.minimap-route {
+  stroke: var(--muted);
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
+.minimap-start {
+  fill: var(--ink);
+}
+.minimap-dot {
+  fill: var(--accent);
+  stroke: var(--surface);
+  stroke-width: 3;
+}
+@media (max-width: 720px) {
+  .hud {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ride-graphs {
+    grid-template-columns: 1fr;
+  }
+}

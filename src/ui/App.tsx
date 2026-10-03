@@ -7,6 +7,8 @@ import EditorSheet from './editor/EditorSheet';
 import HistoryView from './history/HistoryView';
 import { useTheme } from './hooks/useTheme';
 import Player from './player/Player';
+import RideView from './ride/RideView';
+import RoutesView from './routes/RoutesView';
 import UpdatePrompt from './pwa/UpdatePrompt';
 import SensorChips from './sensors/SensorChips';
 import SensorsView from './sensors/SensorsView';
@@ -22,6 +24,7 @@ export default function App() {
   const editing = useUiStore((s) => s.editing);
   const playing = useUiStore((s) => s.playing);
   const playingMode = useUiStore((s) => s.playingMode);
+  const riding = useUiStore((s) => s.riding);
   useTheme();
 
   useEffect(() => {
@@ -59,6 +62,7 @@ export default function App() {
             <ZoneStrip />
             <main>
               {tab === 'library' && <LibraryView />}
+              {tab === 'routes' && <RoutesView />}
               {tab === 'history' && <HistoryView />}
               {tab === 'sensors' && <SensorsView />}
               {tab === 'settings' && <SettingsView />}
@@ -68,6 +72,7 @@ export default function App() {
       </div>
       {editing && <EditorSheet key={editing.id ?? 'new'} initial={editing} />}
       {playing && <Player key={playing.id} workout={playing} mode={playingMode} />}
+      {riding && <RideView key={riding.route.id} route={riding.route} mode={riding.mode} />}
       <UpdatePrompt />
       <Toast />
     </>

@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { recentTotals } from '../../domain/metrics/summary';
+import { hasKcal, hasLoad, recentTotals } from '../../domain/metrics/summary';
 import { useHistoryStore } from '../../store/historyStore';
 import ConfirmButton from '../ConfirmButton';
 import { formatMinutes } from '../format';
+import { formatKm } from '../ride/rideFormat';
 
 const dateFormat = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short' });
 
@@ -54,6 +55,7 @@ export default function HistoryView() {
               <th>Fecha</th>
               <th>Sesión</th>
               <th>Tiempo</th>
+              <th>Distancia</th>
               <th>Carga</th>
               <th>TSS (est.)</th>
               <th>kcal (est.)</th>
@@ -72,9 +74,10 @@ export default function HistoryView() {
                   )}
                 </td>
                 <td className="num">{formatMinutes(s.durationSec)}</td>
-                <td className="num">{Math.round(s.load)}</td>
+                <td className="num nowrap">{s.ride ? formatKm(s.ride.distanceM) : '—'}</td>
+                <td className="num">{hasLoad(s) ? Math.round(s.load) : '—'}</td>
                 <td className="num">{s.power?.tss == null ? '—' : Math.round(s.power.tss)}</td>
-                <td className="num">{Math.round(s.kcalEstimated)}</td>
+                <td className="num">{hasKcal(s) ? Math.round(s.kcalEstimated) : '—'}</td>
               </tr>
             ))}
           </tbody>

@@ -93,11 +93,11 @@ Pendiente: prueba con el rodillo real (elegir su modelo o meter su curva), cuand
 
 Objetivo: rodar sobre una ruta con pendiente, al estilo de la vista de carrera.
 
-- [ ] `domain/route`: importar GPX, remuestrear cada 10 m, suavizar la pendiente (con tests)
-- [ ] 2–3 rutas de ejemplo propias (inventadas o de mis salidas, nunca de Zwift)
-- [ ] Vista de carrera: HUD con potencia, pulso, cadencia, velocidad, distancia, desnivel, tiempo y pendiente
-- [ ] Perfil de altimetría con posición actual y minimapa de la ruta
-- [ ] Modo libre: la velocidad virtual sale de la potencia y la pendiente de la ruta
+- [x] `domain/route`: importar GPX, remuestrear cada 10 m, suavizar la pendiente (con tests)
+- [x] 2–3 rutas de ejemplo propias (inventadas o de mis salidas, nunca de Zwift)
+- [x] Vista de carrera: HUD con potencia, pulso, cadencia, velocidad, distancia, desnivel, tiempo y pendiente
+- [x] Perfil de altimetría con posición actual y minimapa de la ruta
+- [x] Modo libre: la velocidad virtual sale de la potencia y la pendiente de la ruta
 - [ ] Modo workout sobre ruta
 
 Hecho cuando: hago una ruta entera viendo cómo avanzo y cómo cambia la pendiente.
