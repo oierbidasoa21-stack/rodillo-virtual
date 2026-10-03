@@ -17,7 +17,13 @@ interface UiStore {
   playing: Workout | null;
   /** 'ramp' adds the FTP estimate at the end and a one-press stop. */
   playingMode: 'normal' | 'ramp';
-  startWorkout: (workout: Workout, mode?: 'normal' | 'ramp') => void;
+  /** Route the workout is ridden on, if any; it loops until the workout ends. */
+  playingRoute: { route: Route; mode: RideMode } | null;
+  startWorkout: (
+    workout: Workout,
+    mode?: 'normal' | 'ramp',
+    route?: { route: Route; mode: RideMode } | null,
+  ) => void;
   stopPlayer: () => void;
   /** Result of asking the browser to keep our data; null until asked. */
   storagePersistence: StoragePersistence | null;
@@ -40,7 +46,9 @@ export const useUiStore = create<UiStore>()((set) => ({
   closeEditor: () => set({ editing: null }),
   playing: null,
   playingMode: 'normal',
-  startWorkout: (workout, mode = 'normal') => set({ playing: workout, playingMode: mode }),
+  playingRoute: null,
+  startWorkout: (workout, mode = 'normal', route = null) =>
+    set({ playing: workout, playingMode: mode, playingRoute: route }),
   stopPlayer: () => set({ playing: null }),
   storagePersistence: null,
   setStoragePersistence: (value) => set({ storagePersistence: value }),

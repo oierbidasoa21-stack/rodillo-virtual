@@ -138,3 +138,50 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Route under a workout */
+.route-strip {
+  display: grid;
+  gap: 8px;
+}
+.route-strip-hud {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.route-strip .hud-v {
+  font-size: 28px;
+}
+.hud-grade.small {
+  grid-row: auto;
+}
+.hud-grade.small .hud-v {
+  font-size: 34px;
+}
+@media (max-width: 720px) {
+  .route-strip-hud {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+/* With a route under the workout everything must still fit one screen. */
+.pl.with-route {
+  gap: 10px;
+}
+.pl.with-route .clock {
+  font-size: clamp(64px, 11vw, 110px);
+}
+.pl.with-route .zonecard {
+  padding: 12px 18px 14px;
+}
+.pl.with-route .zonecard .zn {
+  font-size: clamp(44px, 9vw, 68px);
+}
+.pl.with-route .profile.big {
+  height: 54px;
+}
+.pl.with-route .controls {
+  grid-template-columns: repeat(8, 1fr);
+}
+.pl.with-route .controls .btn {
+  padding: 12px 6px;
+}

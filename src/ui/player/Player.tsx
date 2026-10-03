@@ -5,7 +5,10 @@ import {
   MIN_SAVED_SESSION_SEC,
   type SessionSummary,
   buildSessionSummary,
+  rideSummaryOf,
 } from '../../domain/metrics/summary';
+import { type RideMode, type RideState, advanceRide, startRide } from '../../domain/route/ride';
+import type { Route } from '../../domain/route/route';
 import { addHrSample, emptyHrTime } from '../../domain/metrics/hrTime';
 import { emptyPowerSampler, samplePower } from '../../domain/metrics/power';
 import { curveFor, speedForPowerKmh } from '../../domain/trainer/curves';
@@ -47,6 +50,9 @@ import { targetColor, targetShortLabel } from '../targetStyle';
 import WorkoutProfile from '../WorkoutProfile';
 import { needsDarkText } from '../zoneStyle';
 import RampResultCard from '../ramp/RampResultCard';
+import ModeBadge from '../ride/ModeBadge';
+import { currentRideInput } from '../ride/rideInput';
+import RouteStrip from '../ride/RouteStrip';
 import HrCounter from './HrCounter';
 import PowerTargetDetail from './PowerTargetDetail';
 import LiveMetrics from './LiveMetrics';
@@ -57,10 +63,13 @@ import Summary from './Summary';
 export default function Player({
   workout,
   mode = 'normal',
+  route = null,
 }: {
   workout: Workout;
   /** 'ramp': one-press stop and an FTP estimate at the end. */
   mode?: 'normal' | 'ramp';
+  /** Ride the workout on this route; it loops until the workout ends. */
+  route?: { route: Route; mode: RideMode } | null;
 }) {
   const zones = useSettingsStore((s) => s.settings.athlete.hrZonesPer10s);
   const addHistory = useHistoryStore((s) => s.add);
@@ -76,6 +85,9 @@ export default function Player({
   // Estimated power, one sample per second, and whether it came from a simulated sensor.
   const power = useRef(emptyPowerSampler());
   const powerSimulated = useRef(false);
+  // Position on the route, if the workout is ridden on one.
+  const [ride, setRide] = useState<RideState>(startRide);
+  const rideRef = useRef(ride);
   // Target zone when the count was opened; the step may change while counting.
   const [countTarget, setCountTarget] = useState<HrZone | null>(null);
   // The simulator as it was before this session, restored when it ends or the player closes.
@@ -110,6 +122,7 @@ export default function Player({
           powerSamples: power.current.samples,
           powerSimulated: powerSimulated.current,
           ftpW: settings.athlete.ftp?.watts ?? null,
+          ...(route ? { ride: rideSummaryOf(route.route, rideRef.current, route.mode) } : {}),
         });
         const saved = summary.durationSec >= MIN_SAVED_SESSION_SEC;
         if (saved) void addHistory(summary);
@@ -121,7 +134,7 @@ export default function Player({
         setResult({ summary, saved, ramp, powerSimulated: powerSimulated.current });
       }
     },
-    [workout.name, addHistory, mode, simBefore],
+    [workout.name, addHistory, mode, simBefore, route],
   );
 
   const running = player.status === 'running';
@@ -140,6 +153,11 @@ export default function Player({
     const watts = estimatePowerW(csc.last, curveFor(settings.trainer), Date.now());
     if (watts !== null && csc.source === 'simulated') powerSimulated.current = true;
     power.current = samplePower(power.current, dt, watts);
+    if (route) {
+      const { input } = currentRideInput(route.mode, Date.now());
+      rideRef.current = advanceRide(rideRef.current, route.route, dt, input, true);
+      setRide(rideRef.current);
+    }
     apply(tick(playerRef.current, dt));
   });
   useWakeLock(running);
@@ -201,9 +219,10 @@ export default function Player({
 
   return (
     <div className="overlay">
-      <div className="sheet pl">
+      <div className={route ? 'sheet pl with-route' : 'sheet pl'}>
         <div className="sheet-top">
           <h2>{workout.name}</h2>
+          {route && <ModeBadge mode={route.mode} simulated={simulate} />}
           <span className="pl-total num">
             Bloque {player.index + 1}/{player.steps.length} · Quedan{' '}
             <b>{formatClock(p.remainingTotalSec)}</b>
@@ -248,6 +267,8 @@ export default function Player({
         </div>
 
         <LiveMetrics zone={zone} targetW={targetWatts(step.target, ftpW)} />
+
+        {route && <RouteStrip route={route.route} mode={route.mode} ride={ride} />}
 
         <div className="next">
           {next ? (

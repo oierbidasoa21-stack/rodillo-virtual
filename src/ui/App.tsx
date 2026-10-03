@@ -24,6 +24,7 @@ export default function App() {
   const editing = useUiStore((s) => s.editing);
   const playing = useUiStore((s) => s.playing);
   const playingMode = useUiStore((s) => s.playingMode);
+  const playingRoute = useUiStore((s) => s.playingRoute);
   const riding = useUiStore((s) => s.riding);
   useTheme();
 
@@ -71,7 +72,9 @@ export default function App() {
         )}
       </div>
       {editing && <EditorSheet key={editing.id ?? 'new'} initial={editing} />}
-      {playing && <Player key={playing.id} workout={playing} mode={playingMode} />}
+      {playing && (
+        <Player key={playing.id} workout={playing} mode={playingMode} route={playingRoute} />
+      )}
       {riding && <RideView key={riding.route.id} route={riding.route} mode={riding.mode} />}
       <UpdatePrompt />
       <Toast />

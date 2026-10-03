@@ -98,7 +98,7 @@ Objetivo: rodar sobre una ruta con pendiente, al estilo de la vista de carrera.
 - [x] Vista de carrera: HUD con potencia, pulso, cadencia, velocidad, distancia, desnivel, tiempo y pendiente
 - [x] Perfil de altimetría con posición actual y minimapa de la ruta
 - [x] Modo libre: la velocidad virtual sale de la potencia y la pendiente de la ruta
-- [ ] Modo workout sobre ruta
+- [x] Modo workout sobre ruta
 
 Hecho cuando: hago una ruta entera viendo cómo avanzo y cómo cambia la pendiente.
 

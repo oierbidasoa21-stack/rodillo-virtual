@@ -11,8 +11,6 @@ import {
 import { positionAt } from '../../domain/route/position';
 import { type RideMode, type RideState, advanceRide, startRide } from '../../domain/route/ride';
 import type { Route } from '../../domain/route/route';
-import { curveFor } from '../../domain/trainer/curves';
-import { estimatePowerW } from '../../sensors/estimatedPower';
 import { isFresh } from '../../sensors/freshness';
 import { useHistoryStore } from '../../store/historyStore';
 import { useSensorsStore } from '../../store/sensorsStore';
@@ -27,6 +25,7 @@ import ElevationProfile from './ElevationProfile';
 import MiniMap from './MiniMap';
 import ModeBadge from './ModeBadge';
 import RideHud from './RideHud';
+import { currentRideInput } from './rideInput';
 import { RIDE_MODE_HINT } from './rideMode';
 
 type Status = 'ready' | 'running' | 'paused';
@@ -78,17 +77,8 @@ export default function RideView({ route, mode }: { route: Route; mode: RideMode
     const { settings } = useSettingsStore.getState();
     const { csc, hr } = useSensorsStore.getState();
     const now = Date.now();
-    const watts =
-      mode === 'power' ? estimatePowerW(csc.last, curveFor(settings.trainer), now) : null;
-    const wheelKmh = csc.last && isFresh(csc.last, now) ? csc.last.speedKmh : null;
-    const next = advanceRide(
-      rideRef.current,
-      route,
-      dt,
-      mode === 'power'
-        ? { mode, powerW: watts, massKg: settings.athlete.weightKg + settings.athlete.bikeWeightKg }
-        : { mode, wheelSpeedKmh: wheelKmh },
-    );
+    const { input, watts } = currentRideInput(mode, now);
+    const next = advanceRide(rideRef.current, route, dt, input);
 
     const bpm = hr.last && isFresh(hr.last, now) ? hr.last.bpm : null;
     if (bpm !== null && hr.source === 'simulated') hrSimulated.current = true;

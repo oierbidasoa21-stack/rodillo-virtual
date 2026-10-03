@@ -118,6 +118,23 @@ export interface RideSummary {
   laps: number;
 }
 
+/** Route part of a summary from the ride state; laps count full passes of the route. */
+export function rideSummaryOf(
+  route: { id: string; name: string; distanceM: number },
+  ride: { distanceM: number; ascentM: number; elapsedSec: number },
+  mode: RideSummary['mode'],
+): RideSummary {
+  return {
+    routeId: route.id,
+    routeName: route.name,
+    distanceM: ride.distanceM,
+    ascentM: ride.ascentM,
+    avgSpeedKmh: ride.elapsedSec > 0 ? (ride.distanceM / ride.elapsedSec) * 3.6 : 0,
+    mode,
+    laps: Math.floor(ride.distanceM / route.distanceM + 1e-9),
+  };
+}
+
 /** Load needs heart rate or planned blocks; a free ride without a strap has none. */
 export function hasLoad(s: SessionSummary): boolean {
   return !!s.hrMeasured || !s.ride || ZONE_IDS.some((id) => s.plannedSecByZone[id] > 0);
@@ -163,6 +180,8 @@ export function buildSessionSummary(args: {
   powerSamples?: readonly number[];
   powerSimulated?: boolean;
   ftpW?: number | null;
+  /** The route, when the workout was ridden on one. */
+  ride?: RideSummary;
 }): SessionSummary {
   const { player, weightKg } = args;
   const power = summarisePower(
@@ -179,6 +198,7 @@ export function buildSessionSummary(args: {
     plannedSecByZone: plannedSecByZone(player.steps),
     actualSecByZone: actual,
     counts: player.counts,
+    ...(args.ride ? { ride: args.ride } : {}),
   };
 
   const measured = fromHeartRate(args.hr, weightKg, args.hrSimulated ?? false);

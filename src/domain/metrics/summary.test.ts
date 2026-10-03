@@ -11,6 +11,7 @@ import {
   hasKcal,
   hasLoad,
   recentTotals,
+  rideSummaryOf,
 } from './summary';
 import { emptySecByZone } from './timeInZone';
 
@@ -263,5 +264,38 @@ describe('buildRideSummary', () => {
       weightKg: 70,
     });
     expect(hasLoad(s)).toBe(true);
+  });
+});
+
+describe('workout on a route', () => {
+  const route = { id: 'ej-embalse', name: 'Embalse', distanceM: 2000 };
+
+  it('counts full laps: 9 km in 20′ on a 2 km route = 4 laps at 27 km/h; 4.5 km = 2', () => {
+    const ride = rideSummaryOf(route, { distanceM: 9000, ascentM: 30, elapsedSec: 1200 }, 'power');
+    expect(ride).toMatchObject({ laps: 4, avgSpeedKmh: 27, distanceM: 9000, mode: 'power' });
+    expect(rideSummaryOf(route, { distanceM: 4500, ascentM: 0, elapsedSec: 1 }, 'wheel').laps).toBe(
+      2,
+    );
+    // Exactly at the end of a lap counts it, despite floating point
+    expect(
+      rideSummaryOf(route, { distanceM: 3999.9999999999, ascentM: 0, elapsedSec: 1 }, 'wheel').laps,
+    ).toBe(2);
+  });
+
+  it('keeps the workout summary and adds the route', () => {
+    const steps = expandWorkout([makeBlock(600, 'L2')]);
+    const p = tick(togglePlay(createPlayer(steps)).state, 600).state;
+    const ride = rideSummaryOf(route, { distanceM: 5000, ascentM: 10, elapsedSec: 600 }, 'power');
+    const s = buildSessionSummary({
+      id: 'x',
+      dateMs: 0,
+      workoutName: 'Fondo',
+      player: p,
+      weightKg: 70,
+      ride,
+    });
+    expect(s.workoutName).toBe('Fondo');
+    expect(s.ride).toEqual(ride);
+    expect(s.load).toBeCloseTo(20, 9); // 10′ in L2 × 2, from the blocks
   });
 });
