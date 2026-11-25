@@ -97,6 +97,8 @@ Cada fórmula vive en `domain/` con tests que incluyan al menos un caso calculad
 4. Antes de cada commit: `npm run lint`, `npm run test` y `npm run build` deben pasar.
 5. Al terminar una tarea, marca su casilla en `docs/ROADMAP.md`.
 6. Si una decisión es mía (diseño, prioridades, compras de equipo), pregúntame.
+7. **Contexto entre conversaciones**: al empezar, lee `docs/contexto/README.md` y `docs/contexto/estado/ESTADO.md`. Al terminar cada tarea, actualiza `docs/contexto/` según su README (estado, registro de cambios, decisiones, fase en curso, pendientes y sesión). Los scripts de prueba en navegador se guardan en `docs/contexto/pruebas/scripts/`.
+8. Las tareas pendientes viven también en GitHub como issues dentro del milestone de su fase. Al cerrar una tarea, cierra su issue; al cerrar una fase, cierra su milestone.
 
 ## Dónde se prueba
 

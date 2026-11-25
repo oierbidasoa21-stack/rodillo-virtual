@@ -1,0 +1,58 @@
+# Arquitectura
+
+Las reglas generales están en [`CLAUDE.md`](../../../CLAUDE.md). Aquí está cómo ha quedado el código de verdad, para orientarse rápido.
+
+## Capas
+
+```
+domain/   lógica pura, testeable en Node (ESLint prohíbe importar React o capas de la app)
+sensors/  Bluetooth real, sensores simulados, decodificadores de paquetes, gestor
+storage/  Dexie (IndexedDB), ajustes, copia de seguridad, almacenamiento persistente
+store/    stores de Zustand: copia en memoria de lo guardado + estado de la UI
+audio/    pitidos (WebAudio) y voz (es-ES), disparados por eventos del player
+ui/       componentes React, un componente por archivo
+```
+
+## Módulos de `src/`
+
+| Carpeta          | Archivos clave                                                                                       | Qué hace                                                                                                                                                                                                   |
+| ---------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `domain/zones`   | `zones.ts`, `athleteConfig.ts`, `powerZones.ts`                                                      | Zonas de pulso /10″ (clasificar, validar, ajustar la vecina), parser de `athlete.json` (peso, bici, rueda, zonas, FTP), zonas de potencia Coggan                                                           |
+| `domain/workout` | `types.ts`, `expand.ts`, `edit.ts`, `player.ts`, `library.ts`, `ramp.ts`, `targets.ts`, `migrate.ts` | Modelo de sesión con objetivo por bloque, expansión de repeticiones, editor puro, **player como máquina de estados**, biblioteca, ramp test, conversión de objetivos a vatios, migración de datos antiguos |
+| `domain/metrics` | `summary.ts`, `power.ts`, `hrTime.ts`, `load.ts`, `kcal.ts`, `timeInZone.ts`                         | Resumen de sesión y de salida en ruta, NP/IF/TSS/kJ, pulso medido, carga, kcal                                                                                                                             |
+| `domain/trainer` | `curves.ts`                                                                                          | 7 curvas de rodillos de fluido (fuente: GoldenCheetah) + personalizada, y su inversa                                                                                                                       |
+| `domain/physics` | `virtualSpeed.ts`                                                                                    | Velocidad virtual por bisección a partir de potencia, masa y pendiente                                                                                                                                     |
+| `domain/route`   | `gpx.ts`, `route.ts`, `position.ts`, `ride.ts`, `examples.ts`                                        | Lector de GPX, remuestreo cada 10 m y suavizado, posición con vueltas, avance por potencia o por rueda, 3 rutas inventadas                                                                                 |
+| `sensors`        | `types.ts`, `manager.ts`, `cscCalculator.ts`, `estimatedPower.ts`, `ble/*`, `parse/*`, `simulated/*` | Interfaz común, gestor real/simulado, Bluetooth con reconexión, decodificadores, simulados                                                                                                                 |
+| `storage`        | `db.ts`, `repositories.ts`, `settings.ts`, `backup.ts`, `persist.ts`                                 | Base de datos, acceso a datos, ajustes por defecto, copia de seguridad                                                                                                                                     |
+| `ui/player`      | `Player.tsx`, `Summary.tsx`, `HrCounter.tsx`, `LiveMetrics.tsx`                                      | Player, resumen, contador de 10″, métricas en directo                                                                                                                                                      |
+| `ui/ride`        | `RideView.tsx`, `RideHud.tsx`, `ElevationProfile.tsx`, `MiniMap.tsx`, `RouteStrip.tsx`               | Vista de carrera y franja de ruta bajo una sesión                                                                                                                                                          |
+
+`src/recording/` sigue vacía: es para la Fase 6.
+
+## Modelo de datos (lo que se guarda)
+
+- **`Workout`**: `{ id, name, description, blocks }`. Cada `Block` es `{ type: 'block', durationSec, target, kind, note }` y `target` es `{ type: 'hr', zoneId } | { type: 'power', pctFtp } | { type: 'watts', watts }` (`watts` solo para el ramp test). `Repeat` = `{ type: 'repeat', times, items }`, un solo nivel.
+- **`SessionSummary`** (historial): duración, carga, kcal estimadas, tiempo por zona planificado y realizado, conteos de pulso, y opcionales `hrMeasured` (pulso medido), `power` (NP, IF, TSS, kJ, zonas, `simulated`) y `ride` (ruta, distancia, desnivel, velocidad media, modo, vueltas).
+- **`AppSettings`**: `athlete` (peso, bici, rueda, zonas, FTP), voz, pitidos, tema, `simulateSensors`, `trainer` (modelo o curva personalizada).
+- **`Route`** (importadas): puntos cada 10 m `{ distanceM, lat, lon, ele }` con la altitud ya suavizada, distancia, desnivel y pendiente máxima.
+
+## Versiones de la base de datos (Dexie, nombre `rodillo-virtual`)
+
+| Versión Dexie | IndexedDB | Fase | Cambio                                                     |
+| ------------- | --------- | ---- | ---------------------------------------------------------- |
+| 1             | 10        | 1    | Tablas `workouts`, `history` (índice `dateMs`), `settings` |
+| 2             | 20        | 4    | Migración: los bloques pasan de `zoneId` a `target`        |
+| 3             | 30        | 5    | Tabla `routes`                                             |
+
+Cada cambio de versión tiene un test que parte de una base de la versión anterior.
+
+## Formato de la copia de seguridad
+
+`{ app: 'rodillo-virtual', format: 2, exportedAtMs, workouts, history, settings, routes }`. El formato 1 (sin `routes`) se sigue leyendo. Al importar se valida todo, se migran las sesiones antiguas y lo que no se puede leer se descarta y se cuenta.
+
+## Principios que se han mantenido
+
+- **Nunca inventar datos.** Sin sensor, la métrica no aparece; sin curva de rodillo, no hay potencia; sin pulso ni potencia, carga y kcal salen como «—». Lo estimado se marca como estimado y lo simulado como SIMULADO.
+- **La UI no sabe si un sensor es real o simulado**: comparten interfaz y los simulados pasan por los mismos decodificadores.
+- **Todo lo calculable está en `domain/` con tests** que incluyen al menos un caso hecho a mano.
