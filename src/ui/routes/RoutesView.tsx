@@ -10,6 +10,7 @@ import { useSettingsStore } from '../../store/settingsStore';
 import { useUiStore } from '../../store/uiStore';
 import { useWorkoutsStore } from '../../store/workoutsStore';
 import { RIDE_MODE_HINT, rideReadiness } from '../ride/rideMode';
+import DemoCard from './DemoCard';
 import RouteCard from './RouteCard';
 
 export default function RoutesView() {
@@ -59,6 +60,9 @@ export default function RoutesView() {
 
   return (
     <>
+      <div className="list" style={{ marginBottom: 18 }}>
+        <DemoCard routes={[...examples, ...imported]} />
+      </div>
       <div className="sectionhead">
         <h2>Mis rutas</h2>
         <button type="button" className="btn" onClick={() => fileInput.current?.click()}>

@@ -28,6 +28,7 @@ export default function App() {
   const playingRoute = useUiStore((s) => s.playingRoute);
   const riding = useUiStore((s) => s.riding);
   const resume = useUiStore((s) => s.resume);
+  const demo = useUiStore((s) => s.demo);
   useTheme();
 
   useEffect(() => {
@@ -86,10 +87,11 @@ export default function App() {
       )}
       {riding && (
         <RideView
-          key={riding.route.id}
+          key={riding.route.id + (demo ? '-demo' : '')}
           route={riding.route}
           mode={riding.mode}
           resume={resume?.kind === 'ride' ? resume : null}
+          demo={demo}
         />
       )}
       <UpdatePrompt />

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { Suspense, lazy, useRef, useState } from 'react';
 import { beep, unlockAudio } from '../../audio/beeper';
 import { say } from '../../audio/speech';
 import type { SessionSummary } from '../../domain/metrics/summary';
@@ -24,26 +24,43 @@ import RideHud from './RideHud';
 import { currentRideInput } from './rideInput';
 import { RIDE_MODE_HINT } from './rideMode';
 import { saveFinishedSession } from '../session/saveSession';
+import { hasWebGL } from '../world/webgl';
+
+// Three.js is big: the 3D view loads only when it is first shown.
+const World3D = lazy(() => import('../world/World3D'));
+
+/** Constant power the demo rides at, with the usual physics. */
+const DEMO_WATTS = 200;
 
 type Status = 'ready' | 'running' | 'paused';
 type RideSnapshot = Extract<SessionSnapshot, { kind: 'ride' }>;
 
-/** Free ride on a route: race view with HUD, elevation profile and minimap. */
+/**
+ * Free ride on a route: 3D world (or the 2D race view) with the HUD, elevation
+ * profile and minimap. In demo mode it rides by itself at a simulated power and
+ * saves nothing.
+ */
 export default function RideView({
   route,
   mode,
   resume = null,
+  demo = false,
 }: {
   route: Route;
   mode: RideMode;
   /** Session saved in progress to continue; it opens paused. */
   resume?: RideSnapshot | null;
+  /** Rides at DEMO_WATTS simulated, without sensors; nothing is recorded or saved. */
+  demo?: boolean;
 }) {
   const stopRide = useUiStore((s) => s.stopRide);
   const setTab = useUiStore((s) => s.setTab);
   const simulated = useSensorsStore((s) => s.csc.source === 'simulated');
+  const cscLast = useSensorsStore((s) => s.csc.last);
+  const [webgl] = useState(hasWebGL);
+  const [view, setView] = useState<'3d' | '2d'>(webgl ? '3d' : '2d');
 
-  const [status, setStatus] = useState<Status>(resume ? 'paused' : 'ready');
+  const [status, setStatus] = useState<Status>(demo ? 'running' : resume ? 'paused' : 'ready');
   const [ride, setRide] = useState<RideState>(() => resume?.ride ?? startRide());
   const rideRef = useRef(ride);
   const recorder = useSessionRecorder(resume?.recorder ?? null);
@@ -59,6 +76,7 @@ export default function RideView({
   });
 
   const finish = () => {
+    if (demo) return; // the demo stops where it is and saves nothing
     const { settings } = useSettingsStore.getState();
     const state = rideRef.current;
     const summary = summaryFromSnapshot(snapshot(), {
@@ -79,10 +97,17 @@ export default function RideView({
 
   const running = status === 'running';
   usePlayerClock(running, (dt) => {
-    const { input } = currentRideInput(mode, Date.now());
+    const { settings } = useSettingsStore.getState();
+    const input = demo
+      ? {
+          mode: 'power' as const,
+          powerW: DEMO_WATTS,
+          massKg: settings.athlete.weightKg + settings.athlete.bikeWeightKg,
+        }
+      : currentRideInput(mode, Date.now()).input;
     const next = advanceRide(rideRef.current, route, dt, input);
     rideRef.current = next;
-    recorder.tick(dt, routeInputOf(route, next, false));
+    if (!demo) recorder.tick(dt, routeInputOf(route, next, false));
     setRide(next);
     if (next.finished) {
       setStatus('paused');
@@ -91,7 +116,7 @@ export default function RideView({
   });
   useWakeLock(running);
   // Saved every 10 s, on pause and when the tab hides, until the summary.
-  useInProgressSaver(status !== 'ready' && !result, running, snapshot);
+  useInProgressSaver(!demo && status !== 'ready' && !result, running, snapshot);
 
   const close = () => {
     stopRide();
@@ -108,36 +133,77 @@ export default function RideView({
 
   const here = positionAt(route, ride.distanceM);
   const label = running ? 'Pausa' : status === 'ready' ? 'Empezar' : 'Reanudar';
+  const in3d = view === '3d';
+  // Only for the pedalling animation; null pedals at a natural cadence.
+  const cadence = !demo && cscLast?.cadenceRpm != null ? cscLast.cadenceRpm : null;
+  const hud = (
+    <RideHud
+      mode={demo ? 'power' : mode}
+      grade={here.grade}
+      speedKmh={ride.speedMs * 3.6}
+      distanceM={ride.distanceM}
+      totalM={route.distanceM}
+      ascentM={ride.ascentM}
+      elapsedSec={ride.elapsedSec}
+      {...(demo ? { demoWatts: DEMO_WATTS } : {})}
+    />
+  );
 
   return (
     <div className="overlay">
-      <div className="sheet ride">
+      <div className={in3d ? 'sheet ride ride-3d' : 'sheet ride'}>
         <div className="sheet-top">
           <h2>{route.name}</h2>
-          <ModeBadge mode={mode} simulated={simulated} />
+          <span className="ride-badges">
+            {demo ? (
+              <span className="mode-badge mode-demo" role="status">
+                DEMO · {DEMO_WATTS} W simulados · no se guarda
+              </span>
+            ) : (
+              <ModeBadge mode={mode} simulated={simulated} />
+            )}
+            <button
+              type="button"
+              className="btn"
+              disabled={!webgl}
+              title={webgl ? undefined : 'Este navegador no puede mostrar 3D (sin WebGL)'}
+              onClick={() => setView(in3d ? '2d' : '3d')}
+            >
+              {in3d ? 'Vista 2D' : 'Vista 3D'}
+            </button>
+          </span>
         </div>
-        {status === 'ready' && <p className="note">{RIDE_MODE_HINT[mode]}</p>}
+        {!demo && status === 'ready' && <p className="note">{RIDE_MODE_HINT[mode]}</p>}
+        {!webgl && <p className="note">Este navegador no puede mostrar la vista 3D (sin WebGL).</p>}
+        {demo && ride.finished && <p className="note">Demo terminada: has llegado al final.</p>}
 
-        <SensorAlerts />
+        {!demo && <SensorAlerts />}
 
-        <RideHud
-          mode={mode}
-          grade={here.grade}
-          speedKmh={ride.speedMs * 3.6}
-          distanceM={ride.distanceM}
-          totalM={route.distanceM}
-          ascentM={ride.ascentM}
-          elapsedSec={ride.elapsedSec}
-        />
+        {in3d ? (
+          <div className="world-stage">
+            <Suspense fallback={<p className="world-loading">Cargando el mundo 3D…</p>}>
+              <World3D
+                route={route}
+                distanceM={ride.distanceM}
+                speedMs={ride.speedMs}
+                cadenceRpm={cadence}
+                running={running}
+              />
+            </Suspense>
+            <div className="world-hud">{hud}</div>
+          </div>
+        ) : (
+          hud
+        )}
 
         <div className="ride-graphs">
           <div className="card ride-profile">
             <span className="tag">Perfil · próximos 500 m resaltados</span>
-            <ElevationProfile route={route} positionM={ride.distanceM} height={150} />
+            <ElevationProfile route={route} positionM={ride.distanceM} height={in3d ? 80 : 150} />
           </div>
           <div className="card ride-map">
             <span className="tag">Recorrido</span>
-            <MiniMap route={route} at={here} height={170} />
+            <MiniMap route={route} at={here} height={in3d ? 90 : 170} />
           </div>
         </div>
 
@@ -152,15 +218,21 @@ export default function RideView({
           >
             {label}
           </button>
-          <ConfirmButton
-            label="Terminar"
-            armedLabel="¿Terminar? Pulsa otra vez"
-            className="btn danger wide"
-            onConfirm={() => {
-              setStatus('paused');
-              finish();
-            }}
-          />
+          {demo ? (
+            <button type="button" className="btn danger wide" onClick={close}>
+              Salir de la demo
+            </button>
+          ) : (
+            <ConfirmButton
+              label="Terminar"
+              armedLabel="¿Terminar? Pulsa otra vez"
+              className="btn danger wide"
+              onConfirm={() => {
+                setStatus('paused');
+                finish();
+              }}
+            />
+          )}
         </div>
       </div>
     </div>

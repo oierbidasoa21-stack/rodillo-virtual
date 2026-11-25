@@ -33,6 +33,9 @@ interface UiStore {
   /** Route being ridden, full screen. */
   riding: { route: Route; mode: RideMode } | null;
   startRide: (route: Route, mode: RideMode, resume?: SessionSnapshot | null) => void;
+  /** The open race view is the demo: simulated power, nothing saved. */
+  demo: boolean;
+  startDemo: (route: Route) => void;
   /** Saved session the open player or race view continues, if any. */
   resume: SessionSnapshot | null;
   stopRide: () => void;
@@ -57,8 +60,10 @@ export const useUiStore = create<UiStore>()((set) => ({
   storagePersistence: null,
   setStoragePersistence: (value) => set({ storagePersistence: value }),
   riding: null,
-  startRide: (route, mode, resume = null) => set({ riding: { route, mode }, resume }),
-  stopRide: () => set({ riding: null, resume: null }),
+  startRide: (route, mode, resume = null) => set({ riding: { route, mode }, resume, demo: false }),
+  stopRide: () => set({ riding: null, resume: null, demo: false }),
+  demo: false,
+  startDemo: (route) => set({ riding: { route, mode: 'power' }, resume: null, demo: true }),
   resume: null,
   toast: null,
   showToast: (text) => set({ toast: { id: Date.now(), text } }),

@@ -14,6 +14,8 @@ interface Props {
   totalM: number;
   ascentM: number;
   elapsedSec: number;
+  /** Demo: this simulated power instead of the sensors (heart rate and cadence hidden). */
+  demoWatts?: number;
 }
 
 const oneDecimal = new Intl.NumberFormat('es-ES', {
@@ -27,8 +29,10 @@ export default function RideHud(p: Props) {
   const csc = useSensorsStore((s) => s.csc.last);
   const now = useNow(500);
   const power = useEstimatedPower();
-  const bpm = hr && isFresh(hr, now) ? hr.bpm : null;
-  const cadence = csc && isFresh(csc, now) ? csc.cadenceRpm : null;
+  const demo = p.demoWatts !== undefined;
+  const bpm = !demo && hr && isFresh(hr, now) ? hr.bpm : null;
+  const cadence = !demo && csc && isFresh(csc, now) ? csc.cadenceRpm : null;
+  const watts = demo ? (p.demoWatts ?? null) : power.watts;
 
   return (
     <div className="hud">
@@ -43,10 +47,10 @@ export default function RideHud(p: Props) {
       </div>
       <div className="hud-cell">
         <span className="hud-l">Potencia</span>
-        {p.mode === 'power' && power.watts !== null ? (
+        {p.mode === 'power' && watts !== null ? (
           <>
-            <span className="hud-v num">{Math.round(power.watts)}</span>
-            <span className="hud-u">W est.</span>
+            <span className="hud-v num">{Math.round(watts)}</span>
+            <span className="hud-u">{demo ? 'W demo' : 'W est.'}</span>
           </>
         ) : (
           <span className="hud-v hud-none">{p.mode === 'wheel' ? 'Sin potencia' : '—'}</span>

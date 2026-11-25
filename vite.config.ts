@@ -7,6 +7,10 @@ const BASE = '/rodillo-virtual/';
 
 export default defineConfig({
   base: BASE,
+  build: {
+    // The 3D view (Three.js, ~930 kB) is its own lazy chunk, loaded only when opened.
+    chunkSizeWarningLimit: 1000,
+  },
   plugins: [
     react(),
     VitePWA({

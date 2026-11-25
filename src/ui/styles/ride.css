@@ -185,3 +185,69 @@
 .pl.with-route .controls .btn {
   padding: 12px 6px;
 }
+
+/* 3D race view */
+.sheet.ride-3d {
+  max-width: 1240px;
+}
+.ride-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mode-badge.mode-demo {
+  border-color: var(--warn);
+  color: var(--warn);
+}
+.world-stage {
+  position: relative;
+  height: min(560px, calc(100vh - 330px));
+  min-height: 380px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #cfe3f2;
+}
+.world-canvas {
+  position: absolute !important;
+  inset: 0;
+}
+.world-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: #34506b;
+  font-weight: 600;
+}
+.world-hud {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  pointer-events: none;
+}
+.world-hud .hud {
+  grid-template-columns: 1.1fr repeat(4, 1fr);
+  gap: 6px;
+}
+.world-hud .hud-cell {
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  backdrop-filter: blur(4px);
+  padding: 6px 10px;
+}
+.world-hud .hud-v {
+  font-size: 26px;
+}
+.world-hud .hud-grade .hud-v {
+  font-size: 44px;
+}
+.world-hud .hud-none {
+  font-size: 18px;
+}
+.ride-3d .ride-graphs .card {
+  padding-block: 8px;
+}
+.demo-card select {
+  min-width: 260px;
+}
