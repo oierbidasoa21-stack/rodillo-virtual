@@ -9,6 +9,8 @@ interface HistoryStore {
   load: () => Promise<void>;
   add: (session: SessionSummary) => Promise<void>;
   clear: () => Promise<void>;
+  /** Deletes one session and its recording. */
+  remove: (id: string) => Promise<void>;
 }
 
 export const useHistoryStore = create<HistoryStore>()((set, get) => ({
@@ -24,5 +26,9 @@ export const useHistoryStore = create<HistoryStore>()((set, get) => ({
   clear: async () => {
     set({ sessions: [] });
     await storage.clearHistory();
+  },
+  remove: async (id) => {
+    set({ sessions: get().sessions.filter((s) => s.id !== id) });
+    await storage.deleteSession(id);
   },
 }));

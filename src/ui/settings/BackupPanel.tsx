@@ -92,7 +92,8 @@ export default function BackupPanel() {
           </p>
           {(pending.skipped.workouts > 0 ||
             pending.skipped.history > 0 ||
-            pending.skipped.routes > 0) && (
+            pending.skipped.routes > 0 ||
+            pending.skipped.recordings > 0) && (
             <p style={{ margin: '0 0 6px' }}>
               No se pueden leer {plural(pending.skipped.workouts, 'sesión', 'sesiones')} y{' '}
               {plural(pending.skipped.history, 'entrada de historial', 'entradas de historial')} del

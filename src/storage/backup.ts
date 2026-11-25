@@ -6,6 +6,8 @@ import type {
   SessionSummary,
 } from '../domain/metrics/summary';
 import type { Route, RoutePoint } from '../domain/route/route';
+import type { RecordSample } from '../recording/recording';
+import type { SessionRecording } from '../recording/session';
 import { POWER_ZONE_IDS } from '../domain/zones/powerZones';
 import { emptySecByZone, type SecByZone } from '../domain/metrics/timeInZone';
 import type { HrCount } from '../domain/workout/player';
@@ -17,9 +19,9 @@ import type { Storage } from './repositories';
 import { type AppSettings, normalizeSettings } from './settings';
 
 export const BACKUP_APP = 'rodillo-virtual';
-/** 2 added imported routes; format 1 files (no routes) are still accepted. */
-export const BACKUP_FORMAT = 2;
-const READABLE_FORMATS: readonly number[] = [1, 2];
+/** 2 added imported routes, 3 added recordings; older files are still accepted. */
+export const BACKUP_FORMAT = 3;
+const READABLE_FORMATS: readonly number[] = [1, 2, 3];
 
 /** Everything the app stores in this browser, as one JSON file. */
 export interface Backup {
@@ -30,20 +32,22 @@ export interface Backup {
   history: SessionSummary[];
   settings: AppSettings;
   routes: Route[];
+  recordings: SessionRecording[];
 }
 
 /** A parsed backup plus what had to be left out. */
 export interface ParsedBackup {
   backup: Backup;
-  skipped: { workouts: number; history: number; routes: number };
+  skipped: { workouts: number; history: number; routes: number; recordings: number };
 }
 
 export async function exportBackup(storage: Storage, nowMs: number): Promise<Backup> {
-  const [workouts, history, settings, routes] = await Promise.all([
+  const [workouts, history, settings, routes, recordings] = await Promise.all([
     storage.listWorkouts(),
     storage.listHistory(),
     storage.getSettings(),
     storage.listRoutes(),
+    storage.listRecordings(),
   ]);
   return {
     app: BACKUP_APP,
@@ -53,6 +57,7 @@ export async function exportBackup(storage: Storage, nowMs: number): Promise<Bac
     history,
     settings,
     routes,
+    recordings,
   };
 }
 
@@ -164,6 +169,36 @@ function parseRide(v: unknown): RideSummary | undefined {
   };
 }
 
+const SAMPLE_KEYS = [
+  'hr',
+  'powerW',
+  'speedKmh',
+  'cadenceRpm',
+  'distanceM',
+  'altitudeM',
+  'lat',
+  'lon',
+] as const;
+
+/** A session recording, or null if any sample is unreadable. */
+function parseRecording(v: unknown): SessionRecording | null {
+  if (!isRecord(v) || typeof v.sessionId !== 'string' || !isNum(v.startMs)) return null;
+  if (!Array.isArray(v.samples)) return null;
+  const samples: RecordSample[] = [];
+  for (const raw of v.samples as unknown[]) {
+    if (!isRecord(raw) || !isNum(raw.t)) return null;
+    const sample = { t: raw.t } as RecordSample;
+    for (const k of SAMPLE_KEYS) {
+      const x = raw[k];
+      if (x === null || x === undefined) sample[k] = null;
+      else if (isNum(x)) sample[k] = x;
+      else return null;
+    }
+    samples.push(sample);
+  }
+  return { sessionId: v.sessionId, startMs: v.startMs, samples };
+}
+
 /** An imported route, or null if any point or total is unreadable. */
 function parseRoute(v: unknown): Route | null {
   if (!isRecord(v) || typeof v.id !== 'string' || typeof v.name !== 'string') return null;
@@ -244,6 +279,10 @@ export function parseBackup(input: unknown): ParseResult<ParsedBackup> {
   const history = input.history.map(parseSession).filter((s): s is SessionSummary => s !== null);
   const rawRoutes: unknown[] = Array.isArray(input.routes) ? input.routes : [];
   const routes = rawRoutes.map(parseRoute).filter((r): r is Route => r !== null);
+  const rawRecordings: unknown[] = Array.isArray(input.recordings) ? input.recordings : [];
+  const recordings = rawRecordings
+    .map(parseRecording)
+    .filter((r): r is SessionRecording => r !== null);
   return {
     ok: true,
     value: {
@@ -255,11 +294,13 @@ export function parseBackup(input: unknown): ParseResult<ParsedBackup> {
         history,
         settings: normalizeSettings(isRecord(input.settings) ? input.settings : undefined),
         routes,
+        recordings,
       },
       skipped: {
         workouts: input.workouts.length - workouts.length,
         history: input.history.length - history.length,
         routes: rawRoutes.length - routes.length,
+        recordings: rawRecordings.length - recordings.length,
       },
     },
   };

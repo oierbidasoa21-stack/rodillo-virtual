@@ -88,9 +88,39 @@ const builtRoute = buildRoute(
 if (!builtRoute) throw new Error('route');
 const route = builtRoute;
 
+const recording = {
+  sessionId: 'h-1',
+  startMs: 1_700_000_000_000,
+  samples: [
+    {
+      t: 1,
+      hr: 120,
+      powerW: 180,
+      speedKmh: 30,
+      cadenceRpm: 88,
+      distanceM: 8.3,
+      altitudeM: null,
+      lat: null,
+      lon: null,
+    },
+    {
+      t: 2,
+      hr: null,
+      powerW: null,
+      speedKmh: null,
+      cadenceRpm: null,
+      distanceM: null,
+      altitudeM: null,
+      lat: null,
+      lon: null,
+    },
+  ],
+};
+
 async function filled(): Promise<Storage> {
   const s = freshStorage();
   await s.saveRoute(route);
+  await s.saveRecording(recording);
   await s.saveWorkout(workout);
   await s.addHistory(session);
   const settings = defaultSettings();
@@ -111,13 +141,14 @@ describe('backup', () => {
     expect(backup.settings.beeps).toBe(false);
     expect(backup.settings.athlete.weightKg).toBe(66);
     expect(backup.routes).toEqual([route]);
+    expect(backup.recordings).toEqual([recording]);
   });
 
   it('round-trips through JSON into another browser', async () => {
     const backup = await exportBackup(await filled(), 1234);
     const parsed = parseBackup(JSON.parse(JSON.stringify(backup)));
     if (!parsed.ok) throw new Error(parsed.errors.join(' '));
-    expect(parsed.value.skipped).toEqual({ workouts: 0, history: 0, routes: 0 });
+    expect(parsed.value.skipped).toEqual({ workouts: 0, history: 0, routes: 0, recordings: 0 });
 
     const target = freshStorage();
     await importBackup(target, parsed.value.backup);
@@ -125,11 +156,25 @@ describe('backup', () => {
     expect(await target.listHistory()).toEqual([session]);
     expect((await target.getSettings()).athlete.weightKg).toBe(66);
     expect(await target.listRoutes()).toEqual([route]);
+    expect(await target.getRecording('h-1')).toEqual(recording);
   });
 
   it('still reads format 1 backups (before routes existed)', () => {
     const parsed = parseBackup({ app: BACKUP_APP, format: 1, workouts: [], history: [] });
     expect(parsed.ok && parsed.value.backup.routes).toEqual([]);
+  });
+
+  it('skips a recording with a broken sample', () => {
+    const broken = { ...recording, sessionId: 'x', samples: [{ t: 1, hr: 'mucho' }] };
+    const parsed = parseBackup({
+      app: BACKUP_APP,
+      format: BACKUP_FORMAT,
+      workouts: [],
+      history: [],
+      recordings: [recording, broken],
+    });
+    expect(parsed.ok && parsed.value.skipped.recordings).toBe(1);
+    expect(parsed.ok && parsed.value.backup.recordings).toEqual([recording]);
   });
 
   it('skips a route with a broken point', () => {
@@ -181,7 +226,7 @@ describe('backup', () => {
       settings: 'nope',
     });
     if (!parsed.ok) throw new Error('should parse');
-    expect(parsed.value.skipped).toEqual({ workouts: 1, history: 1, routes: 0 });
+    expect(parsed.value.skipped).toEqual({ workouts: 1, history: 1, routes: 0, recordings: 0 });
     expect(parsed.value.backup.settings).toEqual(defaultSettings());
   });
 

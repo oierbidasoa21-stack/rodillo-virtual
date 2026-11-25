@@ -82,3 +82,30 @@ describe('settings', () => {
     expect(settings.athlete).toEqual(defaultSettings().athlete);
   });
 });
+
+describe('recordings and the session in progress', () => {
+  const recording = { sessionId: 'h1', startMs: 5, samples: [] };
+
+  it('deletes a session together with its recording', async () => {
+    await storage.addHistory(summary('h1', 1));
+    await storage.addHistory(summary('h2', 2));
+    await storage.saveRecording(recording);
+    await storage.saveRecording({ ...recording, sessionId: 'h2' });
+    await storage.deleteSession('h1');
+    expect((await storage.listHistory()).map((s) => s.id)).toEqual(['h2']);
+    expect(await storage.getRecording('h1')).toBeUndefined();
+    expect(await storage.getRecording('h2')).toBeDefined();
+    await storage.clearHistory();
+    expect(await storage.listRecordings()).toEqual([]);
+  });
+
+  it('keeps one session in progress and forgets it on clear', async () => {
+    expect(await storage.getInProgress()).toBeUndefined();
+    const snap = { kind: 'ride', savedAtMs: 1 } as never;
+    await storage.saveInProgress(snap);
+    await storage.saveInProgress({ ...(snap as object), savedAtMs: 2 } as never);
+    expect(await storage.getInProgress()).toEqual({ kind: 'ride', savedAtMs: 2 });
+    await storage.clearInProgress();
+    expect(await storage.getInProgress()).toBeUndefined();
+  });
+});

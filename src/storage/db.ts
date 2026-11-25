@@ -3,11 +3,16 @@ import type { SessionSummary } from '../domain/metrics/summary';
 import type { Route } from '../domain/route/route';
 import { migrateWorkout } from '../domain/workout/migrate';
 import type { Workout } from '../domain/workout/types';
+import type { SessionRecording, SessionSnapshot } from '../recording/session';
 import type { AppSettings } from './settings';
 
 /** Settings are a single row with a fixed key. */
 export const SETTINGS_KEY = 'app';
 export type SettingsRow = AppSettings & { key: typeof SETTINGS_KEY };
+
+/** The session in progress is a single row with a fixed key. */
+export const IN_PROGRESS_KEY = 'current';
+export type InProgressRow = SessionSnapshot & { key: typeof IN_PROGRESS_KEY };
 
 const STORES_V1 = {
   workouts: 'id',
@@ -21,6 +26,10 @@ export class RodilloDb extends Dexie {
   settings!: EntityTable<SettingsRow, 'key'>;
   /** Routes imported from GPX (built-in ones are generated, not stored). */
   routes!: EntityTable<Route, 'id'>;
+  /** Second-by-second samples of each saved session, keyed by its history id. */
+  recordings!: EntityTable<SessionRecording, 'sessionId'>;
+  /** The session being ridden, saved every few seconds to survive a closed tab. */
+  inProgress!: EntityTable<InProgressRow, 'key'>;
 
   constructor(name = 'rodillo-virtual') {
     super(name);
@@ -40,5 +49,12 @@ export class RodilloDb extends Dexie {
       );
     // v3 (phase 5): imported routes.
     this.version(3).stores({ ...STORES_V1, routes: 'id' });
+    // v4 (phase 6): recordings and the session in progress.
+    this.version(4).stores({
+      ...STORES_V1,
+      routes: 'id',
+      recordings: 'sessionId',
+      inProgress: 'key',
+    });
   }
 }
