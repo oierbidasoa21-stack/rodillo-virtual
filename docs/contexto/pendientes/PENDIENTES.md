@@ -23,6 +23,8 @@ Ver el detalle en [`fases/`](../fases/) y en `docs/ROADMAP.md`. Cada tarea es un
 - El player con ruta cabe justo en 1280×900; en pantallas más bajas necesita algo de scroll.
 - El IF y el TSS se calculan con el FTP del momento; cambiar el FTP no recalcula sesiones antiguas.
 - Tras un ramp test con simulados se puede guardar un FTP simulado (avisa de que no es real).
+- Una sesión retomada no guarda el hueco en que la app estuvo cerrada: el TCX lleva el tiempo en movimiento seguido.
+- El TCX aún no se ha subido de verdad a Strava ni a Garmin Connect (se genera siguiendo el orden del esquema TCX v2 y los tests comprueban ese orden, pero no se ha validado contra el XSD).
 
 ## Ideas y mejoras pedidas
 

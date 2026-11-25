@@ -5,7 +5,7 @@ Marca `[x]` al completar cada tarea.
 
 Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. La app es solo para ordenador: no hay fase de móvil.
 
-**Fase actual: 6**
+**Fase actual: 7**
 
 ---
 
@@ -106,11 +106,11 @@ Pendiente: probarlo con sensores reales cuando tenga el hardware. Hasta entonces
 
 ## Fase 6 — Grabación y exportación
 
-- [ ] Grabación a 1 Hz de todas las métricas disponibles
-- [ ] Recuperar una sesión si se cierra la pestaña por error
-- [ ] Exportar a TCX para subir a Strava o Garmin Connect
-- [ ] Detalle de cada salida en el historial con gráficas de pulso, potencia y velocidad
-- [ ] Importar y exportar workouts en formato `.zwo`
+- [x] Grabación a 1 Hz de todas las métricas disponibles
+- [x] Recuperar una sesión si se cierra la pestaña por error
+- [x] Exportar a TCX para subir a Strava o Garmin Connect
+- [x] Detalle de cada salida en el historial con gráficas de pulso, potencia y velocidad
+- [x] Importar y exportar workouts en formato `.zwo`
 
 ## Fase 7 — Mundo 3D
 

@@ -9,7 +9,7 @@ Todo corre en el navegador y los datos se quedan en el dispositivo. No hay backe
 ## Requisitos
 
 - Node.js 24 (ver `.nvmrc`)
-- Chrome (ordenador o Android) para los sensores Bluetooth. Web Bluetooth necesita HTTPS o `localhost`.
+- Chrome en el ordenador para los sensores Bluetooth. Web Bluetooth necesita HTTPS o `localhost`.
 
 ## Comandos
 
@@ -85,9 +85,18 @@ Siempre se ve con qué modo estás rodando:
 
 Las rutas necesitan el sensor de velocidad. El resumen y el historial guardan la distancia, la velocidad media y el desnivel.
 
+## Grabación, historial y archivos
+
+Cada sesión y cada salida se **graban segundo a segundo** mientras corre el reloj: pulso, potencia estimada, velocidad, cadencia, distancia y, en ruta, altitud y posición. Lo que no mide ningún sensor no se graba.
+
+- **Sesión sin terminar:** la sesión en curso se guarda cada 10 s, al pausar y al cambiar de pestaña. Si se cierra la app a medias, al volver a abrirla aparece «Sesión sin terminar» con **Retomar** (sigue en pausa donde estaba), **Guardar** (la guarda con lo hecho) y **Descartar**.
+- **Detalle:** en **Historial**, pulsa una sesión para ver su resumen y una gráfica por cada dato grabado (el pulso sobre los colores de tus zonas). Pasa el ratón por encima para ver los valores de cada segundo. Desde ahí puedes **borrarla**.
+- **Exportar TCX:** en el detalle, para subir la salida a Strava, Garmin Connect o intervals.icu. Las sesiones de antes de la grabación solo tienen resumen.
+- **`.zwo`:** formato de sesiones estructuradas que usan muchas apps de rodillo (con la potencia en % del FTP). En **Sesiones**, **Importar .zwo** añade una a «Mis sesiones», y cada tarjeta tiene **Exportar .zwo**. Las rampas se convierten en escalones de 1 minuto. Los bloques por pulso, que `.zwo` no admite, se guardan como rodaje libre con la zona en un mensaje: otras apps no los siguen, pero esta app los recupera al importarlos.
+
 ## Copia de seguridad
 
-**Ajustes → Datos en este dispositivo → Exportar copia** guarda en un archivo JSON tus sesiones, el historial y los ajustes. **Importar copia** te enseña qué contiene el archivo y, si confirmas, reemplaza todo lo guardado en ese navegador. Sirve para pasar tus datos a otro ordenador o recuperarlos si borras el navegador. La copia incluye datos personales: guárdala fuera del repositorio, por ejemplo en `data/`.
+**Ajustes → Datos en este dispositivo → Exportar copia** guarda en un archivo JSON tus sesiones, el historial con sus grabaciones, las rutas importadas y los ajustes. **Importar copia** te enseña qué contiene el archivo y, si confirmas, reemplaza todo lo guardado en ese navegador. Sirve para pasar tus datos a otro ordenador o recuperarlos si borras el navegador. La copia incluye datos personales: guárdala fuera del repositorio, por ejemplo en `data/`.
 
 ## Despliegue
 

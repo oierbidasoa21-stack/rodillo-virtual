@@ -1,6 +1,6 @@
-# Fase 6 — Grabación y exportación ⏳ (en curso)
+# Fase 6 — Grabación y exportación ✅ (con simulados)
 
-**Empezada:** 2026-11-25 · **Rama:** `feat/recording` · **Milestone:** Fase 6 (issues #1–#5)
+**Fechas:** 2026-11-25 · **Rama:** `feat/recording` · **Milestone:** Fase 6 (cerrado, issues #1–#5)
 
 ## Objetivo
 
@@ -35,3 +35,29 @@ Guardar cada salida segundo a segundo, no perderla si se cierra la pestaña, exp
 - La grabación vive en `src/recording/` (como dice `CLAUDE.md`); es código puro y testeable aunque no esté en `domain/`.
 - TCX en vez de FIT: es texto, Strava y Garmin Connect lo aceptan y se puede generar sin dependencias.
 - Las rampas de `.zwo` se convierten en escalones de 1 minuto porque nuestro modelo de bloque tiene un objetivo fijo.
+- **Retomar = seguir en pausa.** «Retomar» abre la sesión en pausa donde estaba; el tiempo con la app cerrada no cuenta. En el TCX los segundos van seguidos desde el inicio (tiempo en movimiento), sin el hueco.
+- **«Guardar» desde el aviso** usa la hora de inicio de la sesión como fecha del historial.
+- **Potencia** se graba siempre que haya curva de rodillo, también en modo rueda (antes la vista de carrera solo la guardaba en modo potencia).
+- **Gráficas:** una por dato (nunca dos escalas en una), mismo eje de tiempo, cruz compartida y lectura de valores arriba; una sola serie por gráfica, así que sin leyenda; el pulso lleva de fondo los colores de las zonas. SVG propio, sin librería: son líneas sencillas y así la app no pesa más.
+- **`.zwo`:** un `FreeRide` ajeno se importa como bloque por pulso en L2 («Rodaje libre») y `MaxEffort` en VO2, con aviso, porque nuestro bloque necesita un objetivo. Las repeticiones que no son «trabajo + descanso por potencia» se escriben desplegadas (`.zwo` no tiene repetición general).
+
+## Qué se hizo
+
+- **`src/recording/`**: `recording.ts` (una muestra por segundo), `recorder.ts` (pulso por zonas, potencia, muestras y distancia de rueda; serializable), `session.ts` (instantánea de la sesión en curso y resumen a partir de ella), `tcx.ts` y `chart.ts` (datos para las gráficas). Todo con tests.
+- **Dexie v4**: tablas `recordings` e `inProgress`, migración v3 → v4 con test; copia de seguridad formato 3 con grabaciones.
+- **Player y vista de carrera** comparten `useSessionRecorder`; `useInProgressSaver` guarda la sesión cada 10 s, al pausar y al ocultar la pestaña.
+- **Aviso «Sesión sin terminar»** con Retomar, Guardar y Descartar.
+- **Detalle en el historial**: resumen, gráficas de pulso, potencia, velocidad, cadencia y altitud, Exportar TCX y Borrar sesión.
+- **`.zwo`**: `src/domain/workout/zwo.ts` (leer y escribir sin DOM) y botones en la biblioteca.
+
+## Comprobación
+
+En navegador headless con sensores simulados (scripts en `pruebas/scripts/fase6-*.mjs`):
+
+- **Recuperar:** sesión de 95 s → 90 muestras guardadas → recarga → aviso «Sesión sin terminar · 1:30» → Retomar (en pausa) → 10 s más → Terminar: historial con 100 s y grabación de 100 muestras con el mismo id; no queda sesión en curso.
+- **Detalle y TCX:** salida de 4′ por la Vuelta al Embalse con curva de rodillo → 5 gráficas, lectura con el ratón, TCX de 240 puntos con vatios, posición y la nota de estimado y simulado; Borrar la quita.
+- **`.zwo`:** exportar «Tempo 3×12′ L3» e importarlo da la misma sesión (1 h 11′); un archivo con rampa avisa de los escalones; uno que no es `.zwo` da error.
+
+## Pendiente
+
+Prueba con sensores reales y subir un TCX de verdad a Strava o Garmin Connect.

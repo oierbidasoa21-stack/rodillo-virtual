@@ -105,3 +105,15 @@ Ramas: feat/routes
 - `12cc36d` · 2026-10-03 · feat(ui): routes tab with GPX import and a race view for free rides
 - `c03c3de` · 2026-10-03 · feat(player): ride a workout on a route that loops until the workout ends
 - `271472d` · 2026-10-03 · docs: document routes, close phase 5 and move roadmap to phase 6
+
+## Fase 6 — Grabación y exportación
+
+Ramas: feat/recording
+
+- `44f89cc` · 2026-11-25 · feat(recording): record one sample per second and build TCX files
+- `349d7e9` · 2026-11-25 · feat(recording): add a serialisable recorder for heart rate, power, samples and wheel distance
+- `fa0e23a` · 2026-11-25 · feat(storage): store recordings and the session in progress (Dexie v4)
+- `1e02a64` · 2026-11-25 · feat(recording): record every session, save it in progress and offer to resume it
+- `72b5ebe` · 2026-11-25 · feat(history): open a saved session with charts, TCX export and delete
+- `012c967` · 2026-11-25 · feat(workout): import and export .zwo workouts
+- _(más el commit de documentación que cierra la fase)_

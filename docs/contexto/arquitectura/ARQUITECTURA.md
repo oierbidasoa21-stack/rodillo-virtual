@@ -28,13 +28,22 @@ ui/       componentes React, un componente por archivo
 | `ui/player`      | `Player.tsx`, `Summary.tsx`, `HrCounter.tsx`, `LiveMetrics.tsx`                                      | Player, resumen, contador de 10″, métricas en directo                                                                                                                                                      |
 | `ui/ride`        | `RideView.tsx`, `RideHud.tsx`, `ElevationProfile.tsx`, `MiniMap.tsx`, `RouteStrip.tsx`               | Vista de carrera y franja de ruta bajo una sesión                                                                                                                                                          |
 
-`src/recording/` sigue vacía: es para la Fase 6.
+Fase 6:
+
+| Módulo           | Archivos                                                                        | Para qué                                                                                                            |
+| ---------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `recording`      | `recording.ts`, `recorder.ts`, `session.ts`, `tcx.ts`, `chart.ts`               | Muestras a 1 Hz, grabador serializable, sesión en curso, exportación TCX, datos de gráficas (código puro con tests) |
+| `domain/workout` | `zwo.ts`                                                                        | Leer y escribir `.zwo` sin DOM                                                                                      |
+| `ui/history`     | `HistoryView.tsx`, `SessionDetail.tsx`, `SessionCharts.tsx`, `SessionChart.tsx` | Historial y detalle de una sesión con gráficas SVG y exportación                                                    |
+| `ui/session`     | `ResumeBanner.tsx`, `saveSession.ts`                                            | Aviso «Sesión sin terminar» y guardado de una sesión terminada con su grabación                                     |
 
 ## Modelo de datos (lo que se guarda)
 
 - **`Workout`**: `{ id, name, description, blocks }`. Cada `Block` es `{ type: 'block', durationSec, target, kind, note }` y `target` es `{ type: 'hr', zoneId } | { type: 'power', pctFtp } | { type: 'watts', watts }` (`watts` solo para el ramp test). `Repeat` = `{ type: 'repeat', times, items }`, un solo nivel.
 - **`SessionSummary`** (historial): duración, carga, kcal estimadas, tiempo por zona planificado y realizado, conteos de pulso, y opcionales `hrMeasured` (pulso medido), `power` (NP, IF, TSS, kJ, zonas, `simulated`) y `ride` (ruta, distancia, desnivel, velocidad media, modo, vueltas).
 - **`AppSettings`**: `athlete` (peso, bici, rueda, zonas, FTP), voz, pitidos, tema, `simulateSensors`, `trainer` (modelo o curva personalizada).
+- **`SessionRecording`**: `{ sessionId, startMs, samples }`; cada muestra `{ t, hr, powerW, speedKmh, cadenceRpm, distanceM, altitudeM, lat, lon }` con `null` donde no hubo lectura.
+- **`SessionSnapshot`** (sesión en curso): sesión o salida, estado del player o de la ruta y el grabador entero, para retomarla.
 - **`Route`** (importadas): puntos cada 10 m `{ distanceM, lat, lon, ele }` con la altitud ya suavizada, distancia, desnivel y pendiente máxima.
 
 ## Versiones de la base de datos (Dexie, nombre `rodillo-virtual`)
@@ -44,12 +53,13 @@ ui/       componentes React, un componente por archivo
 | 1             | 10        | 1    | Tablas `workouts`, `history` (índice `dateMs`), `settings` |
 | 2             | 20        | 4    | Migración: los bloques pasan de `zoneId` a `target`        |
 | 3             | 30        | 5    | Tabla `routes`                                             |
+| 4             | 40        | 6    | Tablas `recordings` (por sesión) e `inProgress` (una fila) |
 
 Cada cambio de versión tiene un test que parte de una base de la versión anterior.
 
 ## Formato de la copia de seguridad
 
-`{ app: 'rodillo-virtual', format: 2, exportedAtMs, workouts, history, settings, routes }`. El formato 1 (sin `routes`) se sigue leyendo. Al importar se valida todo, se migran las sesiones antiguas y lo que no se puede leer se descarta y se cuenta.
+`{ app: 'rodillo-virtual', format: 3, exportedAtMs, workouts, history, settings, routes, recordings }`. Los formatos 1 (sin `routes`) y 2 (sin `recordings`) se siguen leyendo. La sesión en curso no entra en la copia. Al importar se valida todo, se migran las sesiones antiguas y lo que no se puede leer se descarta y se cuenta.
 
 ## Principios que se han mantenido
 

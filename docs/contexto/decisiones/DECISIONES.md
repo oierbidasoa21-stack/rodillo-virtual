@@ -64,3 +64,12 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Usuario · Trabajo en automático**: Claude hace todo sin pedir aprobación: planes (escritos en `docs/contexto/fases/`), decisiones de diseño (anotadas aquí), dependencias nuevas (explicadas), commits, push y fast-forward a `main`. Solo pregunta lo que únicamente el usuario puede saber (equipo, compras).
 - **Usuario · Solo ordenador**: no hay móvil en el proyecto. Se elimina la Fase 9 del roadmap y se cierran su milestone y sus issues como «no planificado».
 - **Usuario · Se mantiene el formato `.zwo` en la Fase 6** tras explicarle qué es (archivo de sesiones estructuradas que usan muchas apps de rodillo).
+
+## 2026-11-25 — Fase 6 (grabación y exportación)
+
+- **Técnica · TCX en vez de FIT**: es texto, lo aceptan Strava, Garmin Connect e intervals.icu y se genera sin dependencias.
+- **Técnica · La grabación vive en `src/recording/`**, código puro con tests, como pide `CLAUDE.md`.
+- **Técnica · Retomar abre en pausa** y el tiempo con la app cerrada no cuenta; el TCX lleva el tiempo en movimiento.
+- **Técnica · Potencia grabada siempre que haya curva de rodillo**, también en modo rueda.
+- **Técnica · Gráficas en SVG propio**, una por dato con el mismo eje de tiempo y cruz compartida (nunca dos escalas en una gráfica). Sin librería, para no aumentar el peso de la app.
+- **Técnica · `.zwo`**: rampas en escalones de 1′; bloques por pulso exportados como `FreeRide` con la zona en un mensaje, que esta app recupera al importar; `FreeRide` ajeno → pulso L2 y `MaxEffort` → pulso VO2, con aviso.
