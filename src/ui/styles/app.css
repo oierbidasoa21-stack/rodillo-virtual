@@ -533,3 +533,7 @@ tr.clickable:hover td {
   fill: transparent;
   cursor: crosshair;
 }
+.head-actions {
+  display: flex;
+  gap: 8px;
+}

@@ -12,9 +12,17 @@ interface Props {
   onStart: () => void;
   onEdit: () => void;
   onDelete?: () => void;
+  onExport: () => void;
 }
 
-export default function WorkoutCard({ workout, isCustom, onStart, onEdit, onDelete }: Props) {
+export default function WorkoutCard({
+  workout,
+  isCustom,
+  onStart,
+  onEdit,
+  onDelete,
+  onExport,
+}: Props) {
   const steps = useMemo(() => expandWorkout(workout.blocks), [workout.blocks]);
   return (
     <article className="card">
@@ -30,6 +38,9 @@ export default function WorkoutCard({ workout, isCustom, onStart, onEdit, onDele
         </button>
         <button type="button" className="btn" onClick={onEdit}>
           {isCustom ? 'Editar' : 'Duplicar y editar'}
+        </button>
+        <button type="button" className="btn" onClick={onExport}>
+          Exportar .zwo
         </button>
         {isCustom && onDelete && <ConfirmButton label="Borrar" onConfirm={onDelete} />}
       </div>
