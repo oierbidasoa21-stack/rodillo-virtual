@@ -9,6 +9,16 @@ export function downloadJson(fileName: string, data: unknown): void {
   URL.revokeObjectURL(url);
 }
 
+/** Saves `text` as a file through the browser's download. */
+export function downloadText(fileName: string, text: string, type: string): void {
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 /** Reads a picked file as JSON; null if it isn't valid JSON. */
 export async function readJsonFile(file: File): Promise<unknown> {
   try {

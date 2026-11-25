@@ -4,6 +4,7 @@ import { useHistoryStore } from '../../store/historyStore';
 import ConfirmButton from '../ConfirmButton';
 import { formatMinutes } from '../format';
 import { formatKm } from '../ride/rideFormat';
+import SessionDetail from './SessionDetail';
 
 const dateFormat = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short' });
 
@@ -12,6 +13,8 @@ export default function HistoryView() {
   const clear = useHistoryStore((s) => s.clear);
   // Captured once per mount so the 7-day window doesn't shift while rendering.
   const [now] = useState(() => Date.now());
+  const [openId, setOpenId] = useState<string | null>(null);
+  const open = sessions.find((s) => s.id === openId);
 
   if (!sessions.length) {
     return (
@@ -30,6 +33,7 @@ export default function HistoryView() {
   const week = recentTotals(sessions, now);
   return (
     <>
+      {open && <SessionDetail summary={open} onClose={() => setOpenId(null)} />}
       <div className="sectionhead">
         <h2>Historial</h2>
         <ConfirmButton label="Borrar historial" onConfirm={() => void clear()} />
@@ -63,10 +67,12 @@ export default function HistoryView() {
           </thead>
           <tbody>
             {[...sessions].reverse().map((s) => (
-              <tr key={s.id}>
+              <tr key={s.id} className="clickable" onClick={() => setOpenId(s.id)}>
                 <td className="num nowrap">{dateFormat.format(s.dateMs)}</td>
                 <td>
-                  {s.workoutName}
+                  <button type="button" className="linklike" onClick={() => setOpenId(s.id)}>
+                    {s.workoutName}
+                  </button>
                   {(s.hrMeasured?.simulated || s.power?.simulated) && (
                     <span className="sim-tag" title="Datos de sensores simulados">
                       SIM.

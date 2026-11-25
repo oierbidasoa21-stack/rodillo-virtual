@@ -20,12 +20,24 @@ export default async function run(page) {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.clock.install();
   await page.reload();
-  await page.getByRole('tab', { name: 'Ajustes' }).or(page.getByRole('button', { name: 'Ajustes' })).first().click();
+  await page
+    .getByRole('tab', { name: 'Ajustes' })
+    .or(page.getByRole('button', { name: 'Ajustes' }))
+    .first()
+    .click();
   await page.locator('#simulate').check();
-  await page.getByRole('tab', { name: 'Sensores' }).or(page.getByRole('button', { name: 'Sensores' })).first().click();
+  await page
+    .getByRole('tab', { name: 'Sensores' })
+    .or(page.getByRole('button', { name: 'Sensores' }))
+    .first()
+    .click();
   for (const b of await page.getByRole('button', { name: 'Conectar' }).all()) await b.click();
   await page.clock.runFor(3_000);
-  await page.getByRole('tab', { name: 'Sesiones' }).or(page.getByRole('button', { name: /Sesiones|Biblioteca/ })).first().click();
+  await page
+    .getByRole('tab', { name: 'Sesiones' })
+    .or(page.getByRole('button', { name: /Sesiones|Biblioteca/ }))
+    .first()
+    .click();
   await page.getByRole('button', { name: 'Empezar' }).first().click();
   await page.waitForTimeout(300);
   // Possible route chooser: start without a route.
@@ -35,7 +47,11 @@ export default async function run(page) {
   await page.clock.runFor(95_000);
   const name = await page.locator('.sheet-top h2').innerText();
   const saved = await idb(page, 'inProgress');
-  const before = { name, samples: saved[0]?.recorder.recording.samples.length, kind: saved[0]?.kind };
+  const before = {
+    name,
+    samples: saved[0]?.recorder.recording.samples.length,
+    kind: saved[0]?.kind,
+  };
 
   await page.reload();
   await page.locator('.resume-banner').waitFor();

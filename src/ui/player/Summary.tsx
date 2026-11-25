@@ -13,11 +13,22 @@ interface Props {
   summary: SessionSummary;
   saved: boolean;
   onClose: () => void;
+  /** Text of the close button. */
+  closeLabel?: string;
   /** Extra result shown first, e.g. the ramp test FTP. */
   children?: ReactNode;
+  /** Shown last, e.g. the charts of a saved session. */
+  footer?: ReactNode;
 }
 
-export default function Summary({ summary, saved, onClose, children }: Props) {
+export default function Summary({
+  summary,
+  saved,
+  onClose,
+  closeLabel = 'Volver a sesiones',
+  children,
+  footer,
+}: Props) {
   const { plannedSecByZone: plan, counts, hrMeasured: hr } = summary;
   // Measured by the heart rate sensor when there was enough of it, else the blocks ridden.
   const done = hr?.secByZone ?? summary.actualSecByZone;
@@ -31,7 +42,7 @@ export default function Summary({ summary, saved, onClose, children }: Props) {
       <div className="sheet-top">
         <h2>{summary.workoutName} · Resumen</h2>
         <button type="button" className="btn primary" onClick={onClose}>
-          Volver a sesiones
+          {closeLabel}
         </button>
       </div>
 
@@ -159,6 +170,7 @@ export default function Summary({ summary, saved, onClose, children }: Props) {
           </div>
         </>
       )}
+      {footer}
     </div>
   );
 }
