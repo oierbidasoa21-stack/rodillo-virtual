@@ -2,6 +2,8 @@
 
 _Última actualización: 2026-11-25._
 
+**Forma de trabajar:** en automático, sin pedir aprobación (plan en `fases/`, commits, push y fast-forward a `main`). **Solo ordenador**: no hay móvil.
+
 ## En una frase
 
 Las **fases 0 a 5 están hechas y publicadas** en https://oierbidasoa21-stack.github.io/rodillo-virtual/ (`main` = `271472d`, 72 commits, 228 tests en verde). La **fase actual es la 6** (grabación y exportación), todavía sin empezar. Las fases 3, 4 y 5 están comprobadas con **sensores simulados**; falta probarlas con hardware real.
@@ -19,9 +21,9 @@ Las **fases 0 a 5 están hechas y publicadas** en https://oierbidasoa21-stack.gi
 | **6** | **Grabación a 1 Hz, recuperar sesión, exportar TCX, detalle con gráficas, `.zwo`**                                   | ⏳ **Siguiente**                                          |
 | 7     | Mundo 3D (Three.js): carretera desde la altimetría, ciclista, escenario, HUD                                         | ⏳ Pendiente                                              |
 | 8     | Rodillo inteligente FTMS: lectura, ERG y simulación (solo si se compra)                                              | ⏳ Opcional                                               |
-| 9     | Pruebas en móvil (Android)                                                                                           | ⏳ Al final                                               |
+| ~~9~~ | ~~Pruebas en móvil~~                                                                                                 | ❌ Descartada (solo ordenador)                            |
 
-GitHub tiene un **milestone por fase** (0–5 cerrados, 6–9 abiertos) y otro, **«Pruebas con hardware real»**, con las pruebas que faltan. Las tareas pendientes están como **issues** dentro de su milestone.
+GitHub tiene un **milestone por fase** (0–5 cerrados, 6–8 abiertos, 9 cerrado por descartado) y otro, **«Pruebas con hardware real»**, con las pruebas que faltan. Las tareas pendientes están como **issues** dentro de su milestone.
 
 ## Qué funciona hoy (resumen)
 
@@ -35,7 +37,6 @@ GitHub tiene un **milestone por fase** (0–5 cerrados, 6–9 abiertos) y otro, 
 
 ## Próximos pasos
 
-1. **Plan de la Fase 6** (grabación y exportación), para aprobar antes de tocar nada.
+1. **Fase 6** (grabación y exportación). Claude trabaja en automático: escribe el plan en `fases/` y lo ejecuta sin esperar aprobación.
 2. Mejoras que pida el usuario (ver `pendientes/PENDIENTES.md`).
 3. Cuando haya hardware: las pruebas del milestone «Pruebas con hardware real».
-4. Al final: decidir si además de la PWA se publica una **demo como artefacto de Claude** (ver `decisiones/DECISIONES.md`, 2026-11-25).

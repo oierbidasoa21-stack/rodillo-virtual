@@ -59,4 +59,8 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 
 - **Usuario · Milestones en GitHub** para organizar el trabajo: uno por fase, más «Pruebas con hardware real». Las tareas pendientes como issues.
 - **Usuario · Carpeta `docs/contexto/`** con todo el contexto, actualizada tarea a tarea.
-- **Técnica · Artefacto de Claude como «app instalable»: no sirve como sustituto de la PWA.** El visor de artefactos bloquea las APIs de dispositivo (Web Bluetooth incluida), no permite registrar un service worker propio ni un manifest, y no deja hacer peticiones a otros sitios. Se puede fijar en la barra lateral de claude.ai, pero no instalar como app del sistema. **La app instalable es la PWA de GitHub Pages** (Fase 2). Un artefacto sí puede servir como **demo** compartible con sensores simulados. Pendiente de que el usuario decida si la quiere.
+- **Técnica · Artefacto de Claude como «app instalable»: no sirve como sustituto de la PWA.** El visor de artefactos bloquea las APIs de dispositivo (Web Bluetooth incluida), no permite service worker ni manifest propios y no deja hacer peticiones a otros sitios. Se puede fijar en la barra lateral de claude.ai, pero no instalar como app del sistema. La app instalable es la PWA de GitHub Pages.
+- **Usuario · Sin artefacto**: no se hará demo como artefacto de Claude.
+- **Usuario · Trabajo en automático**: Claude hace todo sin pedir aprobación: planes (escritos en `docs/contexto/fases/`), decisiones de diseño (anotadas aquí), dependencias nuevas (explicadas), commits, push y fast-forward a `main`. Solo pregunta lo que únicamente el usuario puede saber (equipo, compras).
+- **Usuario · Solo ordenador**: no hay móvil en el proyecto. Se elimina la Fase 9 del roadmap y se cierran su milestone y sus issues como «no planificado».
+- **Usuario · Se mantiene el formato `.zwo` en la Fase 6** tras explicarle qué es (archivo de sesiones estructuradas que usan muchas apps de rodillo).

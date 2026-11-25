@@ -1,4 +1,4 @@
-# Fases 6 a 9 — Pendientes
+# Fases 6 a 8 — Pendientes
 
 Cada fase empieza con un **plan que el usuario aprueba** antes de tocar código. Cuando una fase arranque, se crea su propio archivo `fase-N-….md` aquí y se va completando.
 
@@ -27,6 +27,6 @@ Stack previsto en `CLAUDE.md`: Three.js con @react-three/fiber (dependencias nue
 
 Solo si el usuario compra uno: FTMS (0x1826), modo ERG, modo simulación.
 
-## Fase 9 — Pruebas en móvil ⏳ (al final)
+## Fase 9 — Móvil ❌ (descartada)
 
-Android con Chrome (iPhone fuera: sin Web Bluetooth): instalar y modo avión, sesión completa, sensores en el móvil, ajustes de pantalla pequeña, almacenamiento persistente.
+Descartada el 2026-11-25: la app se usa solo en el ordenador.

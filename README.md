@@ -37,7 +37,7 @@ cp config/athlete.example.json config/athlete.local.json
 
 La app es una PWA: se instala como una aplicación y funciona sin conexión una vez cargada.
 
-1. Abre la app en Chrome con conexión. Por ahora se prueba en el ordenador (Chrome en Windows); el móvil (Android) llega en la última fase.
+1. Abre la app en Chrome, en el ordenador, con conexión.
 2. Pulsa el icono de instalar en la barra de direcciones, o menú ⋮ → **Transmitir, guardar y compartir → Instalar página como aplicación**.
 3. En **Ajustes**, importa tu `config/athlete.local.json`. Cada dispositivo guarda sus propios datos.
 

@@ -34,12 +34,12 @@ Aplicación web de entrenamiento en rodillo para **uso personal**, inspirada en 
 - Estado: **Zustand**. Persistencia local: **Dexie** (IndexedDB). Nada de `localStorage` para datos importantes.
 - Tests: **Vitest** para la lógica de dominio.
 - Calidad: **ESLint + Prettier**.
-- Sensores: **Web Bluetooth** (Chrome en ordenador y Android). Requiere HTTPS o `localhost`.
+- Sensores: **Web Bluetooth** (Chrome en el ordenador). Requiere HTTPS o `localhost`.
 - 3D (solo a partir de la Fase 7): **Three.js** con **@react-three/fiber**.
 - Despliegue: **GitHub Pages** mediante GitHub Actions (da HTTPS, que necesitan Web Bluetooth y la PWA fuera de `localhost`).
 - PWA con **vite-plugin-pwa**: instalable y funciona sin conexión una vez cargada.
 
-No añadas dependencias nuevas sin explicar para qué sirven y pedirme confirmación.
+Puedes añadir dependencias cuando hagan falta, sin pedir confirmación: elige la opción más ligera y mantenida, y explica para qué sirve en el commit y en `docs/contexto/decisiones/`.
 
 ## Arquitectura
 
@@ -87,31 +87,30 @@ Cada fórmula vive en `domain/` con tests que incluyan al menos un caso calculad
 - Código, identificadores y commits en **inglés**. Textos de la interfaz y documentación en **español**.
 - Componentes React funcionales con hooks. Un componente por archivo.
 - La interfaz del player se diseña para leerse a 1 metro: números grandes, colores por zona, avisos sonoros.
-- Diseño pensado primero para el **ordenador**, con tema claro y oscuro. Que se vea bien en pantallas estrechas sigue siendo deseable, pero no es requisito hasta la fase de pruebas en móvil.
+- Diseño para el **ordenador**, con tema claro y oscuro. No hay versión móvil: las pantallas estrechas no son requisito.
 
 ## Forma de trabajar
 
 1. Trabaja **solo en la fase actual** de `docs/ROADMAP.md`. No adelantes trabajo de fases futuras.
-2. Antes de un cambio grande, propón un plan corto y espera mi confirmación.
+2. **Trabaja en automático, sin pedirme aprobación** (desde 2026-11-25): antes de cada fase escribe un plan corto en `docs/contexto/fases/` y síguelo sin esperar confirmación. Avísame del resultado al terminar.
 3. Cambios pequeños e incrementales. Explica el **porqué** de las decisiones técnicas, no solo el qué.
 4. Antes de cada commit: `npm run lint`, `npm run test` y `npm run build` deben pasar.
 5. Al terminar una tarea, marca su casilla en `docs/ROADMAP.md`.
-6. Si una decisión es mía (diseño, prioridades, compras de equipo), pregúntame.
+6. Las decisiones de diseño y prioridades tómalas tú con un criterio razonable y anótalas, con su motivo, en `docs/contexto/decisiones/`. Pregúntame solo lo que únicamente yo puedo saber (qué equipo tengo, qué voy a comprar).
 7. **Contexto entre conversaciones**: al empezar, lee `docs/contexto/README.md` y `docs/contexto/estado/ESTADO.md`. Al terminar cada tarea, actualiza `docs/contexto/` según su README (estado, registro de cambios, decisiones, fase en curso, pendientes y sesión). Los scripts de prueba en navegador se guardan en `docs/contexto/pruebas/scripts/`.
 8. Las tareas pendientes viven también en GitHub como issues dentro del milestone de su fase. Al cerrar una tarea, cierra su issue; al cerrar una fase, cierra su milestone.
 
 ## Dónde se prueba
 
-- Por ahora pruebo la app **solo en el ordenador: Chrome en Windows**. Los criterios de «hecho» de cada fase se comprueban ahí, con la web publicada en GitHub Pages.
-- El **móvil es un extra para el final del proyecto**: tiene su propia fase en `docs/ROADMAP.md`. Hasta entonces no lo tengas en cuenta para dar una fase por hecha ni para priorizar trabajo.
-- Las comprobaciones automáticas (navegador headless, capturas) se hacen a tamaño de escritorio. Una captura en estrecho es opcional.
+- La app se usa **solo en el ordenador: Chrome en Windows**. No hay móvil en el proyecto (decidido el 2026-11-25). Los criterios de «hecho» de cada fase se comprueban ahí, con la web publicada en GitHub Pages.
+- Las comprobaciones automáticas (navegador headless, capturas) se hacen a tamaño de escritorio.
 
 ## Git y GitHub
 
 - Rama `main` siempre funcional. Trabajo en ramas: `feat/…`, `fix/…`, `chore/…`, `docs/…`.
 - Commits con **Conventional Commits**: `feat(workout): add repeat blocks`, `fix(sensors): handle HR disconnect`.
 - Commits pequeños, uno por cambio lógico.
-- **No hagas `git push` ni merges a `main` sin que te lo pida.** Haz los commits en local y dime cuándo está listo para subir.
+- **Haz push y fast-forward a `main` tú mismo**, sin pedir permiso, cuando lint, tests y build pasen y lo hecho esté comprobado. Después vigila **CI** y **Deploy** y, si cambia la app, repite la prueba contra la web publicada. Nunca `--force` sobre `main`.
 - Nunca subas datos personales: exportaciones de entrenamientos y archivos `.tcx`/`.fit`/`.gpx` propios van en `data/`, que está en `.gitignore`.
 - Sin secretos en el repo (no hacen falta: no hay backend).
 

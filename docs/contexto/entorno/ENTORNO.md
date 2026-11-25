@@ -5,8 +5,8 @@
 - **Repo:** https://github.com/oierbidasoa21-stack/rodillo-virtual (público).
 - **App publicada:** https://oierbidasoa21-stack.github.io/rodillo-virtual/
 - **Workflows:** `CI` (lint, tests y build en cada push y PR) y `Deploy` (solo en `main`, se salta si el push solo toca `docs/**` o `*.md`).
-- **Ramas:** una por fase o cambio (`feat/…`, `docs/…`, `ci/…`). Se integran en `main` con fast-forward cuando el usuario lo pide. Claude no hace push sin permiso.
-- **Milestones e issues:** un milestone por fase (0–9) y «Pruebas con hardware real». Las tareas pendientes son issues.
+- **Ramas:** una por fase o cambio (`feat/…`, `docs/…`, `ci/…`). Claude hace push y fast-forward a `main` por su cuenta cuando lint, tests y build pasan y lo hecho está comprobado (autorizado el 2026-11-25), y vigila CI y Deploy.
+- **Milestones e issues:** un milestone por fase (0–8; el 9, móvil, cerrado por descartado) y «Pruebas con hardware real». Las tareas pendientes son issues.
 
 ## Herramientas
 

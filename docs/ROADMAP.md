@@ -3,7 +3,7 @@
 Una fase a la vez. Cada fase termina con la app funcionando, desplegada y con los tests en verde.
 Marca `[x]` al completar cada tarea.
 
-Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. Las pruebas en móvil van aparte, en la Fase 9.
+Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. La app es solo para ordenador: no hay fase de móvil.
 
 **Fase actual: 6**
 
@@ -126,15 +126,3 @@ Solo si compro uno.
 - [ ] FTMS (0x1826): lectura de potencia, cadencia y velocidad reales
 - [ ] Modo ERG: el workout fija la potencia del rodillo
 - [ ] Modo simulación: la pendiente de la ruta ajusta la resistencia
-
-## Fase 9 — Pruebas en móvil (extra, al final)
-
-Objetivo: usar la app en el móvil (Android). Hasta esta fase, el móvil no cuenta para dar ninguna fase por hecha. iPhone queda fuera: Safari no tiene Web Bluetooth.
-
-- [ ] Instalar la PWA desde Chrome en Android y usarla en modo avión
-- [ ] Sesión completa en el móvil: pitidos, voz y pantalla siempre encendida (Wake Lock)
-- [ ] Sensores Bluetooth conectados al móvil
-- [ ] Ajustes de interfaz para pantalla pequeña que salgan de las pruebas
-- [ ] Almacenamiento persistente concedido con la app instalada
-
-Hecho cuando: hago una sesión completa con sensores en el móvil, con la app instalada y en modo avión.
