@@ -24,6 +24,8 @@ Ver el detalle en [`fases/`](../fases/) y en `docs/ROADMAP.md`. Cada tarea es un
 - El IF y el TSS se calculan con el FTP del momento; cambiar el FTP no recalcula sesiones antiguas.
 - Tras un ramp test con simulados se puede guardar un FTP simulado (avisa de que no es real).
 - Una sesión retomada no guarda el hueco en que la app estuvo cerrada: el TCX lleva el tiempo en movimiento seguido.
+- La vista 3D está en «Rodar» y en la demo; la sesión sobre ruta sigue con la franja 2D.
+- Los fps de la vista 3D solo se han medido en headless; falta verlo en el portátil del usuario.
 - El TCX aún no se ha subido de verdad a Strava ni a Garmin Connect (se genera siguiendo el orden del esquema TCX v2 y los tests comprueban ese orden, pero no se ha validado contra el XSD).
 
 ## Ideas y mejoras pedidas

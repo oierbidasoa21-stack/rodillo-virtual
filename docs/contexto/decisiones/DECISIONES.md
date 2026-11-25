@@ -73,3 +73,13 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Técnica · Potencia grabada siempre que haya curva de rodillo**, también en modo rueda.
 - **Técnica · Gráficas en SVG propio**, una por dato con el mismo eje de tiempo y cruz compartida (nunca dos escalas en una gráfica). Sin librería, para no aumentar el peso de la app.
 - **Técnica · `.zwo`**: rampas en escalones de 1′; bloques por pulso exportados como `FreeRide` con la zona en un mensaje, que esta app recupera al importar; `FreeRide` ajeno → pulso L2 y `MaxEffort` → pulso VO2, con aviso.
+
+## 2026-11-25 — Fase 7 (mundo 3D)
+
+- **Usuario · «Termina de completar todo» y una demo** de cómo se ve. La Fase 8 se deja para cuando diga si compra un rodillo inteligente (el roadmap la condiciona a eso).
+- **Técnica · Dependencias `three` y `@react-three/fiber`** (las del plan de `CLAUDE.md`). Sin `@react-three/drei`: la cámara, el cielo y las instancias se escriben a mano en pocas líneas y así la app pesa menos.
+- **Técnica · El 3D se carga aparte** (`React.lazy`): la app abre igual de rápido y el trozo 3D (931 kB) se descarga al abrir la vista y queda guardado para usarla sin conexión.
+- **Técnica · Geometría en `src/domain/world/`**, pura y testeada en Node; la UI solo la convierte en mallas.
+- **Técnica · Suelo con dos capas** (carretera cercana ponderada por distancia + campo lejano suavizado) para que no haya acantilados lejos de la carretera ni el suelo tape la carretera en las herraduras.
+- **Técnica · Demo dentro de la app**, marcada como DEMO, a 200 W simulados y sin grabar ni guardar nada: enseña el 3D sin sensores sin mezclar datos inventados con los reales.
+- **Técnica · Vista 3D por defecto al rodar** (si hay WebGL), con botón para volver a 2D. No se guarda la preferencia.

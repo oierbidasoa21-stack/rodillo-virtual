@@ -1,6 +1,6 @@
 # Rodillo Virtual
 
-Aplicación web de entrenamiento en rodillo para uso personal: workouts estructurados por pulso, métricas en directo y, más adelante, rutas virtuales con pendiente y un mundo 3D.
+Aplicación web de entrenamiento en rodillo para uso personal: workouts estructurados por pulso o potencia, métricas en directo, rutas virtuales con pendiente en un mundo 3D, grabación y exportación.
 
 Todo corre en el navegador y los datos se quedan en el dispositivo. No hay backend ni cuentas.
 
@@ -82,6 +82,10 @@ Siempre se ve con qué modo estás rodando:
 
 - **Modo potencia** (con un rodillo elegido en Ajustes): la velocidad virtual sale de tu potencia estimada, tu peso más el de la bici, y la pendiente. En las subidas vas más despacio y en las bajadas ruedas sin pedalear.
 - **Modo velocidad de rueda · sin potencia** (sin rodillo elegido): avanzas a la velocidad real de tu rueda y la pendiente solo se muestra.
+
+**Vista 3D:** al rodar, la ruta se ve en 3D (si el navegador tiene WebGL, como Chrome): la carretera sale de la altimetría de la ruta, con terreno, árboles, cielo y un ciclista que pedalea, seguido por la cámara. El HUD va encima y el perfil y el minimapa debajo. El botón **Vista 2D** vuelve a la vista de antes. La parte 3D se descarga la primera vez que se abre y después funciona sin conexión.
+
+**Demo 3D:** en **Rutas → Demo 3D**, elige una ruta y pulsa **Ver demo 3D** para ver cómo queda sin ningún sensor. El ciclista avanza solo a 200 W **simulados** con la física de siempre. Va marcada como DEMO y no se graba ni se guarda nada.
 
 Las rutas necesitan el sensor de velocidad. El resumen y el historial guardan la distancia, la velocidad media y el desnivel.
 

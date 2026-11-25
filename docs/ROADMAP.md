@@ -5,7 +5,7 @@ Marca `[x]` al completar cada tarea.
 
 Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. La app es solo para ordenador: no hay fase de móvil.
 
-**Fase actual: 7**
+**Fase actual: 8 (opcional: solo si compro un rodillo inteligente)**
 
 ---
 
@@ -114,10 +114,10 @@ Pendiente: probarlo con sensores reales cuando tenga el hardware. Hasta entonces
 
 ## Fase 7 — Mundo 3D
 
-- [ ] Carretera 3D generada a partir de la altimetría de la ruta
-- [ ] Avatar ciclista sencillo y cámara que lo sigue
-- [ ] Escenario procedural (terreno, árboles, cielo) con buen rendimiento en portátil
-- [ ] HUD de la Fase 5 superpuesto sobre la vista 3D
+- [x] Carretera 3D generada a partir de la altimetría de la ruta
+- [x] Avatar ciclista sencillo y cámara que lo sigue
+- [x] Escenario procedural (terreno, árboles, cielo) con buen rendimiento en portátil
+- [x] HUD de la Fase 5 superpuesto sobre la vista 3D
 
 ## Fase 8 — Rodillo inteligente (opcional)
 

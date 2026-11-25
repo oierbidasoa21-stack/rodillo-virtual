@@ -35,6 +35,7 @@ Claude usa la skill `browser-automation` (un Chrome sin ventana, con patchright)
 | 4    | Migración v1 → v2 sembrada; copia de seguridad exportar/importar; ramp test completo hasta guardar el FTP; sesión por potencia con NP/IF/TSS y TSS en el historial                                                    |
 | 5    | Migración v2 → v3; importar GPX bueno y roto; Puerto entero en modo potencia (velocidad en llano/subida, distancia y desnivel finales); modo rueda; sesión sobre ruta con 2 vueltas; player con ruta cabe en 1280×900 |
 | 6    | Sesión guardada cada 10 s, recarga, «Sesión sin terminar» y Retomar; detalle con 5 gráficas, TCX de 240 puntos y borrar; `.zwo` exportar/importar igual, rampa con aviso y archivo roto (scripts `fase6-*.mjs`)       |
+| 7    | Demo 3D en el Puerto y el Rompepiernas a 60 fps (headless), HUD, cambio 2D/3D, nada guardado; la salida de la Fase 6 en 3D sigue grabando (script `fase7-demo-3d.mjs`)                                                |
 
 ## 4. Pruebas manuales del usuario (pendientes)
 

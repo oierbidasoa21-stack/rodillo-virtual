@@ -116,4 +116,12 @@ Ramas: feat/recording
 - `1e02a64` · 2026-11-25 · feat(recording): record every session, save it in progress and offer to resume it
 - `72b5ebe` · 2026-11-25 · feat(history): open a saved session with charts, TCX export and delete
 - `012c967` · 2026-11-25 · feat(workout): import and export .zwo workouts
+- `d66cb75` · 2026-11-25 · docs: close phase 6 (recording, recovery, history detail, TCX and .zwo)
+
+## Fase 7 — Mundo 3D
+
+Ramas: feat/world-3d
+
+- `20a337b` · 2026-11-25 · feat(world): build the 3D road, ground and trees from a route
+- `b9c98dc` · 2026-11-25 · feat(ride): ride routes in 3D with the HUD on top, and a 3D demo
 - _(más el commit de documentación que cierra la fase)_

@@ -30,12 +30,14 @@ ui/       componentes React, un componente por archivo
 
 Fase 6:
 
-| Módulo           | Archivos                                                                        | Para qué                                                                                                            |
-| ---------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `recording`      | `recording.ts`, `recorder.ts`, `session.ts`, `tcx.ts`, `chart.ts`               | Muestras a 1 Hz, grabador serializable, sesión en curso, exportación TCX, datos de gráficas (código puro con tests) |
-| `domain/workout` | `zwo.ts`                                                                        | Leer y escribir `.zwo` sin DOM                                                                                      |
-| `ui/history`     | `HistoryView.tsx`, `SessionDetail.tsx`, `SessionCharts.tsx`, `SessionChart.tsx` | Historial y detalle de una sesión con gráficas SVG y exportación                                                    |
-| `ui/session`     | `ResumeBanner.tsx`, `saveSession.ts`                                            | Aviso «Sesión sin terminar» y guardado de una sesión terminada con su grabación                                     |
+| Módulo           | Archivos                                                                                               | Para qué                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `recording`      | `recording.ts`, `recorder.ts`, `session.ts`, `tcx.ts`, `chart.ts`                                      | Muestras a 1 Hz, grabador serializable, sesión en curso, exportación TCX, datos de gráficas (código puro con tests)              |
+| `domain/workout` | `zwo.ts`                                                                                               | Leer y escribir `.zwo` sin DOM                                                                                                   |
+| `ui/history`     | `HistoryView.tsx`, `SessionDetail.tsx`, `SessionCharts.tsx`, `SessionChart.tsx`                        | Historial y detalle de una sesión con gráficas SVG y exportación                                                                 |
+| `domain/world`   | `path.ts`, `road.ts`, `terrain.ts`                                                                     | Fase 7: ruta en metros locales, pose y cámara, cinta de carretera, suelo con campo lejano, árboles con semilla (puro, con tests) |
+| `ui/world`       | `World3D.tsx`, `WorldTerrain.tsx`, `WorldRoad.tsx`, `WorldTrees.tsx`, `WorldSky.tsx`, `WorldRider.tsx` | Fase 7: escena 3D con Three.js y @react-three/fiber, cargada aparte                                                              |
+| `ui/session`     | `ResumeBanner.tsx`, `saveSession.ts`                                                                   | Aviso «Sesión sin terminar» y guardado de una sesión terminada con su grabación                                                  |
 
 ## Modelo de datos (lo que se guarda)
 
