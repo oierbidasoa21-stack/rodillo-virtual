@@ -1,4 +1,4 @@
-/* Layout: one tool column (max 760px) with tabs; overlays take the full screen. */
+﻿/* Layout: one tool column (max 760px) with tabs; overlays take the full screen. */
 * {
   box-sizing: border-box;
 }
@@ -433,4 +433,17 @@ input[type='range'] {
   flex: 1;
   min-width: 140px;
   max-width: 320px;
+}
+
+.resume-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  border-color: var(--accent);
+}
+.resume-banner .actions {
+  display: flex;
+  gap: 8px;
 }

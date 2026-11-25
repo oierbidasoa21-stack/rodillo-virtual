@@ -1,6 +1,9 @@
 import { type HrTime, addHrSample, emptyHrTime } from '../domain/metrics/hrTime';
 import { type PowerSampler, emptyPowerSampler, samplePower } from '../domain/metrics/power';
 import type { HrZone } from '../domain/zones/zones';
+import { positionAt } from '../domain/route/position';
+import type { RideState } from '../domain/route/ride';
+import type { Route } from '../domain/route/route';
 import { type Recording, recordTick, startRecording } from './recording';
 
 /** Everything a session accumulates while the clock runs. Serialisable, so it can be saved and resumed. */
@@ -70,5 +73,21 @@ export function recorderTick(
       lon: r ? r.lon : null,
     }),
     wheelDistanceM,
+  };
+}
+
+/** Recorder input for a rider `ride.distanceM` into `route` (looping or not). */
+export function routeInputOf(
+  route: Route,
+  ride: RideState,
+  loop: boolean,
+): NonNullable<RecorderInput['route']> {
+  const here = positionAt(route, ride.distanceM, loop);
+  return {
+    distanceM: ride.distanceM,
+    speedKmh: ride.speedMs * 3.6,
+    altitudeM: here.ele,
+    lat: here.lat,
+    lon: here.lon,
   };
 }

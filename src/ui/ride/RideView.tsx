@@ -1,23 +1,19 @@
 import { useRef, useState } from 'react';
 import { beep, unlockAudio } from '../../audio/beeper';
 import { say } from '../../audio/speech';
-import { addHrSample, emptyHrTime } from '../../domain/metrics/hrTime';
-import { emptyPowerSampler, samplePower } from '../../domain/metrics/power';
-import {
-  MIN_SAVED_SESSION_SEC,
-  type SessionSummary,
-  buildRideSummary,
-} from '../../domain/metrics/summary';
+import type { SessionSummary } from '../../domain/metrics/summary';
 import { positionAt } from '../../domain/route/position';
 import { type RideMode, type RideState, advanceRide, startRide } from '../../domain/route/ride';
 import type { Route } from '../../domain/route/route';
-import { isFresh } from '../../sensors/freshness';
-import { useHistoryStore } from '../../store/historyStore';
+import { routeInputOf } from '../../recording/recorder';
+import { type SessionSnapshot, summaryFromSnapshot } from '../../recording/session';
 import { useSensorsStore } from '../../store/sensorsStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useUiStore } from '../../store/uiStore';
 import ConfirmButton from '../ConfirmButton';
+import { useInProgressSaver } from '../hooks/useInProgressSaver';
 import { usePlayerClock } from '../hooks/usePlayerClock';
+import { useSessionRecorder } from '../hooks/useSessionRecorder';
 import { useWakeLock } from '../hooks/useWakeLock';
 import SensorAlerts from '../player/SensorAlerts';
 import Summary from '../player/Summary';
@@ -27,42 +23,51 @@ import ModeBadge from './ModeBadge';
 import RideHud from './RideHud';
 import { currentRideInput } from './rideInput';
 import { RIDE_MODE_HINT } from './rideMode';
+import { saveFinishedSession } from '../session/saveSession';
 
 type Status = 'ready' | 'running' | 'paused';
+type RideSnapshot = Extract<SessionSnapshot, { kind: 'ride' }>;
 
 /** Free ride on a route: race view with HUD, elevation profile and minimap. */
-export default function RideView({ route, mode }: { route: Route; mode: RideMode }) {
-  const addHistory = useHistoryStore((s) => s.add);
+export default function RideView({
+  route,
+  mode,
+  resume = null,
+}: {
+  route: Route;
+  mode: RideMode;
+  /** Session saved in progress to continue; it opens paused. */
+  resume?: RideSnapshot | null;
+}) {
   const stopRide = useUiStore((s) => s.stopRide);
   const setTab = useUiStore((s) => s.setTab);
   const simulated = useSensorsStore((s) => s.csc.source === 'simulated');
 
-  const [status, setStatus] = useState<Status>('ready');
-  const [ride, setRide] = useState<RideState>(startRide);
+  const [status, setStatus] = useState<Status>(resume ? 'paused' : 'ready');
+  const [ride, setRide] = useState<RideState>(() => resume?.ride ?? startRide());
   const rideRef = useRef(ride);
-  const hrTime = useRef(emptyHrTime());
-  const hrSimulated = useRef(false);
-  const power = useRef(emptyPowerSampler());
-  const powerSimulated = useRef(false);
+  const recorder = useSessionRecorder(resume?.recorder ?? null);
   const [result, setResult] = useState<{ summary: SessionSummary; saved: boolean } | null>(null);
 
-  const finish = (state: RideState) => {
+  const snapshot = (): RideSnapshot => ({
+    kind: 'ride',
+    savedAtMs: Date.now(),
+    route,
+    mode,
+    ride: rideRef.current,
+    recorder: recorder.ref.current,
+  });
+
+  const finish = () => {
     const { settings } = useSettingsStore.getState();
-    const summary = buildRideSummary({
+    const state = rideRef.current;
+    const summary = summaryFromSnapshot(snapshot(), {
       id: crypto.randomUUID(),
       dateMs: Date.now(),
-      route,
-      ride: state,
-      mode,
       weightKg: settings.athlete.weightKg,
-      hr: hrTime.current,
-      hrSimulated: hrSimulated.current,
-      powerSamples: power.current.samples,
-      powerSimulated: powerSimulated.current,
       ftpW: settings.athlete.ftp?.watts ?? null,
     });
-    const saved = summary.durationSec >= MIN_SAVED_SESSION_SEC;
-    if (saved) void addHistory(summary);
+    const saved = saveFinishedSession(summary, recorder.ref.current);
     if (settings.beeps) {
       beep(880, 150);
       beep(1175, 150, 0.18);
@@ -74,26 +79,19 @@ export default function RideView({ route, mode }: { route: Route; mode: RideMode
 
   const running = status === 'running';
   usePlayerClock(running, (dt) => {
-    const { settings } = useSettingsStore.getState();
-    const { csc, hr } = useSensorsStore.getState();
-    const now = Date.now();
-    const { input, watts } = currentRideInput(mode, now);
+    const { input } = currentRideInput(mode, Date.now());
     const next = advanceRide(rideRef.current, route, dt, input);
-
-    const bpm = hr.last && isFresh(hr.last, now) ? hr.last.bpm : null;
-    if (bpm !== null && hr.source === 'simulated') hrSimulated.current = true;
-    hrTime.current = addHrSample(hrTime.current, bpm, dt, settings.athlete.hrZonesPer10s);
-    if (watts !== null && csc.source === 'simulated') powerSimulated.current = true;
-    power.current = samplePower(power.current, dt, watts);
-
     rideRef.current = next;
+    recorder.tick(dt, routeInputOf(route, next, false));
     setRide(next);
     if (next.finished) {
       setStatus('paused');
-      finish(next);
+      finish();
     }
   });
   useWakeLock(running);
+  // Saved every 10 s, on pause and when the tab hides, until the summary.
+  useInProgressSaver(status !== 'ready' && !result, running, snapshot);
 
   const close = () => {
     stopRide();
@@ -160,7 +158,7 @@ export default function RideView({ route, mode }: { route: Route; mode: RideMode
             className="btn danger wide"
             onConfirm={() => {
               setStatus('paused');
-              finish(rideRef.current);
+              finish();
             }}
           />
         </div>

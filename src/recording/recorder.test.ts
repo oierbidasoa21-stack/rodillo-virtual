@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import type { HrZone } from '../domain/zones/zones';
-import { type RecorderInput, type RecorderState, recorderTick, startRecorder } from './recorder';
+import {
+  type RecorderInput,
+  type RecorderState,
+  recorderTick,
+  routeInputOf,
+  startRecorder,
+} from './recorder';
+import { builtinRoutes } from '../domain/route/examples';
+import { positionAt } from '../domain/route/position';
+import { startRide } from '../domain/route/ride';
 
 const ZONES: HrZone[] = [
   { id: 'L1', label: 'L1', min: 20, max: 21 },
@@ -74,5 +83,19 @@ describe('recorderTick', () => {
     const next = run(back, 1, { ...NONE, bpm: 150, wheelSpeedKmh: 30 });
     expect(next.recording.samples.map((x) => x.t)).toEqual([1, 2, 3]);
     expect(next.hrTime.coveredSec).toBeCloseTo(3, 6);
+  });
+});
+
+describe('routeInputOf', () => {
+  it('takes distance and speed from the ride and height and position from the route, looping', () => {
+    const route = builtinRoutes()[0];
+    if (!route) throw new Error('route');
+    const ride = { ...startRide(), distanceM: route.distanceM + 5, speedMs: 10 };
+    const r = routeInputOf(route, ride, true);
+    const start = positionAt(route, 5);
+    expect(r.distanceM).toBe(route.distanceM + 5);
+    expect(r.speedKmh).toBeCloseTo(36, 6);
+    expect(r.altitudeM).toBeCloseTo(start.ele, 6);
+    expect([r.lat, r.lon]).toEqual([start.lat, start.lon]);
   });
 });

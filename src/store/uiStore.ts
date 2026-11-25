@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { RideMode } from '../domain/route/ride';
 import type { Route } from '../domain/route/route';
 import type { Workout } from '../domain/workout/types';
+import type { SessionSnapshot } from '../recording/session';
 import type { StoragePersistence } from '../storage/persist';
 
 export type Tab = 'library' | 'routes' | 'history' | 'sensors' | 'settings';
@@ -23,6 +24,7 @@ interface UiStore {
     workout: Workout,
     mode?: 'normal' | 'ramp',
     route?: { route: Route; mode: RideMode } | null,
+    resume?: SessionSnapshot | null,
   ) => void;
   stopPlayer: () => void;
   /** Result of asking the browser to keep our data; null until asked. */
@@ -30,7 +32,9 @@ interface UiStore {
   setStoragePersistence: (value: StoragePersistence) => void;
   /** Route being ridden, full screen. */
   riding: { route: Route; mode: RideMode } | null;
-  startRide: (route: Route, mode: RideMode) => void;
+  startRide: (route: Route, mode: RideMode, resume?: SessionSnapshot | null) => void;
+  /** Saved session the open player or race view continues, if any. */
+  resume: SessionSnapshot | null;
   stopRide: () => void;
   toast: { id: number; text: string } | null;
   showToast: (text: string) => void;
@@ -47,14 +51,15 @@ export const useUiStore = create<UiStore>()((set) => ({
   playing: null,
   playingMode: 'normal',
   playingRoute: null,
-  startWorkout: (workout, mode = 'normal', route = null) =>
-    set({ playing: workout, playingMode: mode, playingRoute: route }),
-  stopPlayer: () => set({ playing: null }),
+  startWorkout: (workout, mode = 'normal', route = null, resume = null) =>
+    set({ playing: workout, playingMode: mode, playingRoute: route, resume }),
+  stopPlayer: () => set({ playing: null, resume: null }),
   storagePersistence: null,
   setStoragePersistence: (value) => set({ storagePersistence: value }),
   riding: null,
-  startRide: (route, mode) => set({ riding: { route, mode } }),
-  stopRide: () => set({ riding: null }),
+  startRide: (route, mode, resume = null) => set({ riding: { route, mode }, resume }),
+  stopRide: () => set({ riding: null, resume: null }),
+  resume: null,
   toast: null,
   showToast: (text) => set({ toast: { id: Date.now(), text } }),
   hideToast: () => set({ toast: null }),

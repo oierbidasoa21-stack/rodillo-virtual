@@ -9,6 +9,7 @@ import { useTheme } from './hooks/useTheme';
 import Player from './player/Player';
 import RideView from './ride/RideView';
 import RoutesView from './routes/RoutesView';
+import ResumeBanner from './session/ResumeBanner';
 import UpdatePrompt from './pwa/UpdatePrompt';
 import SensorChips from './sensors/SensorChips';
 import SensorsView from './sensors/SensorsView';
@@ -26,6 +27,7 @@ export default function App() {
   const playingMode = useUiStore((s) => s.playingMode);
   const playingRoute = useUiStore((s) => s.playingRoute);
   const riding = useUiStore((s) => s.riding);
+  const resume = useUiStore((s) => s.resume);
   useTheme();
 
   useEffect(() => {
@@ -59,6 +61,7 @@ export default function App() {
         )}
         {status === 'ready' && (
           <>
+            {!playing && !riding && <ResumeBanner />}
             <Tabs />
             <ZoneStrip />
             <main>
@@ -73,9 +76,22 @@ export default function App() {
       </div>
       {editing && <EditorSheet key={editing.id ?? 'new'} initial={editing} />}
       {playing && (
-        <Player key={playing.id} workout={playing} mode={playingMode} route={playingRoute} />
+        <Player
+          key={playing.id}
+          workout={playing}
+          mode={playingMode}
+          route={playingRoute}
+          resume={resume?.kind === 'workout' ? resume : null}
+        />
       )}
-      {riding && <RideView key={riding.route.id} route={riding.route} mode={riding.mode} />}
+      {riding && (
+        <RideView
+          key={riding.route.id}
+          route={riding.route}
+          mode={riding.mode}
+          resume={resume?.kind === 'ride' ? resume : null}
+        />
+      )}
       <UpdatePrompt />
       <Toast />
     </>

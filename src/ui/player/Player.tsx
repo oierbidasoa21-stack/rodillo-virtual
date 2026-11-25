@@ -1,21 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { unlockAudio } from '../../audio/beeper';
 import { playCues } from '../../audio/cues';
-import {
-  MIN_SAVED_SESSION_SEC,
-  type SessionSummary,
-  buildSessionSummary,
-  rideSummaryOf,
-} from '../../domain/metrics/summary';
+import type { SessionSummary } from '../../domain/metrics/summary';
 import { type RideMode, type RideState, advanceRide, startRide } from '../../domain/route/ride';
 import type { Route } from '../../domain/route/route';
-import { addHrSample, emptyHrTime } from '../../domain/metrics/hrTime';
-import { emptyPowerSampler, samplePower } from '../../domain/metrics/power';
 import { curveFor, speedForPowerKmh } from '../../domain/trainer/curves';
 import { expandWorkout } from '../../domain/workout/expand';
 import { type RampResult, ftpFromRamp, rampStepsCompleted } from '../../domain/workout/ramp';
 import { targetWatts } from '../../domain/workout/targets';
 import {
+  type PlayerState,
   type Transition,
   addCount,
   createPlayer,
@@ -30,21 +24,21 @@ import {
 } from '../../domain/workout/player';
 import { BLOCK_KIND_LABELS, type Workout, hrZoneOf } from '../../domain/workout/types';
 import { type HrZone, ZONE_META, findZone } from '../../domain/zones/zones';
-import { estimatePowerW } from '../../sensors/estimatedPower';
-import { isFresh } from '../../sensors/freshness';
+import { routeInputOf } from '../../recording/recorder';
+import { type SessionSnapshot, summaryFromSnapshot } from '../../recording/session';
 import {
   SIM_REFERENCE_FTP_W,
   simulatedBpmForEffort,
   zoneMidBpm,
 } from '../../sensors/simulated/follow';
-import { useHistoryStore } from '../../store/historyStore';
-import { useSensorsStore } from '../../store/sensorsStore';
 import { useSimulationStore } from '../../store/simulationStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useUiStore } from '../../store/uiStore';
 import ConfirmButton from '../ConfirmButton';
 import { formatClock, zoneBpmText, zoneRangeText } from '../format';
+import { useInProgressSaver } from '../hooks/useInProgressSaver';
 import { usePlayerClock } from '../hooks/usePlayerClock';
+import { useSessionRecorder } from '../hooks/useSessionRecorder';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { targetColor, targetShortLabel } from '../targetStyle';
 import WorkoutProfile from '../WorkoutProfile';
@@ -53,40 +47,48 @@ import RampResultCard from '../ramp/RampResultCard';
 import ModeBadge from '../ride/ModeBadge';
 import { currentRideInput } from '../ride/rideInput';
 import RouteStrip from '../ride/RouteStrip';
+import { saveFinishedSession } from '../session/saveSession';
 import HrCounter from './HrCounter';
 import PowerTargetDetail from './PowerTargetDetail';
 import LiveMetrics from './LiveMetrics';
 import SensorAlerts from './SensorAlerts';
 import Summary from './Summary';
 
+type WorkoutSnapshot = Extract<SessionSnapshot, { kind: 'workout' }>;
+
+/** A resumed session waits for the rider to press Reanudar. */
+function pausedOf(state: PlayerState): PlayerState {
+  return state.status === 'running' ? { ...state, status: 'paused' } : state;
+}
+
 /** Full-screen workout player, readable from a metre away. Ends in the summary. */
 export default function Player({
   workout,
   mode = 'normal',
   route = null,
+  resume = null,
 }: {
   workout: Workout;
   /** 'ramp': one-press stop and an FTP estimate at the end. */
   mode?: 'normal' | 'ramp';
   /** Ride the workout on this route; it loops until the workout ends. */
   route?: { route: Route; mode: RideMode } | null;
+  /** Session saved in progress to continue. */
+  resume?: WorkoutSnapshot | null;
 }) {
   const zones = useSettingsStore((s) => s.settings.athlete.hrZonesPer10s);
-  const addHistory = useHistoryStore((s) => s.add);
   const stopPlayer = useUiStore((s) => s.stopPlayer);
   const setTab = useUiStore((s) => s.setTab);
   const showToast = useUiStore((s) => s.showToast);
 
-  const [player, setPlayer] = useState(() => createPlayer(expandWorkout(workout.blocks)));
+  const [player, setPlayer] = useState(() =>
+    resume ? pausedOf(resume.player) : createPlayer(expandWorkout(workout.blocks)),
+  );
   const playerRef = useRef(player);
-  // Heart rate measured while the clock runs, and whether any of it was simulated.
-  const hrTime = useRef(emptyHrTime());
-  const hrSimulated = useRef(false);
-  // Estimated power, one sample per second, and whether it came from a simulated sensor.
-  const power = useRef(emptyPowerSampler());
-  const powerSimulated = useRef(false);
+  // Heart rate, power and the 1 Hz samples recorded while the clock runs.
+  const recorder = useSessionRecorder(resume?.recorder ?? null);
   // Position on the route, if the workout is ridden on one.
-  const [ride, setRide] = useState<RideState>(startRide);
+  const [ride, setRide] = useState<RideState>(() => resume?.ride ?? startRide());
   const rideRef = useRef(ride);
   // Target zone when the count was opened; the step may change while counting.
   const [countTarget, setCountTarget] = useState<HrZone | null>(null);
@@ -103,64 +105,54 @@ export default function Player({
     powerSimulated: boolean;
   } | null>(null);
 
-  const apply = useCallback(
-    (t: Transition) => {
-      playerRef.current = t.state;
-      setPlayer(t.state);
-      const { settings } = useSettingsStore.getState();
-      playCues(t.events, { ...settings, ftpW: settings.athlete.ftp?.watts ?? null });
-      if (t.events.some((e) => e.type === 'finished')) {
-        useSimulationStore.getState().set(simBefore);
-        const summary = buildSessionSummary({
-          id: crypto.randomUUID(),
-          dateMs: Date.now(),
-          workoutName: workout.name,
-          player: t.state,
-          weightKg: settings.athlete.weightKg,
-          hr: hrTime.current,
-          hrSimulated: hrSimulated.current,
-          powerSamples: power.current.samples,
-          powerSimulated: powerSimulated.current,
-          ftpW: settings.athlete.ftp?.watts ?? null,
-          ...(route ? { ride: rideSummaryOf(route.route, rideRef.current, route.mode) } : {}),
-        });
-        const saved = summary.durationSec >= MIN_SAVED_SESSION_SEC;
-        if (saved) void addHistory(summary);
-        const ramp =
-          mode === 'ramp'
-            ? ftpFromRamp(power.current.samples, rampStepsCompleted(t.state.index))
-            : null;
-        setCountTarget(null);
-        setResult({ summary, saved, ramp, powerSimulated: powerSimulated.current });
-      }
-    },
-    [workout.name, addHistory, mode, simBefore, route],
-  );
+  const snapshot = (state: PlayerState): WorkoutSnapshot => ({
+    kind: 'workout',
+    savedAtMs: Date.now(),
+    workout,
+    playMode: mode,
+    player: state,
+    route,
+    ride: rideRef.current,
+    recorder: recorder.ref.current,
+  });
+
+  const apply = (t: Transition) => {
+    playerRef.current = t.state;
+    setPlayer(t.state);
+    const { settings } = useSettingsStore.getState();
+    playCues(t.events, { ...settings, ftpW: settings.athlete.ftp?.watts ?? null });
+    if (t.events.some((e) => e.type === 'finished')) {
+      useSimulationStore.getState().set(simBefore);
+      const rec = recorder.ref.current;
+      const summary = summaryFromSnapshot(snapshot(t.state), {
+        id: crypto.randomUUID(),
+        dateMs: Date.now(),
+        weightKg: settings.athlete.weightKg,
+        ftpW: settings.athlete.ftp?.watts ?? null,
+      });
+      const saved = saveFinishedSession(summary, rec);
+      const ramp =
+        mode === 'ramp' ? ftpFromRamp(rec.power.samples, rampStepsCompleted(t.state.index)) : null;
+      setCountTarget(null);
+      setResult({ summary, saved, ramp, powerSimulated: rec.powerSimulated });
+    }
+  };
 
   const running = player.status === 'running';
   usePlayerClock(running, (dt) => {
-    const { hr } = useSensorsStore.getState();
-    const bpm = hr.last && isFresh(hr.last, Date.now()) ? hr.last.bpm : null;
-    if (bpm !== null && hr.source === 'simulated') hrSimulated.current = true;
-    hrTime.current = addHrSample(
-      hrTime.current,
-      bpm,
-      dt,
-      useSettingsStore.getState().settings.athlete.hrZonesPer10s,
-    );
-    const { settings } = useSettingsStore.getState();
-    const { csc } = useSensorsStore.getState();
-    const watts = estimatePowerW(csc.last, curveFor(settings.trainer), Date.now());
-    if (watts !== null && csc.source === 'simulated') powerSimulated.current = true;
-    power.current = samplePower(power.current, dt, watts);
     if (route) {
       const { input } = currentRideInput(route.mode, Date.now());
       rideRef.current = advanceRide(rideRef.current, route.route, dt, input, true);
       setRide(rideRef.current);
     }
+    recorder.tick(dt, route ? routeInputOf(route.route, rideRef.current, true) : null);
     apply(tick(playerRef.current, dt));
   });
   useWakeLock(running);
+  // Saved every 10 s, on pause and when the tab hides, until the summary.
+  useInProgressSaver(player.status !== 'ready' && !result, running, () =>
+    snapshot(playerRef.current),
+  );
 
   // With simulated sensors and follow-zone on, the simulator rides the current block.
   const simulate = useSettingsStore((s) => s.settings.simulateSensors);
