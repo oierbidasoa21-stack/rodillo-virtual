@@ -83,3 +83,10 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Técnica · Suelo con dos capas** (carretera cercana ponderada por distancia + campo lejano suavizado) para que no haya acantilados lejos de la carretera ni el suelo tape la carretera en las herraduras.
 - **Técnica · Demo dentro de la app**, marcada como DEMO, a 200 W simulados y sin grabar ni guardar nada: enseña el 3D sin sensores sin mezclar datos inventados con los reales.
 - **Técnica · Vista 3D por defecto al rodar** (si hay WebGL), con botón para volver a 2D. No se guarda la preferencia.
+
+## 2026-11-26 — Más realismo en la vista 3D
+
+- **Usuario · Pide que el 3D sea más realista.** Se mejora lo que más se nota sin bajar los fps: sombras, texturas, cielo, marcas viales y balizas.
+- **Técnica · Texturas generadas en el navegador** (ruido, `ui/world/textures.ts`) en vez de imágenes: no pesan en la descarga ni tienen licencias.
+- **Técnica · Sol con sombras que siguen a la cámara** (caja de 80 m, mapa de 2048 px ajustado a texel para que no tiemblen): sombras nítidas cerca sin coste grande.
+- **Técnica · Balizas cada 50 m en los arcenes**: dan sensación de velocidad, como en las carreteras de montaña.

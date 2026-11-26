@@ -42,3 +42,5 @@ GitHub tiene un **milestone por fase** (0–7 cerrados, 8 abierto, 9 cerrado por
 1. **Fase 8** solo si el usuario compra un rodillo inteligente (pendiente de que lo diga).
 2. Mejoras que pida el usuario (ver `pendientes/PENDIENTES.md`).
 3. Cuando haya hardware: las pruebas del milestone «Pruebas con hardware real».
+
+_2026-11-26: vista 3D más realista (sombras, texturas, cielo con nubes, líneas laterales y balizas). El usuario ha probado el pulsómetro real (funciona) y ha importado una ruta GPX._

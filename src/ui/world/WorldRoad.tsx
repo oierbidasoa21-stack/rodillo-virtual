@@ -27,26 +27,18 @@ export default function WorldRoad({ path }: { path: WorldPath }) {
     },
     [road, verge, dashes, lines],
   );
-  const { asphalt, gravel } = useMemo(() => {
+  const asphalt = useMemo(() => {
     const a = asphaltTexture();
     a.repeat.set(1 / ASPHALT_TILE_M, 1 / ASPHALT_TILE_M);
-    const g = a.clone();
-    g.repeat.set(1 / 1.5, 1 / 1.5);
-    return { asphalt: a, gravel: g };
+    return a;
   }, []);
-  useEffect(
-    () => () => {
-      asphalt.dispose();
-      gravel.dispose();
-    },
-    [asphalt, gravel],
-  );
+  useEffect(() => () => asphalt.dispose(), [asphalt]);
   const start = useMemo(() => poseAt(path, 0), [path]);
 
   return (
     <>
       <mesh geometry={verge} receiveShadow>
-        <meshLambertMaterial color="#d8ccb2" map={gravel} polygonOffset polygonOffsetFactor={-1} />
+        <meshLambertMaterial color="#a89e88" polygonOffset polygonOffsetFactor={-1} />
       </mesh>
       <mesh geometry={road} receiveShadow>
         <meshLambertMaterial map={asphalt} polygonOffset polygonOffsetFactor={-2} />
