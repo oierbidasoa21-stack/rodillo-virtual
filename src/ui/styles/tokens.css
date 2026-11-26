@@ -17,6 +17,9 @@
   --ok: #22865a;
   --warn: #c0661a;
   --bad: #c23030;
+  /* Fitness chart series (validated for colour-blind separation). */
+  --series-condition: #1f5fd1;
+  --series-fatigue: #c0661a;
   --f-display: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
   --f-body: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
   color-scheme: light;
@@ -40,6 +43,8 @@
     --ok: #41b57e;
     --warn: #e58b3c;
     --bad: #ec5a5a;
+    --series-condition: #5b8cf0;
+    --series-fatigue: #d27a30;
     color-scheme: dark;
   }
 }
@@ -61,5 +66,7 @@
   --ok: #41b57e;
   --warn: #e58b3c;
   --bad: #ec5a5a;
+  --series-condition: #5b8cf0;
+  --series-fatigue: #d27a30;
   color-scheme: dark;
 }

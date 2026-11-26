@@ -4,6 +4,7 @@ import { useHistoryStore } from '../../store/historyStore';
 import ConfirmButton from '../ConfirmButton';
 import { formatMinutes } from '../format';
 import { formatKm } from '../ride/rideFormat';
+import FitnessPanel from './FitnessPanel';
 import SessionDetail from './SessionDetail';
 
 const dateFormat = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short' });
@@ -52,6 +53,7 @@ export default function HistoryView() {
           <div className="l">Carga, 7 días</div>
         </div>
       </div>
+      <FitnessPanel sessions={sessions} now={now} />
       <div className="scroll">
         <table>
           <thead>

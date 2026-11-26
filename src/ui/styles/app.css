@@ -537,3 +537,89 @@ tr.clickable:hover td {
   display: flex;
   gap: 8px;
 }
+
+/* Fitness panel (Historial) */
+.fitness-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.fitness-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.fitness-tiles > div {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.fitness-tiles .label {
+  color: var(--muted);
+  font-size: 13px;
+}
+.fitness-tiles b {
+  font-family: var(--f-display);
+  font-size: 32px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.fitness-tiles .hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+.fitness-level {
+  margin: 0;
+  font-weight: 600;
+}
+.chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.chart-head h3 {
+  font-size: 16px;
+}
+.legend {
+  display: flex;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--ink);
+}
+.legend .swatch {
+  display: inline-block;
+  width: 12px;
+  height: 3px;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.session-chart .readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 2px 0 4px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.session-chart .readout b {
+  color: var(--ink);
+}
+.session-chart .readout .when {
+  color: var(--ink);
+  font-weight: 600;
+}
+.session-chart .end-label {
+  fill: var(--ink);
+  font-size: 12px;
+}
+.session-chart .bar {
+  fill: var(--series-condition);
+}
