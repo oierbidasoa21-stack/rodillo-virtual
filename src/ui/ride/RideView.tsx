@@ -20,6 +20,8 @@ import Summary from '../player/Summary';
 import ElevationProfile from './ElevationProfile';
 import MiniMap from './MiniMap';
 import ModeBadge from './ModeBadge';
+import FullscreenButton from '../FullscreenButton';
+import { useFullscreen } from '../hooks/useFullscreen';
 import GhostChip from './GhostChip';
 import RideHud from './RideHud';
 import { storage } from '../../storage/repositories';
@@ -90,6 +92,12 @@ export default function RideView({
   });
 
   const voice = useVoiceCoach(route);
+  const {
+    ref: fullscreenRef,
+    active: fullscreenOn,
+    toggle: toggleFullscreen,
+    supported: fullscreenSupported,
+  } = useFullscreen<HTMLDivElement>();
 
   // Your fastest earlier ride on this route, replayed from its recording.
   const sessions = useHistoryStore((s) => s.sessions);
@@ -188,7 +196,7 @@ export default function RideView({
   );
 
   return (
-    <div className="overlay">
+    <div className="overlay" ref={fullscreenRef}>
       <div className={in3d ? 'sheet ride ride-3d' : 'sheet ride'}>
         <div className="sheet-top">
           <h2>{route.name}</h2>
@@ -214,6 +222,11 @@ export default function RideView({
                 ))}
               </select>
             )}
+            <FullscreenButton
+              active={fullscreenOn}
+              supported={fullscreenSupported}
+              onToggle={toggleFullscreen}
+            />
             <button
               type="button"
               className="btn"

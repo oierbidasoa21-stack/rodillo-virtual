@@ -38,6 +38,8 @@ import ConfirmButton from '../ConfirmButton';
 import { formatClock, zoneBpmText, zoneRangeText } from '../format';
 import { useInProgressSaver } from '../hooks/useInProgressSaver';
 import { useVoiceCoach } from '../hooks/useVoiceCoach';
+import { useFullscreen } from '../hooks/useFullscreen';
+import FullscreenButton from '../FullscreenButton';
 import { usePlayerClock } from '../hooks/usePlayerClock';
 import { useSessionRecorder } from '../hooks/useSessionRecorder';
 import { useWakeLock } from '../hooks/useWakeLock';
@@ -107,6 +109,12 @@ export default function Player({
   } | null>(null);
 
   const voice = useVoiceCoach(route?.route ?? null);
+  const {
+    ref: fullscreenRef,
+    active: fullscreenOn,
+    toggle: toggleFullscreen,
+    supported: fullscreenSupported,
+  } = useFullscreen<HTMLDivElement>();
 
   const snapshot = (state: PlayerState): WorkoutSnapshot => ({
     kind: 'workout',
@@ -218,7 +226,7 @@ export default function Player({
   const playLabel = running ? 'Pausa' : player.status === 'ready' ? 'Empezar' : 'Reanudar';
 
   return (
-    <div className="overlay">
+    <div className="overlay" ref={fullscreenRef}>
       <div className={route ? 'sheet pl with-route' : 'sheet pl'}>
         <div className="sheet-top">
           <h2>{workout.name}</h2>
@@ -227,6 +235,11 @@ export default function Player({
             Bloque {player.index + 1}/{player.steps.length} · Quedan{' '}
             <b>{formatClock(p.remainingTotalSec)}</b>
           </span>
+          <FullscreenButton
+            active={fullscreenOn}
+            supported={fullscreenSupported}
+            onToggle={toggleFullscreen}
+          />
         </div>
 
         <SensorAlerts />

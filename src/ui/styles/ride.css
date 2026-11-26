@@ -277,3 +277,17 @@
 .world-hud .ghost-chip {
   margin: 8px auto 0;
 }
+
+/* Full screen: the whole session screen, with the 3D view as tall as fits. */
+.overlay:fullscreen {
+  overflow-y: auto;
+}
+.overlay:fullscreen .sheet {
+  max-width: 1500px;
+}
+.overlay:fullscreen .sheet.ride-3d {
+  max-width: none;
+}
+.overlay:fullscreen .world-stage {
+  height: calc(100vh - 310px);
+}

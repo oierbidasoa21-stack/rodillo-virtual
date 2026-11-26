@@ -115,3 +115,4 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Técnica · Sin datos personales en la imagen**: `.dockerignore` excluye `config/*.local.json`, `data/` y `.git`; el build solo importa `athlete.example.json`.
 - **Producto · La web publicada sigue siendo la vía recomendada** para otras personas (sin instalar, datos en su navegador). Docker añade autoalojamiento; fuera de `localhost` necesita HTTPS para Bluetooth y PWA (documentado, sin incluir proxy).
 - **Limpieza · `demo3d.png`** se había subido por error (captura por defecto de un script de prueba): borrada, el script guarda en la carpeta temporal y `.gitignore` ignora `/*.png`.
+- **Usuario · Pantalla completa.** Con la API Fullscreen sobre toda la capa de la sesión (no solo el lienzo 3D), para que el HUD, el perfil y los botones sigan a mano; botón y tecla F en la ruta y en el reproductor; al cerrar la sesión se sale sola.
