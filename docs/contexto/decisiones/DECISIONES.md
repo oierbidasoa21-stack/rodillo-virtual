@@ -90,3 +90,8 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Técnica · Texturas generadas en el navegador** (ruido, `ui/world/textures.ts`) en vez de imágenes: no pesan en la descarga ni tienen licencias.
 - **Técnica · Sol con sombras que siguen a la cámara** (caja de 80 m, mapa de 2048 px ajustado a texel para que no tiemblen): sombras nítidas cerca sin coste grande.
 - **Técnica · Balizas cada 50 m en los arcenes**: dan sensación de velocidad, como en las carreteras de montaña.
+- **Usuario · «Lo más realista posible».** Segunda ronda:
+  - **Horizonte**: el terreno se nivela en su borde y un anillo de tierra con montañas (prados, bosque, roca y nieve por altura) llega hasta 6 km; la niebla va de 250 a 6000 m para que se vean a lo lejos difuminadas.
+  - **Vegetación a lo largo de la carretera** (320 árboles/km, matorrales y rocas) en vez de repartida por toda la caja de la ruta, que en rutas largas dejaba el paisaje vacío. Tres tipos de árbol, girados y teñidos al azar con semilla.
+  - **Ciclista**: brazos, manillar, sillín, zapatillas y ruedas con llanta y radios. Se inclina en las curvas con tan(α) = v²/(g·R) y balancea al pedalear.
+  - **Cámara**: acompaña un 30 % la inclinación y abre el campo de visión hasta 8° con la velocidad (sensación de velocidad).

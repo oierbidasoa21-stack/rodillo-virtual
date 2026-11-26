@@ -27,16 +27,22 @@ export function spanRod(mesh: Mesh, a: Vector3, b: Vector3): void {
   mesh.scale.set(1, len, 1);
 }
 
-/** Matrix for an instanced object at (x, y, z) with a uniform-ish scale. */
-export function placeMatrix(
+const pos = new Vector3();
+const scl = new Vector3();
+const rot = new Quaternion();
+
+/** Matrix for an instanced object at (x, y, z), turned `turn` about the vertical, scaled per axis. */
+export function propMatrix(
   m: Matrix4,
   x: number,
   y: number,
   z: number,
+  turn: number,
   sx: number,
   sy: number,
+  sz = sx,
 ): Matrix4 {
-  return m.makeScale(sx, sy, sx).setPosition(x, y, z);
+  return m.compose(pos.set(x, y, z), rot.setFromAxisAngle(UP, turn), scl.set(sx, sy, sz));
 }
 
 /** Grass colour for the ground: lusher low down, drier and lighter higher up. */

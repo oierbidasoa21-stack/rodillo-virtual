@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { builtinRoutes } from '../route/examples';
 import { buildRoute } from '../route/route';
 import { chaseCamera, pointAt, poseAt, projectRoute } from './path';
+import { farLevel } from './terrain';
+import { horizonRing, scatterBushes, scatterRocks, scatterTrees } from './scenery';
 import { centreDashes, edgeLines, ribbon, roadsidePosts } from './road';
 import {
   GROUND_BELOW_ROAD_M,
@@ -9,7 +11,6 @@ import {
   hills,
   indexRoad,
   roadNear,
-  scatterTrees,
   terrainGrid,
   valueNoise,
 } from './terrain';
@@ -210,11 +211,35 @@ describe('terrain', () => {
     expect(normalOf(grid.positions, i0, i1, i2)[1]).toBeGreaterThan(0);
   });
 
-  it('scatters the same trees every time, off the road and its verge', () => {
-    const a = scatterTrees(path, index, { maxTrees: 300 });
-    const b = scatterTrees(path, index, { maxTrees: 300 });
-    expect(a).toEqual(b);
-    expect(a.length).toBeGreaterThan(50);
-    for (const t of a) expect(roadNear(index, t.x, t.z).distM).toBeGreaterThan(9);
+  it('scatters the same trees every time, along the road but off it and its verge', () => {
+    const a = scatterTrees(path, index);
+    expect(a).toEqual(scatterTrees(path, index));
+    expect(a.length).toBeGreaterThan(100); // ~1 km at 320 per km, minus clumping gaps
+    for (const t of a) expect(roadNear(index, t.x, t.z).distM).toBeGreaterThan(9.9);
+    expect(new Set(a.map((t) => t.kind))).toEqual(new Set([0, 1, 2]));
+  });
+
+  it('puts bushes and rocks beside the road, never on it', () => {
+    for (const props of [scatterBushes(path, index), scatterRocks(path, index)]) {
+      expect(props.length).toBeGreaterThan(30);
+      for (const p of props) expect(roadNear(index, p.x, p.z).distM).toBeGreaterThan(6.9);
+    }
+  });
+
+  it('levels the terrain off to the far level at its edge', () => {
+    const grid = terrainGrid(path, index, { maxVertices: 5000 });
+    const level = farLevel(path);
+    for (let c = 0; c < grid.cols; c++) expect(grid.positions[c * 3 + 1]).toBeCloseTo(level, 3);
+  });
+
+  it('rings the terrain with flat land, then mountains, facing up', () => {
+    const ring = horizonRing(path, 600, { segments: 64 });
+    const level = farLevel(path);
+    // First ring of vertices just under the terrain edge, the outermost high above it.
+    expect(ring.positions[1]).toBeCloseTo(level - 3, 3);
+    const above = Array.from(ring.heightAboveM);
+    expect(Math.max(...above.slice(-64))).toBeGreaterThan(200);
+    const [i0, i1, i2] = [ring.indices[0] ?? 0, ring.indices[1] ?? 0, ring.indices[2] ?? 0];
+    expect(normalOf(ring.positions, i0, i1, i2)[1]).toBeGreaterThan(0);
   });
 });

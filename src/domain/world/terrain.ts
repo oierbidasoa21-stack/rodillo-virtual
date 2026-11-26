@@ -228,6 +228,25 @@ export function pathBounds(path: WorldPath, marginM: number): Bounds {
   };
 }
 
+/** Ground beyond the route's bounding box. */
+export const TERRAIN_MARGIN_M = 600;
+
+/** How far from the terrain edge the ground starts to level off to the horizon. */
+export const EDGE_BLEND_M = 400;
+
+/** The level the ground settles to at the edge of the terrain, where the horizon begins. */
+export function farLevel(path: WorldPath): number {
+  const ys = path.points.map((p) => p.y);
+  return ys.reduce((s, y) => s + y, 0) / Math.max(1, ys.length) - GROUND_BELOW_ROAD_M;
+}
+
+/** Weight (0 at the edge of `b`, 1 inside) that levels the terrain off near its edge. */
+export function edgeWeight(b: Bounds, x: number, z: number): number {
+  const e = Math.min(x - b.minX, b.maxX - x, z - b.minZ, b.maxZ - z);
+  const t = Math.min(1, Math.max(0, e / EDGE_BLEND_M));
+  return t * t * (3 - 2 * t);
+}
+
 /**
  * Ground as a regular grid over the route plus a margin, at most `maxVertices`
  * vertices (cells grow on long routes to keep it light on a laptop).
@@ -237,7 +256,7 @@ export function terrainGrid(
   index: RoadIndex,
   opts: { marginM?: number; maxVertices?: number; minCellM?: number } = {},
 ): MeshData & { cellM: number; cols: number; rows: number } {
-  const { marginM = 600, maxVertices = 60_000, minCellM = 12 } = opts;
+  const { marginM = TERRAIN_MARGIN_M, maxVertices = 60_000, minCellM = 12 } = opts;
   const b = pathBounds(path, marginM);
   const w = b.maxX - b.minX;
   const h = b.maxZ - b.minZ;
@@ -245,11 +264,14 @@ export function terrainGrid(
   const cols = Math.max(2, Math.ceil(w / cellM) + 1);
   const rows = Math.max(2, Math.ceil(h / cellM) + 1);
   const positions = new Float32Array(cols * rows * 3);
+  const level = farLevel(path);
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       const x = b.minX + c * cellM;
       const z = b.minZ + r * cellM;
-      positions.set([x, groundHeight(index, x, z), z], (r * cols + c) * 3);
+      // Level off towards the edge so it meets the horizon ring seamlessly.
+      const y = level + (groundHeight(index, x, z) - level) * edgeWeight(b, x, z);
+      positions.set([x, y, z], (r * cols + c) * 3);
     }
   }
   const indices = new Uint32Array((cols - 1) * (rows - 1) * 6);
@@ -278,46 +300,4 @@ export function rng(seed: number): () => number {
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
-}
-
-export interface Tree {
-  x: number;
-  y: number;
-  z: number;
-  /** Height in metres. */
-  heightM: number;
-  /** 0 = conifer, 1 = round leafy tree. */
-  kind: 0 | 1;
-}
-
-/**
- * Trees scattered near the road (where they are seen), never on it or its verge,
- * denser in clumps. Same route, same trees.
- */
-export function scatterTrees(
-  path: WorldPath,
-  index: RoadIndex,
-  opts: { maxTrees?: number; nearM?: number; seed?: number } = {},
-): Tree[] {
-  const { maxTrees = 1800, nearM = 260, seed = 42 } = opts;
-  const rand = rng(seed);
-  const b = pathBounds(path, nearM);
-  const trees: Tree[] = [];
-  const attempts = maxTrees * 12;
-  for (let i = 0; i < attempts && trees.length < maxTrees; i++) {
-    const x = b.minX + rand() * (b.maxX - b.minX);
-    const z = b.minZ + rand() * (b.maxZ - b.minZ);
-    const { distM } = roadNear(index, x, z);
-    if (distM < VERGE_M + 3 || distM > nearM) continue;
-    // Clumps: keep more where the noise is high.
-    if (valueNoise(x / 90, z / 90, 99) < 0.45 + rand() * 0.2) continue;
-    trees.push({
-      x,
-      y: groundHeight(index, x, z),
-      z,
-      heightM: 6 + rand() * 8,
-      kind: rand() < 0.55 ? 0 : 1,
-    });
-  }
-  return trees;
 }

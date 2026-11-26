@@ -1,6 +1,6 @@
 import { useFrame } from '@react-three/fiber';
 import { type RefObject, useLayoutEffect, useMemo, useRef } from 'react';
-import { type Group, type Mesh, Vector3 } from 'three';
+import { type Group, type Mesh, type PerspectiveCamera, Vector3 } from 'three';
 import { type WorldPath, chaseCamera, poseAt } from '../../domain/world/path';
 import { spanRod } from './geometry';
 
@@ -28,7 +28,18 @@ const P = {
   bar: new Vector3(0, 1.0, -0.47),
   hip: new Vector3(0, 1.02, 0.17),
   shoulder: new Vector3(0, 1.42, -0.22),
+  shoulderL: new Vector3(-0.19, 1.4, -0.22),
+  shoulderR: new Vector3(0.19, 1.4, -0.22),
+  elbowL: new Vector3(-0.22, 1.18, -0.33),
+  elbowR: new Vector3(0.22, 1.18, -0.33),
+  handL: new Vector3(-0.2, 1.02, -0.5),
+  handR: new Vector3(0.2, 1.02, -0.5),
+  barL: new Vector3(-0.22, 1.0, -0.47),
+  barR: new Vector3(0.22, 1.0, -0.47),
 };
+const G = 9.81;
+/** Wraps an angle difference to (-π, π]. */
+const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
 const JERSEY = '#1f5fd1';
 const SHORTS = '#1d2430';
 const SKIN = '#e0b48f';
@@ -62,10 +73,11 @@ export default function WorldRider({
   const bike = useRef<Group>(null);
   const crank = useRef<Group>(null);
   // Moving parts, filled in by callback refs: wheels [rear, front], legs [thigh, shin] × 2.
-  const parts = useRef<{ wheels: (Mesh | null)[]; legs: (Mesh | null)[] }>({
-    wheels: [],
-    legs: [],
-  });
+  const parts = useRef<{
+    wheels: (Group | null)[];
+    legs: (Mesh | null)[];
+    feet: (Mesh | null)[];
+  }>({ wheels: [], legs: [], feet: [] });
   const staticRods = useMemo(
     () =>
       [
@@ -77,7 +89,12 @@ export default function WorldRider({
         [P.headTop, P.frontHub, 0.022, '#333'],
         [P.headTop, P.bar, 0.02, '#333'],
         [P.hip, P.shoulder, 0.17, JERSEY],
-        [P.shoulder, P.bar.clone().setY(P.bar.y + 0.02), 0.05, JERSEY],
+        [P.shoulderL, P.shoulderR, 0.09, JERSEY],
+        [P.barL, P.barR, 0.016, '#222'],
+        [P.shoulderL, P.elbowL, 0.05, JERSEY],
+        [P.shoulderR, P.elbowR, 0.05, JERSEY],
+        [P.elbowL, P.handL, 0.04, SKIN],
+        [P.elbowR, P.handR, 0.04, SKIN],
       ] as const,
     [],
   );
@@ -87,7 +104,7 @@ export default function WorldRider({
       o.castShadow = true;
     });
   }, []);
-  const shown = useRef({ d: 0, crank: 0, wheel: 0, ready: false });
+  const shown = useRef({ d: 0, crank: 0, wheel: 0, lean: 0, ready: false });
   const camPos = useRef(new Vector3());
   const camLook = useRef(new Vector3());
   const tmp = useMemo(
@@ -112,13 +129,20 @@ export default function WorldRider({
     else s.d += (target - s.d) * (1 - Math.exp(-dt * 6));
 
     const pose = poseAt(path, s.d);
-    bike.current?.position.set(pose.position.x, pose.position.y + 0.02, pose.position.z);
-    bike.current?.rotation.set(pose.pitch, -pose.heading, 0, 'YXZ');
-
     // Pedalling: the measured cadence, or a natural one while the bike moves.
     const moving = m.running && m.speedMs > 0.3;
     const rpm = moving ? (m.cadenceRpm ?? 80) : 0;
     s.crank += (rpm / 60) * Math.PI * 2 * dt;
+
+    // Lean into corners as a real bike does: tan(lean) = v² / (g·R) = v · yaw rate / g.
+    const turnPerM = wrap(poseAt(path, s.d + 4).heading - poseAt(path, s.d - 4).heading) / 8;
+    const v = moving ? m.speedMs : 0;
+    const leanTarget = Math.max(-0.4, Math.min(0.4, Math.atan((v * v * turnPerM) / G)));
+    s.lean += (leanTarget - s.lean) * (1 - Math.exp(-dt * 4));
+    // A little side-to-side rock with each pedal stroke.
+    const rock = moving ? Math.sin(s.crank) * 0.025 : 0;
+    bike.current?.position.set(pose.position.x, pose.position.y + 0.02, pose.position.z);
+    bike.current?.rotation.set(pose.pitch, -pose.heading, -s.lean + rock, 'YXZ');
     s.wheel += (moving ? m.speedMs / WHEEL_R : 0) * dt;
     for (const w of parts.current.wheels) if (w) w.rotation.x = -s.wheel;
     if (crank.current) crank.current.rotation.x = -s.crank;
@@ -134,6 +158,7 @@ export default function WorldRider({
       const shin = parts.current.legs[side * 2 + 1];
       if (thigh) spanRod(thigh, tmp.hip, tmp.knee);
       if (shin) spanRod(shin, tmp.knee, tmp.foot);
+      parts.current.feet[side]?.position.set(x, tmp.foot.y, tmp.foot.z - 0.05);
     }
 
     // Chase camera, eased so corners and hills feel smooth.
@@ -150,21 +175,62 @@ export default function WorldRider({
     }
     camera.position.copy(camPos.current);
     camera.lookAt(camLook.current);
+    // Bank a little with the bike, and widen the view slightly with speed.
+    camera.rotateZ(-s.lean * 0.3);
+    const cam3 = camera as PerspectiveCamera;
+    const fov = 58 + Math.min(8, v * 0.35);
+    if (Math.abs(cam3.fov - fov) > 0.05) {
+      cam3.fov += (fov - cam3.fov) * (1 - Math.exp(-dt * 2));
+      cam3.updateProjectionMatrix();
+    }
   });
 
   return (
     <group ref={bike}>
       {[P.rearHub, P.frontHub].map((hub, i) => (
-        <mesh
+        <group
           key={i}
           ref={(el) => {
             parts.current.wheels[i] = el;
           }}
           position={hub}
-          rotation={[0, Math.PI / 2, 0]}
         >
-          <torusGeometry args={[WHEEL_R, 0.025, 6, 24]} />
-          <meshLambertMaterial color="#1b1b1b" />
+          {/* Tyre, rim, hub and spokes, all in the wheel's plane (y–z). */}
+          <mesh rotation={[0, Math.PI / 2, 0]}>
+            <torusGeometry args={[WHEEL_R - 0.016, 0.018, 8, 32]} />
+            <meshStandardMaterial color="#1a1a1a" roughness={0.9} />
+          </mesh>
+          <mesh rotation={[0, Math.PI / 2, 0]}>
+            <torusGeometry args={[WHEEL_R - 0.045, 0.012, 6, 32]} />
+            <meshStandardMaterial color="#2b2b2e" metalness={0.6} roughness={0.35} />
+          </mesh>
+          <mesh rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.03, 0.03, 0.1, 10]} />
+            <meshStandardMaterial color="#9a9a9a" metalness={0.7} roughness={0.3} />
+          </mesh>
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((k) => (
+            <mesh key={k} rotation={[(k * Math.PI) / 8, 0, 0]}>
+              <cylinderGeometry args={[0.003, 0.003, (WHEEL_R - 0.05) * 2, 3]} />
+              <meshStandardMaterial color="#c8c8c8" metalness={0.8} roughness={0.3} />
+            </mesh>
+          ))}
+        </group>
+      ))}
+      {/* Saddle */}
+      <mesh position={[0, P.seat.y + 0.04, P.seat.z - 0.03]}>
+        <boxGeometry args={[0.13, 0.04, 0.27]} />
+        <meshStandardMaterial color="#111" roughness={0.6} />
+      </mesh>
+      {/* Shoes, moved with the pedals */}
+      {[0, 1].map((i) => (
+        <mesh
+          key={i}
+          ref={(el) => {
+            parts.current.feet[i] = el;
+          }}
+        >
+          <boxGeometry args={[0.09, 0.07, 0.25]} />
+          <meshStandardMaterial color="#f2f2f2" roughness={0.5} />
         </mesh>
       ))}
       {staticRods.map(([a, b, r, color], i) => (
