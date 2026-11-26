@@ -1,6 +1,6 @@
 import { useFrame } from '@react-three/fiber';
 import { type RefObject, useLayoutEffect, useMemo, useRef } from 'react';
-import { type Group, type Mesh, type PerspectiveCamera, Vector3 } from 'three';
+import { type Group, type Mesh, type PerspectiveCamera, Mesh as ThreeMesh, Vector3 } from 'three';
 import { type WorldPath, chaseCamera, poseAt } from '../../domain/world/path';
 import { spanRod } from './geometry';
 
@@ -38,6 +38,7 @@ const P = {
   barR: new Vector3(0.22, 1.0, -0.47),
 };
 const G = 9.81;
+const GHOST_OFFSET_M = 1.3;
 /** Wraps an angle difference to (-π, π]. */
 const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
 const JERSEY = '#1f5fd1';
@@ -66,9 +67,12 @@ function knee(hip: Vector3, foot: Vector3, out: Vector3): Vector3 {
 export default function WorldRider({
   path,
   motion,
+  ghost = false,
 }: {
   path: WorldPath;
   motion: RefObject<RiderMotion>;
+  /** A translucent rival a little to the left that does not drive the camera. */
+  ghost?: boolean;
 }) {
   const bike = useRef<Group>(null);
   const crank = useRef<Group>(null);
@@ -101,9 +105,16 @@ export default function WorldRider({
   // Every part of the rider and bike casts a shadow on the road.
   useLayoutEffect(() => {
     bike.current?.traverse((o) => {
-      o.castShadow = true;
+      o.castShadow = !ghost;
+      if (ghost && o instanceof ThreeMesh) {
+        for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
+          m.transparent = true;
+          m.opacity = 0.42;
+          m.depthWrite = false;
+        }
+      }
     });
-  }, []);
+  }, [ghost]);
   const shown = useRef({ d: 0, crank: 0, wheel: 0, lean: 0, ready: false });
   const camPos = useRef(new Vector3());
   const camLook = useRef(new Vector3());
@@ -141,7 +152,13 @@ export default function WorldRider({
     s.lean += (leanTarget - s.lean) * (1 - Math.exp(-dt * 4));
     // A little side-to-side rock with each pedal stroke.
     const rock = moving ? Math.sin(s.crank) * 0.025 : 0;
-    bike.current?.position.set(pose.position.x, pose.position.y + 0.02, pose.position.z);
+    // The ghost rides 1.3 m to the left so the two never overlap.
+    const side = ghost ? -GHOST_OFFSET_M : 0;
+    bike.current?.position.set(
+      pose.position.x + Math.cos(pose.heading) * side,
+      pose.position.y + 0.02,
+      pose.position.z + Math.sin(pose.heading) * side,
+    );
     bike.current?.rotation.set(pose.pitch, -pose.heading, -s.lean + rock, 'YXZ');
     s.wheel += (moving ? m.speedMs / WHEEL_R : 0) * dt;
     for (const w of parts.current.wheels) if (w) w.rotation.x = -s.wheel;
@@ -161,6 +178,7 @@ export default function WorldRider({
       parts.current.feet[side]?.position.set(x, tmp.foot.y, tmp.foot.z - 0.05);
     }
 
+    if (ghost) return;
     // Chase camera, eased so corners and hills feel smooth.
     const cam = chaseCamera(path, s.d);
     tmp.look.set(cam.target.x, cam.target.y, cam.target.z);

@@ -1,4 +1,4 @@
-import { Suspense, lazy, useRef, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
 import { beep, unlockAudio } from '../../audio/beeper';
 import type { SessionSummary } from '../../domain/metrics/summary';
 import { positionAt } from '../../domain/route/position';
@@ -20,7 +20,18 @@ import Summary from '../player/Summary';
 import ElevationProfile from './ElevationProfile';
 import MiniMap from './MiniMap';
 import ModeBadge from './ModeBadge';
+import GhostChip from './GhostChip';
 import RideHud from './RideHud';
+import { storage } from '../../storage/repositories';
+import { useHistoryStore } from '../../store/historyStore';
+import {
+  type Ghost,
+  bestRideOn,
+  gapToGhostSec,
+  ghostDistanceAt,
+  ghostFrom,
+  ghostSpeedAt,
+} from '../../recording/ghost';
 import { currentRideInput } from './rideInput';
 import { RIDE_MODE_HINT } from './rideMode';
 import { saveFinishedSession } from '../session/saveSession';
@@ -79,6 +90,28 @@ export default function RideView({
   });
 
   const voice = useVoiceCoach(route);
+
+  // Your fastest earlier ride on this route, replayed from its recording.
+  const sessions = useHistoryStore((s) => s.sessions);
+  const best = useMemo(() => bestRideOn(sessions, route.id), [sessions, route.id]);
+  const [ghost, setGhost] = useState<Ghost | null>(null);
+  useEffect(() => {
+    if (!best) return;
+    let alive = true;
+    void storage.getRecording(best.id).then((rec) => {
+      if (alive && rec) setGhost(ghostFrom(best.id, best.dateMs, rec.samples));
+    });
+    return () => {
+      alive = false;
+    };
+  }, [best]);
+  const ghostNow = ghost
+    ? {
+        distanceM: ghostDistanceAt(ghost, ride.elapsedSec),
+        speedMs: ghostSpeedAt(ghost, ride.elapsedSec),
+        gapSec: gapToGhostSec(ghost, ride.distanceM, ride.elapsedSec),
+      }
+    : null;
 
   const finish = () => {
     if (demo) return; // the demo stops where it is and saves nothing
@@ -208,12 +241,19 @@ export default function RideView({
                 cadenceRpm={cadence}
                 running={running}
                 timeOfDay={timeOfDay}
+                ghost={ghostNow}
               />
             </Suspense>
-            <div className="world-hud">{hud}</div>
+            <div className="world-hud">
+              {hud}
+              {ghost && ghostNow && <GhostChip gapSec={ghostNow.gapSec} dateMs={ghost.dateMs} />}
+            </div>
           </div>
         ) : (
-          hud
+          <>
+            {hud}
+            {ghost && ghostNow && <GhostChip gapSec={ghostNow.gapSec} dateMs={ghost.dateMs} />}
+          </>
         )}
 
         <div className="ride-graphs">

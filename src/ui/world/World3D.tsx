@@ -24,6 +24,8 @@ interface Props {
   cadenceRpm: number | null;
   running: boolean;
   timeOfDay?: TimeOfDay;
+  /** Your best earlier ride on this route, replayed. */
+  ghost?: { distanceM: number; speedMs: number } | null;
 }
 
 /**
@@ -37,6 +39,7 @@ export default function World3D({
   cadenceRpm,
   running,
   timeOfDay = 'morning',
+  ghost = null,
 }: Props) {
   const light = LIGHTING[timeOfDay];
   const path = useMemo(() => projectRoute(route), [route]);
@@ -51,6 +54,25 @@ export default function World3D({
   useEffect(() => {
     motion.current = { distanceM, speedMs, cadenceRpm, running, atMs: performance.now() };
   }, [distanceM, speedMs, cadenceRpm, running]);
+  const ghostMotion = useRef<RiderMotion>({
+    distanceM: 0,
+    speedMs: 0,
+    cadenceRpm: null,
+    running: false,
+    atMs: 0,
+  });
+  const ghostD = ghost?.distanceM ?? null;
+  const ghostV = ghost?.speedMs ?? 0;
+  useEffect(() => {
+    if (ghostD === null) return;
+    ghostMotion.current = {
+      distanceM: ghostD,
+      speedMs: ghostV,
+      cadenceRpm: null,
+      running,
+      atMs: performance.now(),
+    };
+  }, [ghostD, ghostV, running]);
 
   return (
     <Canvas
@@ -75,6 +97,7 @@ export default function World3D({
       <WorldTrees path={path} index={index} />
       <WorldScenery path={path} index={index} />
       <WorldRider path={path} motion={motion} />
+      {ghost && <WorldRider path={path} motion={ghostMotion} ghost />}
     </Canvas>
   );
 }

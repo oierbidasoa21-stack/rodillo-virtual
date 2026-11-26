@@ -255,3 +255,25 @@
 .ride-badges .time-of-day {
   width: auto;
 }
+
+.ghost-chip {
+  margin: 0;
+  justify-self: center;
+  align-self: start;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: 15px;
+  color: var(--ink);
+  width: max-content;
+}
+.ghost-chip.behind b {
+  color: var(--warn);
+}
+.ghost-chip.ahead b {
+  color: var(--ok);
+}
+.world-hud .ghost-chip {
+  margin: 8px auto 0;
+}
