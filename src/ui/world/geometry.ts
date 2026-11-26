@@ -7,6 +7,7 @@ export function toGeometry(mesh: MeshData, colors?: Float32Array): BufferGeometr
   g.setAttribute('position', new BufferAttribute(mesh.positions, 3));
   g.setIndex(new BufferAttribute(mesh.indices, 1));
   if (colors) g.setAttribute('color', new BufferAttribute(colors, 3));
+  if (mesh.uvs) g.setAttribute('uv', new BufferAttribute(mesh.uvs, 2));
   g.computeVertexNormals();
   g.computeBoundingSphere();
   return g;

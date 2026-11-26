@@ -3,12 +3,17 @@ import { Color } from 'three';
 import type { WorldPath } from '../../domain/world/path';
 import { type RoadIndex, roadNear, terrainGrid, valueNoise } from '../../domain/world/terrain';
 import { grassColor, toGeometry } from './geometry';
+import { grassTexture } from './textures';
 
-/** Rolling ground around the route, flat-shaded and coloured by height. */
+/** Metres covered by one repeat of the grass texture. */
+const GRASS_TILE_M = 9;
+
+/** Rolling ground around the route: coloured by height, with a grass texture, takes shadows. */
 export default function WorldTerrain({ path, index }: { path: WorldPath; index: RoadIndex }) {
   const geometry = useMemo(() => {
     const grid = terrainGrid(path, index);
     const colors = new Float32Array(grid.positions.length);
+    const uvs = new Float32Array((grid.positions.length / 3) * 2);
     const c = new Color();
     for (let i = 0; i < grid.positions.length; i += 3) {
       const x = grid.positions[i] ?? 0;
@@ -17,14 +22,17 @@ export default function WorldTerrain({ path, index }: { path: WorldPath; index: 
       const { roadY } = roadNear(index, x, z);
       grassColor(y - roadY, valueNoise(x / 60, z / 60, 5), c);
       colors.set([c.r, c.g, c.b], i);
+      uvs.set([x / GRASS_TILE_M, z / GRASS_TILE_M], (i / 3) * 2);
     }
-    return toGeometry(grid, colors);
+    return toGeometry({ ...grid, uvs }, colors);
   }, [path, index]);
   useEffect(() => () => geometry.dispose(), [geometry]);
+  const map = useMemo(() => grassTexture(), []);
+  useEffect(() => () => map.dispose(), [map]);
 
   return (
-    <mesh geometry={geometry}>
-      <meshLambertMaterial vertexColors flatShading />
+    <mesh geometry={geometry} receiveShadow>
+      <meshLambertMaterial vertexColors map={map} />
     </mesh>
   );
 }

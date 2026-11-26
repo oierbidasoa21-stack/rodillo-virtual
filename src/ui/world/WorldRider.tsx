@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber';
-import { type RefObject, useMemo, useRef } from 'react';
+import { type RefObject, useLayoutEffect, useMemo, useRef } from 'react';
 import { type Group, type Mesh, Vector3 } from 'three';
 import { type WorldPath, chaseCamera, poseAt } from '../../domain/world/path';
 import { spanRod } from './geometry';
@@ -81,6 +81,12 @@ export default function WorldRider({
       ] as const,
     [],
   );
+  // Every part of the rider and bike casts a shadow on the road.
+  useLayoutEffect(() => {
+    bike.current?.traverse((o) => {
+      o.castShadow = true;
+    });
+  }, []);
   const shown = useRef({ d: 0, crank: 0, wheel: 0, ready: false });
   const camPos = useRef(new Vector3());
   const camLook = useRef(new Vector3());

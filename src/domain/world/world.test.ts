@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { builtinRoutes } from '../route/examples';
 import { buildRoute } from '../route/route';
 import { chaseCamera, pointAt, poseAt, projectRoute } from './path';
-import { centreDashes, ribbon } from './road';
+import { centreDashes, edgeLines, ribbon, roadsidePosts } from './road';
 import {
   GROUND_BELOW_ROAD_M,
   groundHeight,
@@ -99,6 +99,40 @@ describe('road meshes', () => {
     expect((first[0] ?? 0) - (first[1] ?? 0)).toBeCloseTo(4, 1); // 4 m long, heading north
     const [i0, i1, i2] = [dashes.indices[0] ?? 0, dashes.indices[1] ?? 0, dashes.indices[2] ?? 0];
     expect(normalOf(dashes.positions, i0, i1, i2)[1]).toBeGreaterThan(0);
+  });
+});
+
+describe('road details', () => {
+  const path = projectRoute(northClimb());
+
+  it('gives the road texture coordinates in metres', () => {
+    const road = ribbon(path, 3);
+    const uvs = road.uvs ?? new Float32Array();
+    expect(uvs.length).toBe(path.points.length * 4);
+    expect([uvs[0], uvs[2]]).toEqual([0, 6]); // 6 m across
+    const last = path.points.length - 1;
+    expect(uvs[last * 4 + 1]).toBeCloseTo(path.points[last]?.d ?? 0, 3); // v = distance
+  });
+
+  it('draws two edge lines inside the asphalt', () => {
+    const lines = edgeLines(path);
+    expect(lines.positions.length).toBe(path.points.length * 6 * 2);
+    // Heading north, right is +x: the left line sits between -3 and -2.6 m from the centre.
+    const cx = path.points[0]?.x ?? 0;
+    const lx = (lines.positions[0] ?? 0) - cx;
+    expect(lx).toBeLessThan(-2.6);
+    expect(lx).toBeGreaterThan(-3);
+    const maxIndex = Math.max(...lines.indices);
+    expect(maxIndex).toBe(lines.positions.length / 3 - 1); // merged indices are rebased
+  });
+
+  it('puts a post every 50 m on each side, off the asphalt', () => {
+    const posts = roadsidePosts(path);
+    expect(posts.length).toBe(2 * Math.ceil((path.distanceM - 25) / 50));
+    const p0 = pointAt(path, 25);
+    const [a, b] = posts;
+    expect(Math.abs((a?.x ?? 0) - p0.x)).toBeCloseTo(4.6, 1);
+    expect((b?.x ?? 0) - p0.x).toBeCloseTo(4.6, 1);
   });
 });
 

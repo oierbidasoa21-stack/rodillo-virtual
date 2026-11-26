@@ -11,6 +11,7 @@ export default function WorldTrees({ path, index }: { path: WorldPath; index: Ro
   const leafy = useMemo(() => trees.filter((t) => t.kind === 1), [trees]);
 
   const coneRef = useRef<InstancedMesh>(null);
+  const cone2Ref = useRef<InstancedMesh>(null);
   const ballRef = useRef<InstancedMesh>(null);
   const trunkRef = useRef<InstancedMesh>(null);
 
@@ -19,12 +20,18 @@ export default function WorldTrees({ path, index }: { path: WorldPath; index: Ro
     const c = new Color();
     const rand = rng(7);
     conifers.forEach((t, i) => {
-      // Crown: a cone over the top 80 % of the tree.
+      // Crown in two tiers: a wide lower cone and a narrower top one.
       coneRef.current?.setMatrixAt(
         i,
-        placeMatrix(m, t.x, t.y + t.heightM * 0.55, t.z, t.heightM * 0.28, t.heightM * 0.8),
+        placeMatrix(m, t.x, t.y + t.heightM * 0.45, t.z, t.heightM * 0.3, t.heightM * 0.6),
       );
-      coneRef.current?.setColorAt(i, c.setRGB(0.12 + rand() * 0.06, 0.32 + rand() * 0.1, 0.18));
+      cone2Ref.current?.setMatrixAt(
+        i,
+        placeMatrix(m, t.x, t.y + t.heightM * 0.74, t.z, t.heightM * 0.21, t.heightM * 0.52),
+      );
+      c.setRGB(0.1 + rand() * 0.06, 0.27 + rand() * 0.1, 0.15 + rand() * 0.04);
+      coneRef.current?.setColorAt(i, c);
+      cone2Ref.current?.setColorAt(i, c.offsetHSL(0, 0, 0.03));
     });
     leafy.forEach((t, i) => {
       ballRef.current?.setMatrixAt(
@@ -39,7 +46,7 @@ export default function WorldTrees({ path, index }: { path: WorldPath; index: Ro
         placeMatrix(m, t.x, t.y + t.heightM * 0.2, t.z, 0.25, t.heightM * 0.4),
       );
     });
-    for (const mesh of [coneRef.current, ballRef.current, trunkRef.current]) {
+    for (const mesh of [coneRef.current, cone2Ref.current, ballRef.current, trunkRef.current]) {
       if (!mesh) continue;
       mesh.instanceMatrix.needsUpdate = true;
       if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
@@ -53,22 +60,34 @@ export default function WorldTrees({ path, index }: { path: WorldPath; index: Ro
         ref={coneRef}
         args={[undefined, undefined, Math.max(1, conifers.length)]}
         count={conifers.length}
+        castShadow
       >
-        <coneGeometry args={[1, 1, 7]} />
+        <coneGeometry args={[1, 1, 9]} />
+        <meshLambertMaterial flatShading />
+      </instancedMesh>
+      <instancedMesh
+        ref={cone2Ref}
+        args={[undefined, undefined, Math.max(1, conifers.length)]}
+        count={conifers.length}
+        castShadow
+      >
+        <coneGeometry args={[1, 1, 9]} />
         <meshLambertMaterial flatShading />
       </instancedMesh>
       <instancedMesh
         ref={ballRef}
         args={[undefined, undefined, Math.max(1, leafy.length)]}
         count={leafy.length}
+        castShadow
       >
-        <icosahedronGeometry args={[1, 0]} />
+        <icosahedronGeometry args={[1, 1]} />
         <meshLambertMaterial flatShading />
       </instancedMesh>
       <instancedMesh
         ref={trunkRef}
         args={[undefined, undefined, Math.max(1, trees.length)]}
         count={trees.length}
+        castShadow
       >
         <cylinderGeometry args={[1, 1, 1, 5]} />
         <meshLambertMaterial color="#6b4a2f" />
