@@ -12,3 +12,6 @@ config/*.local.json
 .DS_Store
 .vscode/*
 !.vscode/extensions.json
+
+# Test screenshots written to the repo root by the browser scripts
+/*.png

@@ -1,3 +1,4 @@
+import os from 'node:os';
 // Fase 7: la demo 3D carga el mundo, el ciclista avanza solo, se miden los fotogramas
 // por segundo y se cambia a la vista 2D y vuelta. No debe guardar nada.
 // ROUTE=<nombre> elige la ruta de la demo (por defecto, el puerto).
@@ -38,7 +39,7 @@ export default async function run(page) {
   );
   const hud = await page.locator('.world-hud').innerText();
   const badge = await page.locator('.mode-demo').innerText();
-  await page.screenshot({ path: process.env.SHOT ?? 'demo3d.png' });
+  await page.screenshot({ path: process.env.SHOT ?? `${os.tmpdir()}/demo3d.png` });
   if (process.env.SHOT2) {
     await page.waitForTimeout(25_000);
     await page.screenshot({ path: process.env.SHOT2 });

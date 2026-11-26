@@ -107,3 +107,11 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Técnica · Avisos de voz** con pausas para no agobiar: el pulso se juzga tras 60 s del bloque, avisa tras 25 s fuera y no repite antes de 90 s; en recuperación nunca pide apretar. Las subidas (≥ 2,5 % en 100 m, ≥ 300 m y 15 m) se detectan de la ruta.
 - **Técnica · Puente con el agente sin servidor**: informe Markdown con JSON para copiar y plan en JSON (`rodillo-virtual/plan@1`, claves en español) para pegar. La app extrae el JSON de la respuesta aunque venga con texto. Planes en Dexie v5 (con migración y test) y en la copia de seguridad (formato 4).
 - **Técnica · Pruebas en navegador**: patchright evalúa en un contexto aislado; para interceptar la voz el script inyecta una etiqueta `<script>` y deja lo dicho en un atributo del DOM.
+
+## 2026-11-27 — Docker y estructura
+
+- **Usuario · Docker «para que otra gente pueda usarlo»** y un documento que explique cada carpeta y archivo.
+- **Técnica · Imagen estática multietapa** (Node 24 compila, nginx 1.27 sirve): unos 80 MB y sin Node en ejecución. La ruta base pasa a ser configurable (`BASE_PATH`, `/` en Docker y `/rodillo-virtual/` en Pages). CI construye la imagen en cada push para que no se rompa.
+- **Técnica · Sin datos personales en la imagen**: `.dockerignore` excluye `config/*.local.json`, `data/` y `.git`; el build solo importa `athlete.example.json`.
+- **Producto · La web publicada sigue siendo la vía recomendada** para otras personas (sin instalar, datos en su navegador). Docker añade autoalojamiento; fuera de `localhost` necesita HTTPS para Bluetooth y PWA (documentado, sin incluir proxy).
+- **Limpieza · `demo3d.png`** se había subido por error (captura por defecto de un script de prueba): borrada, el script guarda en la carpeta temporal y `.gitignore` ignora `/*.png`.

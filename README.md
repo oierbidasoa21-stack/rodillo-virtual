@@ -120,3 +120,17 @@ Los push a `main` también publican la app en GitHub Pages (workflow `Deploy`), 
 - **Fantasma**: al repetir una ruta, rueda contigo tu salida más rápida en ella (desde su grabación) y se ve cuántos segundos le sacas o te saca.
 - **Avisos de voz**: pulso fuera de zona de forma sostenida, mitad y último minuto de los bloques largos, subidas que se acercan en las rutas y un resumen al terminar.
 - **Plan del entrenador** (Sesiones): informe para tu agente y plan semanal importable. Ver [docs/agente-entrenador.md](docs/agente-entrenador.md).
+
+## Usarla con Docker
+
+La forma más fácil de usarla sigue siendo la web publicada, sin instalar nada: cada persona guarda sus datos en su propio navegador. Docker sirve para ejecutarla en tu ordenador o en un servidor propio:
+
+```
+docker compose up -d        # o: docker build -t rodillo-virtual . && docker run -p 8080:80 rodillo-virtual
+```
+
+Abre http://localhost:8080. La imagen (unos 80 MB, nginx) solo lleva el atleta de ejemplo: los datos de cada uno se meten en la app y se quedan en su navegador.
+
+**Bluetooth y HTTPS:** Chrome solo permite Web Bluetooth y la instalación como app en `localhost` o con HTTPS. Desde el mismo ordenador (`localhost:8080`) funciona todo. Para usarla desde otro equipo de la red hace falta ponerla detrás de un proxy con HTTPS (por ejemplo Caddy o Traefik con un certificado).
+
+Qué es cada carpeta y archivo: [docs/ESTRUCTURA.md](docs/ESTRUCTURA.md).

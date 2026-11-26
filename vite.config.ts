@@ -2,8 +2,9 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vitest/config';
 
-// GitHub Pages serves the site under /<repo>/
-const BASE = '/rodillo-virtual/';
+// GitHub Pages serves the site under /<repo>/; the Docker image serves it at the root
+// (BASE_PATH=/). Always with a trailing slash.
+const BASE = process.env.BASE_PATH ?? '/rodillo-virtual/';
 
 export default defineConfig({
   base: BASE,

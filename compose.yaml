@@ -1,0 +1,8 @@
+# docker compose up -d   →   http://localhost:8080
+services:
+  rodillo-virtual:
+    build: .
+    image: rodillo-virtual
+    ports:
+      - '8080:80'
+    restart: unless-stopped

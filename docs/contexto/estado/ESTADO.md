@@ -50,3 +50,5 @@ _2026-11-26 (2): segunda ronda de realismo 3D: montañas en el horizonte, vegeta
 _2026-11-26 (3): público animando en los bordes, quitamiedos, rodadas, arcén de grava y hora del día en la vista 3D._
 
 _2026-11-26 (4): mejoras de entrenamiento: forma y fatiga en Historial, fantasma en las rutas, avisos de voz y plan del entrenador (informe y plan semanal con el agente del usuario). Ver `fases/mejoras-entrenamiento.md` y `docs/agente-entrenador.md`._
+
+_2026-11-27: imagen Docker (`Dockerfile`, `compose.yaml`, `docker/nginx.conf`) y `docs/ESTRUCTURA.md` con qué es cada carpeta y archivo._

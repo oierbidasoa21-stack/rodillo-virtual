@@ -1,0 +1,12 @@
+# Keep the image small and free of personal data.
+node_modules
+dist
+coverage
+data
+config/*.local.json
+.git
+.github
+.vscode
+docs
+*.png
+!public/**/*.png
