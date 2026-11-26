@@ -40,7 +40,7 @@ describe('Dexie migrations', () => {
     expect((await db.workouts.get('c-1'))?.blocks).toEqual(expected);
     // Other tables untouched
     expect(await db.history.count()).toBe(1);
-    expect(db.verno).toBe(4);
+    expect(db.verno).toBe(5);
     expect(await db.routes.count()).toBe(0);
     db.close();
   });
@@ -57,7 +57,7 @@ describe('Dexie migrations', () => {
     v2.close();
 
     const db = new RodilloDb(name);
-    expect(db.verno).toBe(4);
+    expect(db.verno).toBe(5);
     expect(await createStorage(db).listWorkouts()).toEqual([
       { id: 'c-2', name: 'Ya migrada', description: '', blocks: [makeBlock(300, 'L2')] },
     ]);
@@ -82,10 +82,36 @@ describe('Dexie migrations', () => {
     v3.close();
 
     const db = new RodilloDb(name);
-    expect(db.verno).toBe(4);
+    expect(db.verno).toBe(5);
     expect(await db.routes.count()).toBe(1);
     expect(await db.recordings.count()).toBe(0);
     expect(await db.inProgress.count()).toBe(0);
+    db.close();
+  });
+
+  it('v4 → v5 adds training plans, keeping history and recordings', async () => {
+    const v4 = new Dexie(name);
+    v4.version(4).stores({
+      workouts: 'id',
+      history: 'id, dateMs',
+      settings: 'key',
+      routes: 'id',
+      recordings: 'sessionId',
+      inProgress: 'key',
+    });
+    await v4.table('history').put({ id: 'h-4', dateMs: 4, workoutName: 'Antes de los planes' });
+    await v4.table('recordings').put({ sessionId: 'h-4', startMs: 4, samples: [] });
+    v4.close();
+
+    const db = new RodilloDb(name);
+    const storage = createStorage(db);
+    expect(db.verno).toBe(5);
+    expect(await db.history.count()).toBe(1);
+    expect(await db.recordings.count()).toBe(1);
+    expect(await storage.listPlans()).toEqual([]);
+    const plan = { id: 'p', name: 'S49', importedAtMs: 1, days: [] };
+    await storage.savePlan(plan);
+    expect(await storage.listPlans()).toEqual([plan]);
     db.close();
   });
 });

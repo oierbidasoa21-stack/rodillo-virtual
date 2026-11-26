@@ -124,4 +124,17 @@ Ramas: feat/world-3d
 
 - `20a337b` · 2026-11-25 · feat(world): build the 3D road, ground and trees from a route
 - `b9c98dc` · 2026-11-25 · feat(ride): ride routes in 3D with the HUD on top, and a 3D demo
-- _(más el commit de documentación que cierra la fase)_
+- `e564906` · 2026-11-25 · docs: close phase 7 (3D world and demo)
+
+## Después de la Fase 7 — realismo 3D y mejoras de entrenamiento
+
+Ramas: feat/world-realism, feat/world-spectators, feat/fitness, feat/coach-plan
+
+- `ad36302` · 2026-11-26 · feat(world): shadows, textures, sky with sun and clouds, edge lines and roadside posts
+- `3250f48` · 2026-11-26 · fix(world): lighter plain verge; docs for the 3D realism pass
+- `4c75763` · 2026-11-26 · feat(world): horizon mountains, dense roadside scenery, detailed rider that leans into corners
+- `5aae342` · 2026-11-26 · feat(world): cheering spectators, guardrails, wheel tracks, gravel verges and time of day
+- `25fe577` · 2026-11-26 · feat(history): condition, fatigue and freshness from the training load
+- `bd35605` · 2026-11-26 · feat(audio): voice coaching: heart rate out of zone, long blocks, climbs ahead, summary
+- `fdb32bd` · 2026-11-26 · feat(ride): race a ghost of your fastest earlier ride on the route
+- _(más el commit del plan del entrenador y su documentación)_

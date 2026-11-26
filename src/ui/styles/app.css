@@ -623,3 +623,74 @@ tr.clickable:hover td {
 .session-chart .bar {
   fill: var(--series-condition);
 }
+
+/* Plan del entrenador (Sesiones) */
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.plan-card .sectionhead {
+  margin: 0;
+}
+.plan-import {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.plan-import textarea {
+  width: 100%;
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: 13px;
+}
+.plan-name {
+  margin: 0;
+  font-weight: 600;
+}
+.plan-days {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.plan-days li {
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.plan-days li.today {
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.plan-days li.past {
+  opacity: 0.7;
+}
+.plan-date {
+  color: var(--muted);
+  font-size: 14px;
+  text-transform: capitalize;
+}
+.plan-days li.today .plan-date {
+  color: var(--accent);
+  font-weight: 700;
+}
+.plan-what {
+  display: flex;
+  flex-direction: column;
+}
+.plan-sum,
+.plan-notes {
+  color: var(--muted);
+  font-size: 13px;
+}
+.plan-status .done {
+  color: var(--ok);
+  font-weight: 600;
+}

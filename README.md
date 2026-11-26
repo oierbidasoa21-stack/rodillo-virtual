@@ -113,3 +113,10 @@ Los push a `main` también publican la app en GitHub Pages (workflow `Deploy`), 
 - [`docs/ROADMAP.md`](docs/ROADMAP.md): fases y tareas.
 - [`CLAUDE.md`](CLAUDE.md): arquitectura, stack y convenciones.
 - [`docs/reference/rodillo-pulso-v1.html`](docs/reference/rodillo-pulso-v1.html): versión 1 (un solo archivo), referencia funcional.
+
+## Entrenamiento
+
+- **Forma** (Historial): condición (media de 42 días de la carga), fatiga (7 días) y frescura (la diferencia), con la curva de 90 días y la carga por semana. Las sesiones con sensores simulados no cuentan.
+- **Fantasma**: al repetir una ruta, rueda contigo tu salida más rápida en ella (desde su grabación) y se ve cuántos segundos le sacas o te saca.
+- **Avisos de voz**: pulso fuera de zona de forma sostenida, mitad y último minuto de los bloques largos, subidas que se acercan en las rutas y un resumen al terminar.
+- **Plan del entrenador** (Sesiones): informe para tu agente y plan semanal importable. Ver [docs/agente-entrenador.md](docs/agente-entrenador.md).

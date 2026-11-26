@@ -5,6 +5,7 @@ import type {
   SecByPowerZone,
   SessionSummary,
 } from '../domain/metrics/summary';
+import type { PlanDay, TrainingPlan } from '../domain/plan/plan';
 import type { Route, RoutePoint } from '../domain/route/route';
 import type { RecordSample } from '../recording/recording';
 import type { SessionRecording } from '../recording/session';
@@ -19,9 +20,9 @@ import type { Storage } from './repositories';
 import { type AppSettings, normalizeSettings } from './settings';
 
 export const BACKUP_APP = 'rodillo-virtual';
-/** 2 added imported routes, 3 added recordings; older files are still accepted. */
-export const BACKUP_FORMAT = 3;
-const READABLE_FORMATS: readonly number[] = [1, 2, 3];
+/** 2 added imported routes, 3 added recordings, 4 training plans; older files are still accepted. */
+export const BACKUP_FORMAT = 4;
+const READABLE_FORMATS: readonly number[] = [1, 2, 3, 4];
 
 /** Everything the app stores in this browser, as one JSON file. */
 export interface Backup {
@@ -33,21 +34,29 @@ export interface Backup {
   settings: AppSettings;
   routes: Route[];
   recordings: SessionRecording[];
+  plans: TrainingPlan[];
 }
 
 /** A parsed backup plus what had to be left out. */
 export interface ParsedBackup {
   backup: Backup;
-  skipped: { workouts: number; history: number; routes: number; recordings: number };
+  skipped: {
+    workouts: number;
+    history: number;
+    routes: number;
+    recordings: number;
+    plans: number;
+  };
 }
 
 export async function exportBackup(storage: Storage, nowMs: number): Promise<Backup> {
-  const [workouts, history, settings, routes, recordings] = await Promise.all([
+  const [workouts, history, settings, routes, recordings, plans] = await Promise.all([
     storage.listWorkouts(),
     storage.listHistory(),
     storage.getSettings(),
     storage.listRoutes(),
     storage.listRecordings(),
+    storage.listPlans(),
   ]);
   return {
     app: BACKUP_APP,
@@ -58,6 +67,7 @@ export async function exportBackup(storage: Storage, nowMs: number): Promise<Bac
     settings,
     routes,
     recordings,
+    plans,
   };
 }
 
@@ -261,6 +271,24 @@ function parseSession(v: unknown): SessionSummary | null {
  * Validates a backup file. Workouts from older versions are migrated; entries
  * that can't be read are skipped and counted, never guessed.
  */
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+function parsePlanDay(v: unknown): PlanDay | null {
+  if (!isRecord(v) || typeof v.date !== 'string' || !DATE_RE.test(v.date)) return null;
+  if (typeof v.title !== 'string' || typeof v.notes !== 'string') return null;
+  if (v.workout === null) return { date: v.date, title: v.title, notes: v.notes, workout: null };
+  const workout = migrateWorkout(v.workout);
+  return workout ? { date: v.date, title: v.title, notes: v.notes, workout } : null;
+}
+
+function parsePlanRow(v: unknown): TrainingPlan | null {
+  if (!isRecord(v) || typeof v.id !== 'string' || typeof v.name !== 'string') return null;
+  if (!isNum(v.importedAtMs) || !Array.isArray(v.days)) return null;
+  const days = v.days.map(parsePlanDay);
+  if (days.some((d) => d === null)) return null;
+  return { id: v.id, name: v.name, importedAtMs: v.importedAtMs, days: days as PlanDay[] };
+}
+
 export function parseBackup(input: unknown): ParseResult<ParsedBackup> {
   if (!isRecord(input) || input.app !== BACKUP_APP) {
     return { ok: false, errors: ['El archivo no es una copia de Rodillo Virtual.'] };
@@ -283,6 +311,8 @@ export function parseBackup(input: unknown): ParseResult<ParsedBackup> {
   const recordings = rawRecordings
     .map(parseRecording)
     .filter((r): r is SessionRecording => r !== null);
+  const rawPlans: unknown[] = Array.isArray(input.plans) ? input.plans : [];
+  const plans = rawPlans.map(parsePlanRow).filter((p): p is TrainingPlan => p !== null);
   return {
     ok: true,
     value: {
@@ -295,12 +325,14 @@ export function parseBackup(input: unknown): ParseResult<ParsedBackup> {
         settings: normalizeSettings(isRecord(input.settings) ? input.settings : undefined),
         routes,
         recordings,
+        plans,
       },
       skipped: {
         workouts: input.workouts.length - workouts.length,
         history: input.history.length - history.length,
         routes: rawRoutes.length - routes.length,
         recordings: rawRecordings.length - recordings.length,
+        plans: rawPlans.length - plans.length,
       },
     },
   };

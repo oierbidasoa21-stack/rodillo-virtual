@@ -98,3 +98,12 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Usuario · Personas en los bordes animando.** Público colocado como en las carreras de verdad: mucho en subidas (>3 %), curvas y los 200 m de salida y llegada, poco en llanos, en grupos de 1 a 4 en el arcén y mirando a la carretera. Se animan solo los que están a menos de 250 m y saltan cuando el ciclista pasa a menos de 45 m. Instanciados (5 mallas para todo el público). Son decorado: no son datos ni otros ciclistas.
 - **Técnica · Quitamiedos** en el exterior de curvas de radio < 90 m; **rodadas** en el asfalto (textura que abarca el ancho de la carretera); **arcén de grava** con textura propia.
 - **Técnica · Hora del día** (mañana, mediodía, atardecer) en un selector de la vista 3D; no se guarda. Las etiquetas viven en `ui/world/timeOfDay.ts`, sin Three.js, para no meterlo en el paquete principal.
+
+## 2026-11-26 — Mejoras de entrenamiento
+
+- **Usuario · Elige forma y fatiga, fantasma y avisos de voz**, y propone conectar la app con el agente que le plantea los entrenamientos.
+- **Técnica · Condición/fatiga/frescura** con el modelo clásico de carga crónica (42 d) y aguda (7 d) sobre la carga por pulso que ya se guardaba. Sus bandas de lectura se doblan respecto a las de TSS porque una hora en L2 da 120 de carga (≈ 2× TSS). Nombres en español sin marcas registradas.
+- **Técnica · Fantasma desde la grabación** de la salida más rápida (velocidad media) de al menos 1 km en la misma ruta, sin sensores simulados: no inventa nada. Se dibuja translúcido 1,3 m a la izquierda; la diferencia va en una etiqueta y no en el HUD (la rejilla de 5×2 casillas está llena).
+- **Técnica · Avisos de voz** con pausas para no agobiar: el pulso se juzga tras 60 s del bloque, avisa tras 25 s fuera y no repite antes de 90 s; en recuperación nunca pide apretar. Las subidas (≥ 2,5 % en 100 m, ≥ 300 m y 15 m) se detectan de la ruta.
+- **Técnica · Puente con el agente sin servidor**: informe Markdown con JSON para copiar y plan en JSON (`rodillo-virtual/plan@1`, claves en español) para pegar. La app extrae el JSON de la respuesta aunque venga con texto. Planes en Dexie v5 (con migración y test) y en la copia de seguridad (formato 4).
+- **Técnica · Pruebas en navegador**: patchright evalúa en un contexto aislado; para interceptar la voz el script inyecta una etiqueta `<script>` y deja lo dicho en un atributo del DOM.

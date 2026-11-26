@@ -1,4 +1,5 @@
 import { useHistoryStore } from './historyStore';
+import { usePlansStore } from './plansStore';
 import { useRoutesStore } from './routesStore';
 import { useSettingsStore } from './settingsStore';
 import { useWorkoutsStore } from './workoutsStore';
@@ -10,5 +11,6 @@ export async function loadAll(): Promise<void> {
     useWorkoutsStore.getState().load(),
     useHistoryStore.getState().load(),
     useRoutesStore.getState().load(),
+    usePlansStore.getState().load(),
   ]);
 }

@@ -48,3 +48,5 @@ _2026-11-26: vista 3D más realista (sombras, texturas, cielo con nubes, líneas
 _2026-11-26 (2): segunda ronda de realismo 3D: montañas en el horizonte, vegetación densa con matorrales y rocas, ciclista detallado que se inclina en las curvas y cámara que acompaña._
 
 _2026-11-26 (3): público animando en los bordes, quitamiedos, rodadas, arcén de grava y hora del día en la vista 3D._
+
+_2026-11-26 (4): mejoras de entrenamiento: forma y fatiga en Historial, fantasma en las rutas, avisos de voz y plan del entrenador (informe y plan semanal con el agente del usuario). Ver `fases/mejoras-entrenamiento.md` y `docs/agente-entrenador.md`._

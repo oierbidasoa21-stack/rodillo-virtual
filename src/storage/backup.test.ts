@@ -148,7 +148,13 @@ describe('backup', () => {
     const backup = await exportBackup(await filled(), 1234);
     const parsed = parseBackup(JSON.parse(JSON.stringify(backup)));
     if (!parsed.ok) throw new Error(parsed.errors.join(' '));
-    expect(parsed.value.skipped).toEqual({ workouts: 0, history: 0, routes: 0, recordings: 0 });
+    expect(parsed.value.skipped).toEqual({
+      workouts: 0,
+      history: 0,
+      routes: 0,
+      recordings: 0,
+      plans: 0,
+    });
 
     const target = freshStorage();
     await importBackup(target, parsed.value.backup);
@@ -162,6 +168,38 @@ describe('backup', () => {
   it('still reads format 1 backups (before routes existed)', () => {
     const parsed = parseBackup({ app: BACKUP_APP, format: 1, workouts: [], history: [] });
     expect(parsed.ok && parsed.value.backup.routes).toEqual([]);
+  });
+
+  it('keeps training plans and skips a broken one', () => {
+    const plan = {
+      id: 'p1',
+      name: 'S49',
+      importedAtMs: 5,
+      days: [
+        {
+          date: '2026-11-30',
+          title: 'Rodaje',
+          notes: '',
+          workout: {
+            id: 'plan-2026-11-30',
+            name: 'Rodaje',
+            description: '',
+            blocks: [makeBlock(1800, 'L2')],
+          },
+        },
+        { date: '2026-12-01', title: 'Descanso', notes: '', workout: null },
+      ],
+    };
+    const broken = { ...plan, id: 'p2', days: [{ date: 'mañana' }] };
+    const parsed = parseBackup({
+      app: BACKUP_APP,
+      format: BACKUP_FORMAT,
+      workouts: [],
+      history: [],
+      plans: [plan, broken],
+    });
+    expect(parsed.ok && parsed.value.backup.plans).toEqual([plan]);
+    expect(parsed.ok && parsed.value.skipped.plans).toBe(1);
   });
 
   it('skips a recording with a broken sample', () => {
@@ -226,7 +264,13 @@ describe('backup', () => {
       settings: 'nope',
     });
     if (!parsed.ok) throw new Error('should parse');
-    expect(parsed.value.skipped).toEqual({ workouts: 1, history: 1, routes: 0, recordings: 0 });
+    expect(parsed.value.skipped).toEqual({
+      workouts: 1,
+      history: 1,
+      routes: 0,
+      recordings: 0,
+      plans: 0,
+    });
     expect(parsed.value.backup.settings).toEqual(defaultSettings());
   });
 

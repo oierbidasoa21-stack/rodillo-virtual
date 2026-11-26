@@ -1,5 +1,6 @@
 import { Dexie, type EntityTable } from 'dexie';
 import type { SessionSummary } from '../domain/metrics/summary';
+import type { TrainingPlan } from '../domain/plan/plan';
 import type { Route } from '../domain/route/route';
 import { migrateWorkout } from '../domain/workout/migrate';
 import type { Workout } from '../domain/workout/types';
@@ -30,6 +31,8 @@ export class RodilloDb extends Dexie {
   recordings!: EntityTable<SessionRecording, 'sessionId'>;
   /** The session being ridden, saved every few seconds to survive a closed tab. */
   inProgress!: EntityTable<InProgressRow, 'key'>;
+  /** Weekly plans imported from the coaching agent. */
+  plans!: EntityTable<TrainingPlan, 'id'>;
 
   constructor(name = 'rodillo-virtual') {
     super(name);
@@ -55,6 +58,14 @@ export class RodilloDb extends Dexie {
       routes: 'id',
       recordings: 'sessionId',
       inProgress: 'key',
+    });
+    // v5 (mejoras): training plans from the coaching agent.
+    this.version(5).stores({
+      ...STORES_V1,
+      routes: 'id',
+      recordings: 'sessionId',
+      inProgress: 'key',
+      plans: 'id',
     });
   }
 }

@@ -5,6 +5,7 @@ import { ZwoError, buildZwo, parseZwo, zwoFileName } from '../../domain/workout/
 import { downloadText } from '../download';
 import { useUiStore } from '../../store/uiStore';
 import { useWorkoutsStore } from '../../store/workoutsStore';
+import PlanCard from '../plan/PlanCard';
 import RampTestCard from '../ramp/RampTestCard';
 import WorkoutCard from './WorkoutCard';
 
@@ -47,6 +48,7 @@ export default function LibraryView() {
 
   return (
     <>
+      <PlanCard />
       <div className="sectionhead">
         <h2>Mis sesiones</h2>
         <div className="head-actions">

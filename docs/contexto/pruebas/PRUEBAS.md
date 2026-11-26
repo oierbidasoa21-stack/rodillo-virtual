@@ -43,3 +43,4 @@ Todas en Chrome para Windows, con la web publicada:
 
 - **Fase 2:** instalar la app, abrirla sin conexión y ver el aviso de actualización (pasos detallados en `sesiones/2026-10-02_03.md`).
 - **Fases 3–5:** con banda de pulso, sensor de velocidad y rodillo reales (milestone «Pruebas con hardware real»).
+  | Mejoras | Forma con 60 sesiones sembradas (`mejoras-forma.mjs`), aviso de subida en el Rompepiernas (`mejoras-voz.mjs`), fantasma sembrado en el Puerto a 7,5 m/s (`mejoras-fantasma.mjs`), plan con errores y válido, Empezar (`mejoras-plan.mjs`) |
