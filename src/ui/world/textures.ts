@@ -65,26 +65,6 @@ function toTexture(size: number, rgb: (i: number) => [number, number, number]): 
   return t;
 }
 
-/** Asphalt: grey with fine aggregate grain and faint darker patches. */
-export function asphaltTexture(size = 256): DataTexture {
-  const rand = rng(11);
-  const patches = fbm(
-    size,
-    [
-      [4, 1],
-      [8, 0.6],
-    ],
-    21,
-  );
-  return toTexture(size, (i) => {
-    const grain = rand();
-    // Most grains near the base tone, a few light stones and dark pits.
-    const stone = grain > 0.97 ? 0.12 : grain < 0.04 ? -0.08 : (grain - 0.5) * 0.08;
-    const v = 0.36 + stone - ((patches[i] ?? 0) - 0.5) * 0.1;
-    return [v, v, v * 1.03];
-  });
-}
-
 /**
  * Grass detail, near white so it only modulates the ground's own colour
  * (which varies with height): clumps, blades and a hint of yellow.
@@ -106,5 +86,51 @@ export function grassTexture(size = 256): DataTexture {
     const v = 0.78 + (c - 0.5) * 0.35 + blade;
     const dry = Math.max(0, c - 0.62) * 0.6; // a little straw in the light clumps
     return [Math.min(1, v + dry), Math.min(1, v + dry * 0.6), Math.max(0, v - dry * 0.6)];
+  });
+}
+
+/** Width of the asphalt the road texture spans, in metres (one repeat across). */
+export const ROAD_TEXTURE_WIDTH_M = 6;
+
+/**
+ * Asphalt across the whole road width: aggregate grain plus darker, smoother
+ * wheel tracks in each lane where tyres have polished it. Tiles along the road.
+ */
+export function roadTexture(size = 256): DataTexture {
+  const rand = rng(12);
+  const patches = fbm(
+    size,
+    [
+      [4, 1],
+      [8, 0.6],
+    ],
+    22,
+  );
+  // Two tracks per 3 m lane, measured from the left edge.
+  const tracks = [0.85, 2.15, 3.85, 5.15];
+  return toTexture(size, (i) => {
+    const u = ((i % size) / size) * ROAD_TEXTURE_WIDTH_M;
+    const track = tracks.reduce((s, c) => Math.max(s, Math.exp(-(((u - c) / 0.28) ** 2))), 0);
+    const grain = rand();
+    const stone = grain > 0.97 ? 0.12 : grain < 0.04 ? -0.08 : (grain - 0.5) * 0.08;
+    const v = 0.37 + stone * (1 - track * 0.6) - ((patches[i] ?? 0) - 0.5) * 0.1 - track * 0.06;
+    return [v, v, v * 1.03];
+  });
+}
+
+/** Gravel for the verges: light, warm stones of mixed sizes. */
+export function gravelTexture(size = 256): DataTexture {
+  const rand = rng(51);
+  const lumps = fbm(
+    size,
+    [
+      [16, 1],
+      [48, 0.8],
+    ],
+    61,
+  );
+  return toTexture(size, (i) => {
+    const v = 0.5 + ((lumps[i] ?? 0.5) - 0.5) * 0.45 + (rand() - 0.5) * 0.14;
+    return [v * 1.05, v, v * 0.88];
   });
 }

@@ -251,3 +251,7 @@
 .demo-card select {
   min-width: 260px;
 }
+
+.ride-badges .time-of-day {
+  width: auto;
+}

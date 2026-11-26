@@ -1,6 +1,7 @@
 // Fase 7: la demo 3D carga el mundo, el ciclista avanza solo, se miden los fotogramas
 // por segundo y se cambia a la vista 2D y vuelta. No debe guardar nada.
 // ROUTE=<nombre> elige la ruta de la demo (por defecto, el puerto).
+// TIME=<Mañana|Mediodía|Atardecer> elige la hora del día de la vista 3D.
 // Uso: npm run build && npx vite preview --port 4173
 //      SHOT=<png> node <skill>/browser.mjs http://localhost:4173/rodillo-virtual/ --script <este archivo>
 const tab = (page, name) =>
@@ -17,6 +18,9 @@ export default async function run(page) {
   }
   await page.getByRole('button', { name: 'Ver demo 3D' }).click();
   await page.locator('canvas').waitFor({ timeout: 30_000 });
+  if (process.env.TIME) {
+    await page.getByLabel('Hora del día').selectOption({ label: process.env.TIME });
+  }
   await page.waitForTimeout(6000);
 
   const fps = await page.evaluate(

@@ -2,10 +2,12 @@ import { useEffect, useMemo } from 'react';
 import { type WorldPath, poseAt } from '../../domain/world/path';
 import { ROAD_HALF_WIDTH_M, centreDashes, edgeLines, ribbon } from '../../domain/world/road';
 import { toGeometry } from './geometry';
-import { asphaltTexture } from './textures';
+import { ROAD_TEXTURE_WIDTH_M, gravelTexture, roadTexture } from './textures';
 
-/** Metres covered by one repeat of the asphalt texture. */
-const ASPHALT_TILE_M = 3;
+/** Metres along the road covered by one repeat of the asphalt texture. */
+const ASPHALT_TILE_M = 4;
+/** Metres covered by one repeat of the gravel texture. */
+const GRAVEL_TILE_M = 2;
 
 /** Textured asphalt, gravel verges, edge lines, a dashed centre line and an arch at the start. */
 export default function WorldRoad({ path }: { path: WorldPath }) {
@@ -27,18 +29,26 @@ export default function WorldRoad({ path }: { path: WorldPath }) {
     },
     [road, verge, dashes, lines],
   );
-  const asphalt = useMemo(() => {
-    const a = asphaltTexture();
-    a.repeat.set(1 / ASPHALT_TILE_M, 1 / ASPHALT_TILE_M);
-    return a;
+  const { asphalt, gravel } = useMemo(() => {
+    const a = roadTexture();
+    a.repeat.set(1 / ROAD_TEXTURE_WIDTH_M, 1 / ASPHALT_TILE_M);
+    const g = gravelTexture();
+    g.repeat.set(1 / GRAVEL_TILE_M, 1 / GRAVEL_TILE_M);
+    return { asphalt: a, gravel: g };
   }, []);
-  useEffect(() => () => asphalt.dispose(), [asphalt]);
+  useEffect(
+    () => () => {
+      asphalt.dispose();
+      gravel.dispose();
+    },
+    [asphalt, gravel],
+  );
   const start = useMemo(() => poseAt(path, 0), [path]);
 
   return (
     <>
       <mesh geometry={verge} receiveShadow>
-        <meshLambertMaterial color="#a89e88" polygonOffset polygonOffsetFactor={-1} />
+        <meshLambertMaterial map={gravel} polygonOffset polygonOffsetFactor={-1} />
       </mesh>
       <mesh geometry={road} receiveShadow>
         <meshLambertMaterial map={asphalt} polygonOffset polygonOffsetFactor={-2} />

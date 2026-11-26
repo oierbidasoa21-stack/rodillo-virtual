@@ -1,7 +1,7 @@
 import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
 import { type DirectionalLight, Vector3 } from 'three';
-import { SUN_DIRECTION } from './sun';
+import type { Lighting } from './sun';
 
 /** Half the side of the square that gets sharp shadows, in metres. */
 const SHADOW_HALF_M = 40;
@@ -11,7 +11,7 @@ const SHADOW_MAP_PX = 2048;
  * The sun: a directional light whose shadow box follows the camera, so the
  * rider, posts and nearby trees cast shadows without a huge shadow map.
  */
-export default function WorldSun() {
+export default function WorldSun({ light: lighting }: { light: Lighting }) {
   const light = useRef<DirectionalLight>(null);
   const tmp = useRef({ fwd: new Vector3(), centre: new Vector3() });
 
@@ -33,15 +33,15 @@ export default function WorldSun() {
     );
     l.target.position.copy(centre);
     l.target.updateMatrixWorld();
-    l.position.copy(centre).addScaledVector(SUN_DIRECTION, 300);
+    l.position.copy(centre).addScaledVector(lighting.sunDirection, 300);
   });
 
   return (
     <directionalLight
       ref={light}
       castShadow
-      color="#fff3df"
-      intensity={2.6}
+      color={lighting.sunColor}
+      intensity={lighting.sunIntensity}
       shadow-mapSize={[SHADOW_MAP_PX, SHADOW_MAP_PX]}
       shadow-camera-left={-SHADOW_HALF_M}
       shadow-camera-right={SHADOW_HALF_M}

@@ -1,10 +1,7 @@
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import { BackSide, Color, type Mesh, type ShaderMaterial } from 'three';
-import { SUN_DIRECTION } from './sun';
-
-export const SKY_HORIZON = '#cfe3f2';
-const SKY_ZENITH = '#4f8bcb';
+import type { Lighting } from './sun';
 
 const vertexShader = /* glsl */ `
   varying vec3 vDir;
@@ -18,6 +15,7 @@ const fragmentShader = /* glsl */ `
   uniform vec3 horizon;
   uniform vec3 zenith;
   uniform vec3 sunDir;
+  uniform vec3 sunColor;
   uniform float time;
   varying vec3 vDir;
 
@@ -42,32 +40,33 @@ const fragmentShader = /* glsl */ `
     vec3 col = mix(horizon, zenith, pow(h, 0.55));
 
     float s = max(dot(dir, sunDir), 0.0);
-    col += vec3(1.0, 0.92, 0.75) * (pow(s, 8.0) * 0.18 + pow(s, 64.0) * 0.35);
-    col = mix(col, vec3(1.0, 0.98, 0.9), smoothstep(0.9993, 0.9997, s));
+    col += sunColor * (pow(s, 8.0) * 0.22 + pow(s, 64.0) * 0.4);
+    col = mix(col, mix(sunColor, vec3(1.0), 0.6), smoothstep(0.9993, 0.9997, s));
 
     if (dir.y > 0.0) {
       vec2 uv = dir.xz / (dir.y + 0.12) * 1.6 + vec2(time * 0.004, time * 0.0015);
       float c = smoothstep(0.52, 0.8, fbm(uv));
       float shade = 0.82 + 0.18 * fbm(uv * 2.0 + 3.0);
       float fade = smoothstep(0.0, 0.18, dir.y);
-      col = mix(col, vec3(shade) * vec3(1.0, 0.99, 0.97), c * fade * 0.85);
+      col = mix(col, vec3(shade) * mix(vec3(1.0), sunColor, 0.35), c * fade * 0.85);
     }
     gl_FragColor = vec4(col, 1.0);
   }
 `;
 
 /** A sky dome with sun and clouds that travels with the camera, so it is never reached. */
-export default function WorldSky() {
+export default function WorldSky({ light }: { light: Lighting }) {
   const ref = useRef<Mesh>(null);
   const material = useRef<ShaderMaterial>(null);
   const uniforms = useMemo(
     () => ({
-      horizon: { value: new Color(SKY_HORIZON) },
-      zenith: { value: new Color(SKY_ZENITH) },
-      sunDir: { value: SUN_DIRECTION.clone() },
+      horizon: { value: new Color(light.horizon) },
+      zenith: { value: new Color(light.zenith) },
+      sunDir: { value: light.sunDirection.clone() },
+      sunColor: { value: new Color(light.sunColor) },
       time: { value: 0 },
     }),
-    [],
+    [light],
   );
   useFrame(({ camera, clock }) => {
     ref.current?.position.copy(camera.position);

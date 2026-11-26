@@ -46,3 +46,5 @@ GitHub tiene un **milestone por fase** (0–7 cerrados, 8 abierto, 9 cerrado por
 _2026-11-26: vista 3D más realista (sombras, texturas, cielo con nubes, líneas laterales y balizas). El usuario ha probado el pulsómetro real (funciona) y ha importado una ruta GPX._
 
 _2026-11-26 (2): segunda ronda de realismo 3D: montañas en el horizonte, vegetación densa con matorrales y rocas, ciclista detallado que se inclina en las curvas y cámara que acompaña._
+
+_2026-11-26 (3): público animando en los bordes, quitamiedos, rodadas, arcén de grava y hora del día en la vista 3D._

@@ -25,9 +25,11 @@ import { currentRideInput } from './rideInput';
 import { RIDE_MODE_HINT } from './rideMode';
 import { saveFinishedSession } from '../session/saveSession';
 import { hasWebGL } from '../world/webgl';
+import { TIME_OF_DAY_LABEL, type TimeOfDay } from '../world/timeOfDay';
 
 // Three.js is big: the 3D view loads only when it is first shown.
 const World3D = lazy(() => import('../world/World3D'));
+const HOURS: TimeOfDay[] = ['morning', 'noon', 'evening'];
 
 /** Constant power the demo rides at, with the usual physics. */
 const DEMO_WATTS = 200;
@@ -59,6 +61,7 @@ export default function RideView({
   const cscLast = useSensorsStore((s) => s.csc.last);
   const [webgl] = useState(hasWebGL);
   const [view, setView] = useState<'3d' | '2d'>(webgl ? '3d' : '2d');
+  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('morning');
 
   const [status, setStatus] = useState<Status>(demo ? 'running' : resume ? 'paused' : 'ready');
   const [ride, setRide] = useState<RideState>(() => resume?.ride ?? startRide());
@@ -162,6 +165,20 @@ export default function RideView({
             ) : (
               <ModeBadge mode={mode} simulated={simulated} />
             )}
+            {in3d && (
+              <select
+                className="time-of-day"
+                aria-label="Hora del día"
+                value={timeOfDay}
+                onChange={(e) => setTimeOfDay(e.target.value as TimeOfDay)}
+              >
+                {HOURS.map((h) => (
+                  <option key={h} value={h}>
+                    {TIME_OF_DAY_LABEL[h]}
+                  </option>
+                ))}
+              </select>
+            )}
             <button
               type="button"
               className="btn"
@@ -188,6 +205,7 @@ export default function RideView({
                 speedMs={ride.speedMs}
                 cadenceRpm={cadence}
                 running={running}
+                timeOfDay={timeOfDay}
               />
             </Suspense>
             <div className="world-hud">{hud}</div>
