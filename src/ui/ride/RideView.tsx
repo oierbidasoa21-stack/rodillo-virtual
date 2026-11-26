@@ -1,6 +1,5 @@
 import { Suspense, lazy, useRef, useState } from 'react';
 import { beep, unlockAudio } from '../../audio/beeper';
-import { say } from '../../audio/speech';
 import type { SessionSummary } from '../../domain/metrics/summary';
 import { positionAt } from '../../domain/route/position';
 import { type RideMode, type RideState, advanceRide, startRide } from '../../domain/route/ride';
@@ -13,6 +12,7 @@ import { useUiStore } from '../../store/uiStore';
 import ConfirmButton from '../ConfirmButton';
 import { useInProgressSaver } from '../hooks/useInProgressSaver';
 import { usePlayerClock } from '../hooks/usePlayerClock';
+import { useVoiceCoach } from '../hooks/useVoiceCoach';
 import { useSessionRecorder } from '../hooks/useSessionRecorder';
 import { useWakeLock } from '../hooks/useWakeLock';
 import SensorAlerts from '../player/SensorAlerts';
@@ -78,10 +78,11 @@ export default function RideView({
     recorder: recorder.ref.current,
   });
 
+  const voice = useVoiceCoach(route);
+
   const finish = () => {
     if (demo) return; // the demo stops where it is and saves nothing
     const { settings } = useSettingsStore.getState();
-    const state = rideRef.current;
     const summary = summaryFromSnapshot(snapshot(), {
       id: crypto.randomUUID(),
       dateMs: Date.now(),
@@ -94,7 +95,7 @@ export default function RideView({
       beep(1175, 150, 0.18);
       beep(1568, 300, 0.36);
     }
-    if (settings.voice) say(state.finished ? 'Ruta terminada' : 'Salida terminada');
+    voice.finished(summary);
     setResult({ summary, saved });
   };
 
@@ -112,6 +113,7 @@ export default function RideView({
     rideRef.current = next;
     if (!demo) recorder.tick(dt, routeInputOf(route, next, false));
     setRide(next);
+    voice.routeTick(next.distanceM);
     if (next.finished) {
       setStatus('paused');
       finish();

@@ -37,6 +37,7 @@ import { useUiStore } from '../../store/uiStore';
 import ConfirmButton from '../ConfirmButton';
 import { formatClock, zoneBpmText, zoneRangeText } from '../format';
 import { useInProgressSaver } from '../hooks/useInProgressSaver';
+import { useVoiceCoach } from '../hooks/useVoiceCoach';
 import { usePlayerClock } from '../hooks/usePlayerClock';
 import { useSessionRecorder } from '../hooks/useSessionRecorder';
 import { useWakeLock } from '../hooks/useWakeLock';
@@ -105,6 +106,8 @@ export default function Player({
     powerSimulated: boolean;
   } | null>(null);
 
+  const voice = useVoiceCoach(route?.route ?? null);
+
   const snapshot = (state: PlayerState): WorkoutSnapshot => ({
     kind: 'workout',
     savedAtMs: Date.now(),
@@ -135,6 +138,7 @@ export default function Player({
         mode === 'ramp' ? ftpFromRamp(rec.power.samples, rampStepsCompleted(t.state.index)) : null;
       setCountTarget(null);
       setResult({ summary, saved, ramp, powerSimulated: rec.powerSimulated });
+      voice.finished(summary);
     }
   };
 
@@ -147,6 +151,10 @@ export default function Player({
     }
     recorder.tick(dt, route ? routeInputOf(route.route, rideRef.current, true) : null);
     apply(tick(playerRef.current, dt));
+    if (playerRef.current.status === 'running') {
+      voice.workoutTick(dt, playerRef.current);
+      if (route) voice.routeTick(rideRef.current.distanceM);
+    }
   });
   useWakeLock(running);
   // Saved every 10 s, on pause and when the tab hides, until the summary.
