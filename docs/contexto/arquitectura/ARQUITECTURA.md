@@ -50,13 +50,13 @@ Fase 6:
 
 ## Versiones de la base de datos (Dexie, nombre `rodillo-virtual`)
 
-| Versión Dexie | IndexedDB | Fase | Cambio                                                     |
-| ------------- | --------- | ---- | ---------------------------------------------------------- |
-| 1             | 10        | 1    | Tablas `workouts`, `history` (índice `dateMs`), `settings` |
-| 2             | 20        | 4    | Migración: los bloques pasan de `zoneId` a `target`        |
-| 3             | 30        | 5    | Tabla `routes`                                             |
-| 4             | 40        | 6    | Tablas `recordings` (por sesión) e `inProgress` (una fila) |
-| 5             | 50        | —    | Tabla `plans` (plan del agente entrenador)                 |
+| Versión Dexie | IndexedDB | Fase | Cambio                                                                                                |
+| ------------- | --------- | ---- | ----------------------------------------------------------------------------------------------------- |
+| 1             | 10        | 1    | Tablas `workouts`, `history` (índice `dateMs`), `settings`                                            |
+| 2             | 20        | 4    | Migración: los bloques pasan de `zoneId` a `target`                                                   |
+| 3             | 30        | 5    | Tabla `routes`                                                                                        |
+| 4             | 40        | 6    | Tablas `recordings` (por sesión) e `inProgress` (una fila)                                            |
+| 5             | 50        | —    | Tabla `plans` (plan del agente entrenador)                                                            |
 | 6             | 60        | 9    | Migración: zonas de pulso L1…VO2 → Z1…Z6 en `workouts`, `history`, `settings`, `inProgress` y `plans` |
 
 Cada cambio de versión tiene un test que parte de una base de la versión anterior.
