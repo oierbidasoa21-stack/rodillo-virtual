@@ -137,4 +137,15 @@ Ramas: feat/world-realism, feat/world-spectators, feat/fitness, feat/coach-plan
 - `25fe577` · 2026-11-26 · feat(history): condition, fatigue and freshness from the training load
 - `bd35605` · 2026-11-26 · feat(audio): voice coaching: heart rate out of zone, long blocks, climbs ahead, summary
 - `fdb32bd` · 2026-11-26 · feat(ride): race a ghost of your fastest earlier ride on the route
-- _(más el commit del plan del entrenador y su documentación)_
+- `31f8f15` · 2026-11-26 · feat(plan): bridge with the coaching agent: training report out, weekly plan in
+- `37a6215` · 2026-11-27 · chore(docker): self-hostable image and a guide to every folder and file
+- _(y la pantalla completa, el plan de las fases 10–12 en #31 y el roadmap de la Fase 9 en #32)_
+
+## Fase 9 — Mantenimiento
+
+### T1 · Zonas Z1…Z6 · rama `feat/zones-z1-z6`, [PR #33](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/33) (en revisión)
+
+- `2af00bf` · 2026-11-27 · feat(zones): rename heart rate zones L1…VO2 to Z1…Z6, with migration
+- `fe6d3b2` · 2026-11-27 · feat(ui): say and show Z1…Z6, and tell heart rate zones from power zones
+- `cb0799c` · 2026-11-27 · docs: zones Z1…Z6 in CLAUDE.md, the structure guide, the agent guide and Dexie v6
+- `5e00464` · 2026-11-27 · style: format the docs touched by the zone rename

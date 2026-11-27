@@ -6,7 +6,7 @@ _Última actualización: 2026-11-27._
 
 ## En una frase
 
-Las **fases 0 a 7 están hechas y publicadas** en https://oierbidasoa21-stack.github.io/rodillo-virtual/ (278 tests en verde). Queda la **Fase 8** (rodillo inteligente), que solo se hará si el usuario compra uno. Las fases 3 a 7 están comprobadas con **sensores simulados**; falta probarlas con hardware real.
+Las **fases 0 a 7 están hechas y publicadas** en https://oierbidasoa21-stack.github.io/rodillo-virtual/, más las mejoras de después (realismo 3D, forma y fatiga, fantasma, voz, plan del entrenador, Docker y pantalla completa). **Fase actual: 9 (mantenimiento).** Orden de ejecución: 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → T13 → T19; la 8 queda en espera hasta que haya rodillo. Las fases 3 a 7 están comprobadas con **sensores simulados**; falta probarlas con hardware real.
 
 ## Fases
 
@@ -56,3 +56,5 @@ _2026-11-27: imagen Docker (`Dockerfile`, `compose.yaml`, `docker/nginx.conf`) y
 _2026-11-27 (2): el usuario pide **apuntar, no hacer**, una lista de tareas para su agente de cambios: fusionar el PR #31 (plan de los niveles de realismo, fases 10–12), zonas Z1…Z6, seguimiento al día, modo local con repo privado, Docker de producción, Fase 8 y AWS. Ver `pendientes/PENDIENTES.md` (T0–T6) y `estudios/2026-11-27-rodillo-inteligente-produccion-aws.md`._
 
 _2026-11-27 (3): más tareas apuntadas: propuesta de roadmap (fases 9 y 13–15), GitHub profesional (T7), base de datos centralizada (T8, en estudio), rodillo casero (T9, en estudio). **Reparto:** Claude en la nube hace de intermediario y el agente de VS Code hace los cambios._
+
+_2026-11-28: el agente de VS Code fusiona el PR #31 (plan de las fases 10–12) y el #32 (roadmap: «Fase actual: 9» y orden de ejecución). **T1 (zonas Z1…Z6) hecha en el [PR #33](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/33)**, con CI en verde y **abierto para que lo revise Claude en la nube** (no se fusiona sin revisión). 322 tests. Siguiente tarea de la Fase 9 tras la revisión: T12 (curvas suaves) o T2._

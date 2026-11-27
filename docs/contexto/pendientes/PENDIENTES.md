@@ -17,11 +17,13 @@ El usuario pide **apuntarlas, no hacerlas**: los cambios los hace su agente. Van
 
 [PR #31](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/31) (`docs: plan de las fases 10–12`) sigue **abierto sin fusionar**. Lleva al `ROADMAP` las fases 10, 11 y 12 (paisaje real, niveles 1, 2 y 3) y crea `fases/fase-10-paisaje-real.md`. Hasta que se fusione, `main` dice que la fase actual es la 8 y no aparecen los niveles de realismo.
 
-- [ ] Revisar y fusionar #31 (CI en verde).
-- [ ] Comprobar que existen los milestones «Fase 10 — Paisaje real · nivel 1», «Fase 11 …» y «Fase 12 …», y que los issues #22–#30 (etiqueta `paisaje-real`) están en el suyo.
-- [ ] Después, actualizar `estado/ESTADO.md` («Queda la Fase 8» → fases 10–12 en curso o planificadas, la 8 en espera) y la lista «Fases por hacer» de abajo.
+- [x] Revisar y fusionar #31 (CI en verde). Fusionado el 2026-11-28.
+- [x] Comprobar que existen los milestones «Fase 10 — Paisaje real · nivel 1», «Fase 11 …» y «Fase 12 …», y que los issues #22–#30 (etiqueta `paisaje-real`) están en el suyo. Comprobado el 2026-11-28.
+- [x] Después, actualizar `estado/ESTADO.md` («Queda la Fase 8» → fases 10–12 en curso o planificadas, la 8 en espera) y la lista «Fases por hacer» de abajo. Hecho el 2026-11-28 (con la Fase 9 como actual).
 
 ### T1 · Zonas de pulso Z1…Z6
+
+**Estado (2026-11-28): hecha en el [PR #33](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/33), abierto para revisión** (CI en verde, 322 tests). Sigue el diseño de abajo. Al revisar, mirar sobre todo la migración v5→v6 y que las etiquetas escritas por el usuario se respetan. El usuario tendrá que volver a dar las instrucciones a su agente entrenador.
 
 Pedido por el usuario: las zonas pasan de `L1, L2, L3, UA, UA+, VO2` a `Z1, Z2, Z3, Z4, Z5, Z6` (misma posición, mismos pesos y MET). Es un **cambio de modelo de datos guardados**, así que lleva migración (regla de `CLAUDE.md`). Diseño propuesto (se probó en una rama local el 2026-11-27, con todos los tests en verde, y se descartó porque el usuario prefiere que lo haga su agente):
 
