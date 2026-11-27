@@ -1,0 +1,732 @@
+<title>Seguimiento Rodillo Virtual</title>
+<meta name="claude:viewport-fit-sides" content="cover" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+/>
+<style>
+  /* Layout: one reading column; summary strip, then the ordered plan as a route of stages, then decisions and advice side by side on wide screens. */
+  :root {
+    --bg: #eef1f6;
+    --surface: #ffffff;
+    --fg: #172033;
+    --muted: #5b6577;
+    --line: #d5dbe5;
+    --accent: #1f5fd1;
+    --accent-soft: #e2eafb;
+    --ok: #1d7a46;
+    --ok-soft: #dcf1e4;
+    --warn: #9a5b00;
+    --warn-soft: #fbeccf;
+    --idle: #5b6577;
+    --idle-soft: #e7eaf0;
+    --z1: #8fa3b8;
+    --z2: #3f8fd2;
+    --z3: #3fae6a;
+    --z4: #e0b22f;
+    --z5: #e07a2f;
+    --z6: #d1453b;
+    --display: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+    --body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --bg: #0f1420;
+      --surface: #171e2d;
+      --fg: #e6ebf3;
+      --muted: #9aa5b8;
+      --line: #2a3346;
+      --accent: #6c9cff;
+      --accent-soft: #1d2a47;
+      --ok: #5fcf8e;
+      --ok-soft: #173326;
+      --warn: #f0b552;
+      --warn-soft: #3a2c12;
+      --idle: #9aa5b8;
+      --idle-soft: #232b3b;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme='dark'] {
+    --bg: #0f1420;
+    --surface: #171e2d;
+    --fg: #e6ebf3;
+    --muted: #9aa5b8;
+    --line: #2a3346;
+    --accent: #6c9cff;
+    --accent-soft: #1d2a47;
+    --ok: #5fcf8e;
+    --ok-soft: #173326;
+    --warn: #f0b552;
+    --warn-soft: #3a2c12;
+    --idle: #9aa5b8;
+    --idle-soft: #232b3b;
+    color-scheme: dark;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 28px 56px;
+    display: grid;
+    gap: 28px;
+  }
+  .zonebar {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .zonebar span:nth-child(1) {
+    background: var(--z1);
+  }
+  .zonebar span:nth-child(2) {
+    background: var(--z2);
+  }
+  .zonebar span:nth-child(3) {
+    background: var(--z3);
+  }
+  .zonebar span:nth-child(4) {
+    background: var(--z4);
+  }
+  .zonebar span:nth-child(5) {
+    background: var(--z5);
+  }
+  .zonebar span:nth-child(6) {
+    background: var(--z6);
+  }
+  header {
+    display: grid;
+    gap: 10px;
+  }
+  .eyebrow {
+    font-family: var(--display);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(34px, 6vw, 52px);
+    line-height: 1;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 26px;
+    margin: 0;
+    letter-spacing: 0.01em;
+  }
+  .lede {
+    color: var(--muted);
+    max-width: 65ch;
+    margin: 0;
+  }
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: grid;
+    gap: 2px;
+  }
+  .stat b {
+    font-family: var(--display);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat span {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  section {
+    display: grid;
+    gap: 14px;
+  }
+  .sechead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .sechead p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  ol.route {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+  ol.route > li {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 14px;
+  }
+  .km {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  .km::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--line);
+  }
+  ol.route > li:first-child .km::before {
+    top: 18px;
+  }
+  ol.route > li:last-child .km::before {
+    bottom: calc(100% - 18px);
+  }
+  .dot {
+    position: relative;
+    z-index: 1;
+    margin-top: 4px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+    background: var(--surface);
+    border: 2px solid var(--line);
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  li.now .dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .stage {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    min-width: 0;
+  }
+  li.now .stage {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .stage-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .stage h3 {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+  }
+  .stage ul {
+    margin: 8px 0 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 3px;
+  }
+  .stage li {
+    color: var(--fg);
+  }
+  .ref {
+    color: var(--muted);
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .chip {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .chip.now {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .chip.next {
+    background: var(--idle-soft);
+    color: var(--idle);
+  }
+  .chip.wait {
+    background: var(--warn-soft);
+    color: var(--warn);
+  }
+  .chip.done {
+    background: var(--ok-soft);
+    color: var(--ok);
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 28px;
+    align-items: start;
+  }
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .item {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+  }
+  .item.decide {
+    border-left: 4px solid var(--warn);
+  }
+  .item.tip {
+    border-left: 4px solid var(--accent);
+  }
+  .item.test {
+    border-left: 4px solid var(--idle);
+  }
+  .item strong {
+    font-weight: 600;
+  }
+  .item p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+  .waiting {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .done-list {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--muted);
+    display: grid;
+    gap: 4px;
+  }
+  footer {
+    color: var(--muted);
+    font-size: 12.5px;
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+  }
+  code {
+    font-size: 0.92em;
+    background: var(--idle-soft);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    li.now .dot {
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 var(--accent-soft);
+      }
+      50% {
+        box-shadow: 0 0 0 7px var(--accent-soft);
+      }
+    }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="zonebar" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="eyebrow">Rodillo Virtual · seguimiento del proyecto</div>
+    <h1>Seguimiento Rodillo Virtual</h1>
+    <p class="lede">
+      Qué se está haciendo, qué viene después, qué tienes que decidir tú y qué te recomiendo. Lo
+      mantiene al día Claude en la nube; el código lo hace el agente de VS Code. Detalle de cada
+      tarea en <code>docs/contexto/pendientes/PENDIENTES.md</code>.
+    </p>
+  </header>
+
+  <div class="summary">
+    <div class="stat"><span>Fase actual</span><b>Fase 9</b><span>Mantenimiento</span></div>
+    <div class="stat">
+      <span>En curso</span><b>T1</b><span>Zonas Z1…Z6 (agente de VS Code)</span>
+    </div>
+    <div class="stat"><span>Por decidir</span><b>7</b><span>Decisiones tuyas abiertas</span></div>
+    <div class="stat">
+      <span>Hechas</span><b>Fases 0–7</b><span>Publicadas, con extras de 3D y entreno</span>
+    </div>
+  </div>
+
+  <section aria-labelledby="plan">
+    <div class="sechead">
+      <h2 id="plan">Plan, en orden de ejecución</h2>
+      <p>Los números de fase no cambian, solo el orden.</p>
+    </div>
+    <ol class="route">
+      <li class="now">
+        <div class="km"><div class="dot">1</div></div>
+        <div class="stage">
+          <div class="stage-top">
+            <h3>Fase 9 · Mantenimiento</h3>
+            <span class="chip now">En curso</span>
+          </div>
+          <ul>
+            <li>Zonas de pulso Z1…Z6 con migración de datos <span class="ref">T1</span></li>
+            <li>Curvas suaves en la vista 3D (giros a tirones) <span class="ref">T12</span></li>
+            <li>Roadmap y documentos de seguimiento al día <span class="ref">T2</span></li>
+            <li>README corto y manual de uso de toda la app <span class="ref">T11</span></li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="km"><div class="dot">2</div></div>
+        <div class="stage">
+          <div class="stage-top">
+            <h3>Fase 13 · GitHub profesional</h3>
+            <span class="chip next">Siguiente</span>
+          </div>
+          <ul>
+            <li>
+              Todo por PR con CI obligatorio, plantillas, versiones y escaneo de seguridad
+              <span class="ref">T7</span>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="km"><div class="dot">3</div></div>
+        <div class="stage">
+          <div class="stage-top">
+            <h3>Fase 14 · Docker de producción y CSP</h3>
+            <span class="chip next">Pendiente</span>
+          </div>
+          <ul>
+            <li>
+              nginx sin root, cabeceras de seguridad, HTTPS, imágenes fijadas y releases
+              <span class="ref">T4</span>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="km"><div class="dot">4</div></div>
+        <div class="stage">
+          <div class="stage-top">
+            <h3>Fase 15a · Mejoras pequeñas</h3>
+            <span class="chip next">Pendiente</span>
+          </div>
+          <ul>
+            <li>
+              Al guardar: descarga del archivo y botón para subir a Strava
+              <span class="ref">T8</span>
+            </li>
+            <li>Pulso máximo de la sesión con aviso <span class="ref">T17</span></li>
+            <li>Arco de llegada con cámara de meta <span class="ref">T16</span></li>
+            <li>Reconexión de Bluetooth sin preguntar <span class="ref">T18</span></li>
+            <li>
+              Panel de inicio, calidad gráfica del 3D, transiciones y cuenta atrás, gráfica de zonas
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="km"><div class="dot">5</div></div>
+        <div class="stage">
+          <div class="stage-top">
+            <h3>Fase 10 · Paisaje real, nivel 1</h3>
+            <span class="chip next">Pendiente</span>
+          </div>
+          <ul>
+            <li>Relieve real y foto de satélite desde el GPX <span class="ref">#22–#26</span></li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="km"><div class="dot">6</div></div>
+        <div class="stage">
+          <div class="stage-top">
+            <h3>Crear ruta en un mapa</h3>
+            <span class="chip next">Pendiente</span>
+          </div>
+          <ul>
+            <li>
+              Elegir puntos en el mapa y que salga el recorrido con su altitud
+              <span class="ref">T14</span>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="km"><div class="dot">7</div></div>
+        <div class="stage">
+          <div class="stage-top">
+            <h3>Fase 11 · Paisaje real, nivel 2</h3>
+            <span class="chip next">Pendiente</span>
+          </div>
+          <ul>
+            <li>
+              Edificios, bosques, agua y carreteras de OpenStreetMap
+              <span class="ref">#27–#29</span>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="km"><div class="dot">8</div></div>
+        <div class="stage">
+          <div class="stage-top">
+            <h3>Fase 12 · Paisaje real, nivel 3</h3>
+            <span class="chip next">Pendiente</span>
+          </div>
+          <ul>
+            <li>Google Photorealistic 3D Tiles <span class="ref">#30</span></li>
+            <li>Alta en Google Maps Platform, juntos <span class="ref">T15</span></li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="km"><div class="dot">9</div></div>
+        <div class="stage">
+          <div class="stage-top">
+            <h3>Fase 15b · Entrenamiento</h3>
+            <span class="chip next">Pendiente</span>
+          </div>
+          <ul>
+            <li>Exportar FIT para el entrenador</li>
+            <li>
+              Zonas desde un test, sugerencias «X podría ser tu Z2» y sensaciones
+              <span class="ref">T20</span>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="km"><div class="dot">10</div></div>
+        <div class="stage">
+          <div class="stage-top">
+            <h3>Ciclista realista</h3>
+            <span class="chip next">Pendiente</span>
+          </div>
+          <ul>
+            <li>Modelo 3D detallado con pedaleo según la cadencia <span class="ref">T13</span></li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="km"><div class="dot">11</div></div>
+        <div class="stage">
+          <div class="stage-top">
+            <h3>Seguridad complementaria</h3>
+            <span class="chip next">Al final</span>
+          </div>
+          <ul>
+            <li>
+              Copia cifrada, recordatorio de copia, límites al importar <span class="ref">T19</span>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="espera">
+    <div class="sechead">
+      <h2 id="espera">En espera</h2>
+      <p>Entran cuando se cumpla su condición.</p>
+    </div>
+    <div class="waiting">
+      <div class="item">
+        <div class="stage-top">
+          <strong>Fase 8 · Rodillo inteligente</strong><span class="chip wait">Al comprarlo</span>
+        </div>
+        <p>
+          FTMS: vatios medidos, ERG y pendiente que cambia la resistencia sola.
+          <span class="ref">#10–#12</span>
+        </p>
+      </div>
+      <div class="item">
+        <div class="stage-top">
+          <strong>Base de datos centralizada</strong><span class="chip wait">En estudio</span>
+        </div>
+        <p>Carpeta sincronizada, PocketBase o Supabase. <span class="ref">T8</span></p>
+      </div>
+      <div class="item">
+        <div class="stage-top">
+          <strong>Repo privado y uso en local</strong><span class="chip wait">Todavía no</span>
+        </div>
+        <p>Se dejaría de publicar en GitHub Pages. <span class="ref">T3</span></p>
+      </div>
+      <div class="item">
+        <div class="stage-top">
+          <strong>Issues en GitHub</strong><span class="chip wait">Más adelante</span>
+        </div>
+        <p>Un issue por tarea, en su milestone. <span class="ref">T10</span></p>
+      </div>
+      <div class="item">
+        <div class="stage-top"><strong>AWS</strong><span class="chip wait">Sin decidir</span></div>
+        <p>S3 + CloudFront con Terraform. <span class="ref">T6</span></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="cols">
+    <section aria-labelledby="decidir">
+      <div class="sechead"><h2 id="decidir">Por decidir (tú)</h2></div>
+      <ul class="list">
+        <li class="item decide">
+          <strong>«Context bombs»</strong>
+          <p>
+            ¿Te refieres a la CSP (bloquear código inyectado) o a trampas que avisan de un acceso
+            indebido (canary tokens)?
+          </p>
+        </li>
+        <li class="item decide">
+          <strong>Repo público o privado</strong>
+          <p>
+            Profesional y gratis solo en público; en privado, las reglas de rama necesitan Pro o
+            Team.
+          </p>
+        </li>
+        <li class="item decide">
+          <strong>Licencia del repo</strong>
+          <p>«Todos los derechos reservados» o abierta (MIT). Hace falta para la Fase 13.</p>
+        </li>
+        <li class="item decide">
+          <strong>Base de datos centralizada</strong>
+          <p>A (carpeta sincronizada, recomendada), B (PocketBase en Docker) o C (Supabase).</p>
+        </li>
+        <li class="item decide">
+          <strong>Rodillo inteligente</strong>
+          <p>Cuándo comprarlo. Recomendado: FTMS de segunda mano.</p>
+        </li>
+        <li class="item decide">
+          <strong>Crear los issues</strong>
+          <p>Cuando quieras que el agente trabaje desde GitHub.</p>
+        </li>
+        <li class="item decide">
+          <strong>Vault de Obsidian</strong>
+          <p>Compartir la carpeta con la sesión en la nube para poder actualizarlo.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="recomiendo">
+      <div class="sechead"><h2 id="recomiendo">Recomendaciones</h2></div>
+      <ul class="list">
+        <li class="item tip">
+          <strong>Una tarea cada vez al agente</strong>
+          <p>PRs pequeños se revisan mejor y no mezclan cambios.</p>
+        </li>
+        <li class="item tip">
+          <strong>Curvas antes que realismo</strong>
+          <p>Los giros a tirones son un fallo de geometría; se arreglan en la Fase 9.</p>
+        </li>
+        <li class="item tip">
+          <strong>CSP antes del paisaje real</strong>
+          <p>Así la Fase 10 solo abre los servicios de mapas que necesita.</p>
+        </li>
+        <li class="item tip">
+          <strong>Manda ya el TCX a tu entrenador</strong>
+          <p>Casi todas las plataformas lo aceptan mientras llega el FIT.</p>
+        </li>
+        <li class="item tip">
+          <strong>Exporta la copia de seguridad</strong>
+          <p>Tus datos viven en Chrome; si borras los datos del navegador, se pierden.</p>
+        </li>
+        <li class="item tip">
+          <strong>Rodillo con «Bluetooth FTMS»</strong>
+          <p>Si no lo pone en la ficha, la app no podrá controlarlo.</p>
+        </li>
+      </ul>
+    </section>
+  </div>
+
+  <section aria-labelledby="pruebas">
+    <div class="sechead"><h2 id="pruebas">Pruebas que te tocan a ti</h2></div>
+    <div class="waiting">
+      <div class="item test">
+        <div class="stage-top">
+          <strong>PWA sin conexión</strong><span class="chip wait">Falta</span>
+        </div>
+        <p>Instalada y con botón de actualizar: hecho. Falta abrirla sin internet.</p>
+      </div>
+      <div class="item test">
+        <div class="stage-top">
+          <strong>Sensores reales</strong><span class="chip wait">Falta</span>
+        </div>
+        <p>Pulsómetro probado. Falta el sensor de velocidad y cadencia.</p>
+      </div>
+      <div class="item test">
+        <div class="stage-top">
+          <strong>Ruta completa</strong><span class="chip wait">Falta</span>
+        </div>
+        <p>Una ruta entera con sensores reales.</p>
+      </div>
+      <div class="item test">
+        <div class="stage-top">
+          <strong>TCX en Strava</strong><span class="chip wait">Falta</span>
+        </div>
+        <p>Subir un TCX real y ver que llega bien.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="hecho">
+    <div class="sechead"><h2 id="hecho">Hecho recientemente</h2></div>
+    <ul class="done-list">
+      <li>Plan de los niveles de realismo (fases 10–12) fusionado en el roadmap (PR #31).</li>
+      <li>
+        Orden de ejecución, Strava opción (b), Supabase solo para centralizar datos y compra de
+        rodillo FTMS: decididos.
+      </li>
+      <li>Tareas T0–T20 apuntadas para el agente de VS Code.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Actualizado el 28 de noviembre de 2026. Sin datos personales: solo tareas y decisiones.
+  </footer>
+</div>

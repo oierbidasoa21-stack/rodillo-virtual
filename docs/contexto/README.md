@@ -19,6 +19,8 @@ Esta carpeta guarda **todo el contexto de Rodillo Virtual** para que no se pierd
 | [`entorno/`](entorno/ENTORNO.md)                | Repositorio, despliegue, herramientas y problemas del entorno ya resueltos.                      |
 | [`sesiones/`](sesiones/)                        | Resumen de cada sesión de trabajo: qué se pidió y qué se hizo.                                   |
 
+**Página de seguimiento** (fijada en la barra lateral del usuario): https://claude.ai/artifact/MtKN4xqp47je5nNQtyK5Uc. Su fuente es [`estado/seguimiento.html`](estado/seguimiento.html). La mantiene Claude en la nube: cada vez que cambie `pendientes/PENDIENTES.md`, se edita y se vuelve a publicar en la misma URL. Sin datos personales.
+
 Las fuentes de verdad siguen siendo [`CLAUDE.md`](../../CLAUDE.md) (reglas del proyecto) y [`docs/ROADMAP.md`](../ROADMAP.md) (fases y casillas). Esta carpeta las complementa con la historia y el porqué; si algo choca, mandan esos dos archivos.
 
 ## Cómo se mantiene al día
