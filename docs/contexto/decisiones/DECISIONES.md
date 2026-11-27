@@ -126,3 +126,7 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Usuario · Reparto del trabajo.** Habla solo con Claude en la nube, que hace de intermediario: apunta las tareas (`pendientes/`, issues), revisa los PR y mantiene `docs/contexto/`. El agente de VS Code hace los cambios. Se comunican por el repo. Claude en la nube solo toca `docs/contexto/` y los issues, para no pisarse.
 - **Usuario · Acepta las ideas del estudio salvo el modo daltónico** (no le interesa por ahora).
 - **Usuario · Quiere el GitHub «como el de una empresa»** (T7) y **pregunta por una base de datos centralizada** (T8) y por un **rodillo inteligente casero** (T9). Pendiente de que decida: público o privado (las reglas de rama en privado necesitan Pro o Team), qué opción de base de datos y el modelo de su rodillo tonto.
+- **Usuario · Todavía no tiene rodillo.** Su idea era ahorrar montando uno casero; con el coste total, la recomendación es un FTMS de segunda mano (T9).
+- **Usuario · Repo privado: apuntado, todavía no** (T3, con lo que se rompería: sobre todo Pages).
+- **Usuario · Issues de GitHub: más adelante** (T10).
+- **Técnica · Supabase no exige backend propio** (API generada, login, RLS; Edge Functions solo para secretos como Strava). Sigue en estudio (T8).

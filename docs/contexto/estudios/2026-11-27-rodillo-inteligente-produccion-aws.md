@@ -117,7 +117,16 @@ La idea: comprar piezas baratas, ponerlas en el rodillo tonto y que la app lo co
   - Rodillo de fluido: buscar un rodillo **FTMS de segunda mano**.
   - Rodillo magnético con palanca: el casero es un proyecto bonito y barato, pero hay que tomarlo como proyecto, no como ahorro seguro.
   - Si solo se quieren **vatios reales** (sin control de resistencia), un medidor de potencia también vale con el rodillo tonto.
-- **Pregunta abierta para el usuario:** marca y modelo de su rodillo tonto (fluido o magnético, y si tiene palanca de niveles).
+- **Respuesta del usuario:** **todavía no tiene rodillo** (ni tonto ni inteligente). La pregunta pasa a ser **qué comprar**. Comparación en coste total (precios orientativos; comprobar antes de comprar):
+
+  | Opción                                                     | Coste total aprox.                 | Qué se consigue                                                                                                                                 |
+  | ---------------------------------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+  | Rodillo de fluido tonto                                    | 80–200 €                           | Sensación de carretera, vatios estimados con su curva (la app ya trae curvas de fluido). Sin control.                                           |
+  | Magnético con palanca (nuevo o usado) + ESP32 casero       | 50–150 € + 40–80 € ≈ **100–230 €** | ERG y pendiente a saltos, vatios estimados (hay que meter una curva por nivel: la app hoy solo trae curvas de fluido), muchas horas de montaje. |
+  | **Inteligente FTMS de segunda mano** (rodillo sobre rueda) | **150–250 €**                      | Potencia **medida**, ERG fino y simulación de pendiente. La app solo necesita la Fase 8.                                                        |
+  | Inteligente FTMS nuevo de gama de entrada                  | 250–400 €                          | Lo mismo con garantía.                                                                                                                          |
+
+- **Conclusión:** sin rodillo todavía, el casero **apenas ahorra** frente a un FTMS de segunda mano y da mucho menos. Recomendación: **FTMS de segunda mano** (que diga «Bluetooth FTMS» en la ficha). El casero queda como proyecto opcional, si apetece cacharrear, no como forma de ahorrar.
 
 ## 7. ¿Cómo dejar el GitHub «como el de una empresa»?
 
@@ -163,3 +172,27 @@ La idea: comprar piezas baratas, ponerlas en el rodillo tonto y que la app lo co
   - historial, rutas y planes;
   - grabaciones. Son una fila por segundo, unas 3600 por hora: mejor comprimidas por sesión que fila a fila.
 - **Recomendación:** A ya (barato y sin riesgo); B si se quiere una base de datos de verdad; C solo si hay producto o empresa.
+
+### 8.1 ¿Con Supabase (opción C) hay que crear un backend?
+
+**No hace falta un backend propio** (ni servidor ni API que programar y mantener). Supabase es un «backend como servicio»:
+
+- **Base de datos:** PostgreSQL. Supabase genera sola una API sobre las tablas, y la app la usa directamente desde el navegador con su librería (`supabase-js`).
+- **Usuarios:** login incluido (correo con enlace mágico o contraseña).
+- **Seguridad: con políticas RLS** (_Row Level Security_) en cada tabla, por ejemplo «cada usuario solo ve y escribe sus filas». La clave que va en la web es **pública a propósito**: lo que protege los datos son las políticas RLS, así que tienen que estar en todas las tablas y con tests. Este es el punto crítico.
+- **Lo único que necesitaría código de servidor** es algo con un secreto, por ejemplo la subida a Strava (OAuth con _client secret_). Se haría con **Edge Functions** de Supabase: funciones pequeñas que corren en su nube, sin servidor que mantener.
+
+**Qué sí hay que hacer:**
+
+- crear el proyecto en **región UE**;
+- escribir las tablas y las políticas RLS como migraciones SQL versionadas (carpeta `supabase/` con su CLI);
+- añadir el login en la app;
+- hacer que Dexie siga como copia local y sincronice (la app tiene que seguir funcionando sin conexión).
+
+**A tener en cuenta:**
+
+- el plan gratuito tiene límites de tamaño, y los proyectos inactivos se pausan tras un tiempo sin uso (comprobar las condiciones actuales);
+- el pulso es dato de salud: Supabase actúa como encargado del tratamiento (tiene contrato de encargado, DPA);
+- cambia la regla «sin backend, sin cuentas» de `CLAUDE.md`.
+
+**Resumen:** con Supabase no se programa un backend, pero sí se diseña y se asegura la base de datos (tablas, RLS y login). Es la forma más barata y rápida de tener la opción C.

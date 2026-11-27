@@ -73,6 +73,20 @@ El usuario quiere poder hacer el repo **privado sin GitHub Pro**. GitHub Pages n
 - [ ] Guía corta para el usuario: exportar la copia en la web publicada (si tiene datos), cambiar la visibilidad (Settings → General → Danger Zone, eso lo hace él), arrancar Docker e importar la copia. Usar siempre el mismo puerto: cada dirección tiene su propia base.
 - [ ] Anotar la decisión cuando el usuario cambie la visibilidad.
 
+**Estado (2026-11-27): apuntado, todavía no.** El usuario no cambia la visibilidad por ahora.
+
+**Qué se rompería al pasarlo a privado** (respuesta del 2026-11-27):
+
+- **La web de GitHub Pages deja de publicarse** (plan gratuito). Es lo único importante: la app se usaría en `localhost:8080` con Docker (este T3). Una PWA instalada desde `github.io` puede seguir abriendo desde su caché, pero ya no se actualiza.
+- **Las reglas de protección de rama dejan de aplicarse** en el plan gratuito (afecta a T7).
+- Los enlaces al repo (issues, `README`, la URL del roadmap en los issues) piden iniciar sesión a quien no tenga acceso.
+- **No se rompe:**
+  - el código, el historial, los issues, los PR y los milestones;
+  - CI, con 2.000 minutos gratis al mes en privados, de sobra;
+  - el acceso de Claude (app de GitHub instalada) ni el del agente de VS Code;
+  - los datos del usuario, que están en su navegador.
+- **Es reversible:** se puede volver a público cuando se quiera.
+
 ### T4 · Docker de producción y seguridad
 
 Ver la tabla del punto 2 del estudio:
@@ -138,6 +152,8 @@ Pedido por el usuario el 2026-11-27. Detalle y porqué en el punto 7 del estudio
 
 ### T8 · Base de datos centralizada (en estudio)
 
+Aclaración del 2026-11-27: con **Supabase** (opción C) **no hay que programar un backend propio**. La app habla directamente con Supabase, la seguridad va en políticas RLS por tabla y solo Strava necesitaría una Edge Function. Sí hay que diseñar las tablas, las políticas RLS y el login. Detalle en el punto 8.1 del estudio.
+
 Pregunta del usuario el 2026-11-27. Opciones en el punto 8 del estudio:
 
 - **A**: copia automática en una carpeta sincronizada, sin servidor;
@@ -153,7 +169,22 @@ El usuario quiere saber si le sale más barato montar uno con piezas y el softwa
 - con rodillo de **fluido**, no es viable;
 - con rodillo **magnético con palanca**, sí: ESP32 + servo que se anuncia como FTMS, unos 40–80 € en piezas, a cambio de muchas horas y menos precisión.
 
-**Falta que el usuario diga el modelo de su rodillo tonto.** Si sale adelante, el firmware va en `firmware/` o en otro repo, y la app no cambia (Fase 8).
+**El usuario todavía no tiene rodillo** (2026-11-27). Con eso, la comparación de coste total del punto 6 del estudio da que el casero apenas ahorra frente a un **FTMS de segunda mano (150–250 €, orientativo)** y da mucho menos.
+
+- **Recomendación:** comprar un FTMS de segunda mano.
+- **Casero:** solo como proyecto opcional. Si sale adelante, el firmware va en `firmware/` o en otro repo, y la app no cambia (Fase 8).
+- **Si compra un rodillo magnético tonto:** la app hoy solo trae curvas de fluido, así que habría que meter una curva personalizada.
+- Cuando compre, actualizar «Atleta y equipo» en `CLAUDE.md`.
+
+### T10 · Pasar las tareas a issues de GitHub (después)
+
+Pedido el 2026-11-27: **apuntado para hacerlo más adelante, no ahora.** Cuando el usuario lo diga:
+
+- un issue por tarea o casilla (T0–T9), con criterios de «hecho»;
+- cada uno en el milestone de su fase según la propuesta de roadmap de T2 (crear los milestones que falten);
+- etiquetas de tipo y área.
+
+Lo hará Claude en la nube (los issues son suyos según el reparto). El agente de VS Code trabajará desde ellos: rama por issue y PR con `Closes #n`. Antes de crear issues nuevos, revisar los que ya existen para no duplicar: #10–#12 de la Fase 8, #18–#21 de pruebas con hardware y #22–#30 de paisaje real.
 
 ## Fases por hacer
 
