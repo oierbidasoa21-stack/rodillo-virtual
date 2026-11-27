@@ -100,6 +100,7 @@ Cada fórmula vive en `domain/` con tests que incluyan al menos un caso calculad
 6. Las decisiones de diseño y prioridades tómalas tú con un criterio razonable y anótalas, con su motivo, en `docs/contexto/decisiones/`. Pregúntame solo lo que únicamente yo puedo saber (qué equipo tengo, qué voy a comprar).
 7. **Contexto entre conversaciones**: al empezar, lee `docs/contexto/README.md` y `docs/contexto/estado/ESTADO.md`. Al terminar cada tarea, actualiza `docs/contexto/` según su README (estado, registro de cambios, decisiones, fase en curso, pendientes y sesión). Los scripts de prueba en navegador se guardan en `docs/contexto/pruebas/scripts/`.
 8. Las tareas pendientes viven también en GitHub como issues dentro del milestone de su fase. Al cerrar una tarea, cierra su issue; al cerrar una fase, cierra su milestone.
+9. **Reparto del trabajo entre dos agentes** (desde el 2026-11-27). El usuario habla con **Claude en la nube**, que apunta las tareas (`docs/contexto/pendientes/`, decisiones, estudios, issues), revisa los PR y mantiene `docs/contexto/estado/seguimiento.html`. El **agente de VS Code** hace los cambios: código, `ROADMAP.md`, `CLAUDE.md` y `README.md`, y al cerrar cada tarea suya actualiza `estado/`, `registro/`, `fases/`, `sesiones/` y la línea de estado de su tarea en `pendientes/`. Se comunican a través del repo, porque ninguno ve la conversación del otro.
 
 ## Dónde se prueba
 
@@ -111,7 +112,8 @@ Cada fórmula vive en `domain/` con tests que incluyan al menos un caso calculad
 - Rama `main` siempre funcional. Trabajo en ramas: `feat/…`, `fix/…`, `chore/…`, `docs/…`.
 - Commits con **Conventional Commits**: `feat(workout): add repeat blocks`, `fix(sensors): handle HR disconnect`.
 - Commits pequeños, uno por cambio lógico.
-- **Haz push y fast-forward a `main` tú mismo**, sin pedir permiso, cuando lint, tests y build pasen y lo hecho esté comprobado. Después vigila **CI** y **Deploy** y, si cambia la app, repite la prueba contra la web publicada. Nunca `--force` sobre `main`.
+- **Una rama y un PR por tarea.** Los PR de código no se fusionan hasta que los revisa Claude en la nube; los que solo tocan documentación pueden fusionarse con CI en verde. Tras fusionar, vigila **CI** y **Deploy** y, si cambia la app, repite la prueba contra la web publicada. Nunca `--force` sobre `main`.
+- Claude en la nube sube a `main` en pocos commits. Si un merge se rechaza porque `main` cambió mientras tanto, trae `main` a la rama con un merge normal (sin `rebase` forzado) y vuelve a intentarlo.
 - Nunca subas datos personales: exportaciones de entrenamientos y archivos `.tcx`/`.fit`/`.gpx` propios van en `data/`, que está en `.gitignore`.
 - Sin secretos en el repo (no hacen falta: no hay backend).
 

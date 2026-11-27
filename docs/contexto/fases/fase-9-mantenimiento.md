@@ -5,8 +5,8 @@ Primera fase del orden de ejecución acordado el 2026-11-27 (9 → 13 → 14 →
 | Tarea | Qué                                         | Estado                           |
 | ----- | ------------------------------------------- | -------------------------------- |
 | T1    | Zonas de pulso Z1…Z6 con migración Dexie v6 | ✅ PR #33, revisado y fusionado  |
-| T12   | Curvas suaves en la vista 3D                | 🔍 PR #35, abierto para revisión |
-| T2    | Documentos de seguimiento al día            | Pendiente                        |
+| T12   | Curvas suaves en la vista 3D                | ✅ PR #35, revisado y fusionado  |
+| T2    | Documentos de seguimiento al día            | 🔍 PR #36, abierto para revisión |
 | T11   | README corto y `docs/MANUAL.md`             | Pendiente (al final de la fase)  |
 
 ## Forma de trabajar
