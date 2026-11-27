@@ -2,7 +2,7 @@
 # docker build -t rodillo-virtual . && docker run -p 8080:80 rodillo-virtual
 # Only the example athlete goes into the image (config/*.local.json is excluded).
 
-FROM node:24-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
