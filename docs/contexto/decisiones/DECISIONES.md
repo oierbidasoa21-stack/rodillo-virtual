@@ -147,3 +147,12 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Usuario · «Context bombs» = las dos cosas:** CSP en la Fase 14 y trampas que avisan (_canary tokens_) en T19, sobre todo una vez exista Supabase.
 - **Usuario · Curvas suaves antes que el realismo** (T12 en la Fase 9).
 - **Usuario · Datos centralizados en Supabase** (T8, opción C). Ubicación propuesta: fase propia después de la 15b; pendiente de confirmar.
+
+## 2026-11-28 — Fase 9 · zonas Z1…Z6 (T1)
+
+- **Usuario · Zonas Z1…Z6** en lugar de L1, L2, L3, UA, UA+, VO2 (misma posición, mismos pesos y MET).
+- **Técnica · Migración en Dexie v6** con una función pura (`domain/zones/legacy.ts`) que recorre el valor guardado y solo renombra campos de zona (`zoneId`, `targetZoneId`, segundos por zona y zonas del atleta). No toca `routes` ni `recordings` ni texto libre: una ruta o una nota pueden contener «UA».
+- **Técnica · Los nombres viejos se siguen aceptando al importar** (copia, archivo de atleta, plan del agente, `.zwo`) para no perder datos ni planes antiguos. `isZoneId` sigue estricto y `toZoneId` es el que acepta los dos.
+- **Técnica · Etiquetas:** la de ejemplo se renombra (`UA (umbral)` → `Z4 (umbral)`); la que escribió el usuario se respeta.
+- **Producto · Pulso frente a potencia:** las zonas de potencia también se llaman Z1…Z7 y no coinciden. Donde salen las dos se dice «de pulso» o «de potencia» («Potencia Z4 · Umbral» en el player).
+- **Proceso · El PR de T1 no se fusiona sin revisión** de Claude en la nube (pedido del usuario). Los PR solo de documentación (#31, #32) sí los fusiona el agente con CI en verde.
