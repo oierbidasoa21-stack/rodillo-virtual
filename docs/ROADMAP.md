@@ -7,7 +7,7 @@ Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**
 
 **Fase actual: 9 (mantenimiento).**
 
-**Orden de ejecución:** 9 → 13 → 14 → 15a → 10 → 11 → 12. Los números no cambian; la 8 entra cuando haya rodillo inteligente. El porqué está en `docs/contexto/pendientes/PENDIENTES.md` (tarea T2).
+**Orden de ejecución:** 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → T13 → T19. Los números no cambian; la 8 entra cuando haya rodillo inteligente. Las tareas Tn y el porqué del orden están en `docs/contexto/pendientes/PENDIENTES.md` (T2).
 
 ---
 
@@ -135,6 +135,7 @@ El número de la antigua Fase 9 (móvil, descartada) queda libre y se reutiliza.
 
 - [ ] Zonas de pulso Z1…Z6 en lugar de L1…VO2, con migración de los datos guardados (T1)
 - [ ] Documentos de seguimiento al día (T2)
+- [ ] Curvas suaves en la vista 3D (T12)
 - [ ] README corto y `docs/MANUAL.md` con el uso de toda la app (T11)
 
 ## Fase 10 — Paisaje real · nivel 1 (relieve y satélite)
