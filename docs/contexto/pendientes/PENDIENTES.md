@@ -65,7 +65,7 @@ Pedido por el usuario: las zonas pasan de `L1, L2, L3, UA, UA+, VO2` a `Z1, Z2, 
     3. **Fase 14** (Docker de producción y seguridad): poner la CSP estricta **antes** de la Fase 10 es seguridad desde el diseño. Luego la Fase 10 solo abre, de forma explícita, los servicios de teselas que necesita, en vez de tener que cerrar después lo que quedó abierto.
     4. **Fase 15** partida en dos:
        - **15a, antes de la 10**: lo pequeño (recordatorio de copia, límites al importar, copia cifrada, calidad gráfica del 3D, panel de inicio). Los límites al importar y la copia cifrada encajan con la Fase 14.
-       - **15b, después o en espera**: exportar FIT y zonas desde un test. **Strava sale de la Fase 15**: necesita un secreto (OAuth). **Decidido: se hará con Supabase** (Edge Function y tokens en una tabla con RLS), dentro de T8.
+       - **15b, después o en espera**: exportar FIT (botón «Descargar FIT» junto al TCX, con el FIT SDK oficial de Garmin, mismos datos; el usuario lo quiere para compartir con su entrenador) y zonas desde un test. **Strava sale de la Fase 15**: necesita un secreto (OAuth). **Decidido: se hará con Supabase** (Edge Function y tokens en una tabla con RLS), dentro de T8.
     5. **Fases 10 → 11 → 12** (paisaje real): lo más grande y con más riesgo (servicios externos, rendimiento, licencias). Mejor con la base ya limpia y segura.
     6. **Fase 8** cuando haya rodillo: es independiente y puede entrar en cualquier momento.
     - **Los números no se cambian**, aunque el orden sea otro: los issues y milestones de #31 ya usan 10–12. En `ROADMAP.md` basta con poner «Fase actual: 9» y una línea con el orden de ejecución. Recordar la regla 1 de `CLAUDE.md` (trabajar solo en la fase actual).
@@ -177,6 +177,13 @@ Al empezarla, cambiar la regla «sin backend, sin cuentas» de `CLAUDE.md`.
 - tabla `strava_tokens` con RLS (solo su dueño);
 - refresco del token en la función;
 - subida del TCX o FIT desde la app con el token.
+
+Flujo paso a paso y qué datos llegan en el punto 8.4 del estudio:
+
+- vatios marcados como estimados en la descripción;
+- actividad de interior o virtual;
+- sin posición en las rutas inventadas;
+- no subir sesiones simuladas.
 
 Si se comparte el proyecto (punto 8.3 del estudio):
 

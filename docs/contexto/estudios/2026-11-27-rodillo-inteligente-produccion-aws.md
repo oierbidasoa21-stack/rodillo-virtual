@@ -226,3 +226,27 @@ A tener en cuenta:
   - las claves de Strava y Supabase van por configuración, nunca en el código;
   - la app funciona entera sin ellas (con exportar a mano);
   - la integración queda desactivada si no hay claves.
+
+### 8.4 Strava solo para el usuario, paso a paso, y FIT para el entrenador
+
+**Una sola vez:**
+
+1. Crear una app en la configuración de la API de Strava. Strava da un _client id_ y un _client secret_.
+2. Guardar el secreto en Supabase como secreto de la Edge Function (nunca en el repo ni en la web).
+3. En la app, botón **«Conectar con Strava»**: se abre la página de Strava, se inicia sesión y se acepta el permiso de subir actividades (`activity:write`). Strava devuelve un código, la Edge Function lo cambia por los tokens y los guarda en la tabla protegida.
+
+**Después de cada sesión:** botón **«Subir a Strava»** (o automático al guardar, si se quiere). La app manda el archivo de la sesión con el token y Strava devuelve el enlace a la actividad.
+
+**Qué datos llegan:** los mismos que lleva el archivo. El TCX actual ya incluye, segundo a segundo, pulso, vatios, cadencia, velocidad, distancia, altitud y, en rutas, posición. Detalles a cuidar:
+
+- **Los vatios son estimados** (rodillo tonto): la descripción de la actividad tiene que decirlo (regla «nunca inventar datos»). Con un rodillo FTMS serían medidos.
+- **Marcar la actividad como de interior o virtual**, no como salida real.
+- **Rutas inventadas:** su posición pondría un mapa en un sitio que no existe. Mejor subir sin posición, o solo en rutas GPX reales si el usuario quiere.
+- **Sesiones con sensores simulados:** no se suben, o se avisa.
+
+**FIT para el entrenador (Fase 15b):** sí. FIT es el formato de Garmin, más compacto y el más aceptado, por ejemplo por TrainingPeaks o intervals.icu.
+
+- Botón **«Descargar FIT»** en el detalle de cada sesión, junto al TCX.
+- Se genera en el navegador con la librería oficial de Garmin (FIT SDK de JavaScript), sin Supabase ni cuentas.
+- Lleva los mismos datos que el TCX.
+- Mientras tanto, el TCX de hoy ya sirve: casi todas las plataformas de entrenadores lo aceptan.
