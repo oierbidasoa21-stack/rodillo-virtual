@@ -150,7 +150,7 @@ El número de la antigua Fase 9 (móvil, descartada) queda libre y se reutiliza.
 - [x] Zonas de pulso Z1…Z6 en lugar de L1…VO2, con migración de los datos guardados (T1)
 - [ ] Documentos de seguimiento al día (T2)
 - [x] Curvas suaves en la vista 3D (T12)
-- [ ] README corto y `docs/MANUAL.md` con el uso de toda la app (T11)
+- [x] README corto y `docs/MANUAL.md` con el uso de toda la app (T11)
 
 ## Fase 10 — Paisaje real · nivel 1 (relieve y satélite)
 
