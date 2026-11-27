@@ -26,7 +26,7 @@ Aplicación web de entrenamiento en rodillo para **uso personal**, inspirada en 
 - Entreno **por pulso y sensaciones**. Aún no tengo FTP medido.
 
 - Bici: Van Rysel EDR AF, ruedas 700×32.
-- Equipo previsto: **rodillo "tonto"** + banda de pulso BLE + sensor de velocidad BLE en la rueda trasera. Puede que más adelante haya rodillo inteligente (FTMS). El diseño soporta ambos.
+- Equipo previsto: **rodillo "tonto"** + banda de pulso BLE + sensor de velocidad BLE en la rueda trasera. El usuario comprará un rodillo inteligente con FTMS (decidido el 2026-11-28): la Fase 8 empieza cuando lo tenga. El diseño soporta ambos.
 - Regla: **la app nunca inventa datos**. Si un sensor no está conectado, la métrica que depende de él no se muestra. Las métricas estimadas (potencia en rodillo tonto, kcal) se marcan siempre como estimadas.
 
 ## Stack
@@ -100,7 +100,8 @@ Cada fórmula vive en `domain/` con tests que incluyan al menos un caso calculad
 6. Las decisiones de diseño y prioridades tómalas tú con un criterio razonable y anótalas, con su motivo, en `docs/contexto/decisiones/`. Pregúntame solo lo que únicamente yo puedo saber (qué equipo tengo, qué voy a comprar).
 7. **Contexto entre conversaciones**: al empezar, lee `docs/contexto/README.md` y `docs/contexto/estado/ESTADO.md`. Al terminar cada tarea, actualiza `docs/contexto/` según su README (estado, registro de cambios, decisiones, fase en curso, pendientes y sesión). Los scripts de prueba en navegador se guardan en `docs/contexto/pruebas/scripts/`.
 8. Las tareas pendientes viven también en GitHub como issues dentro del milestone de su fase. Al cerrar una tarea, cierra su issue; al cerrar una fase, cierra su milestone.
-9. **Reparto del trabajo entre dos agentes** (desde el 2026-11-27). El usuario habla con **Claude en la nube**, que apunta las tareas (`docs/contexto/pendientes/`, decisiones, estudios, issues), revisa los PR y mantiene `docs/contexto/estado/seguimiento.html`. El **agente de VS Code** hace los cambios: código, `ROADMAP.md`, `CLAUDE.md` y `README.md`, y al cerrar cada tarea suya actualiza `estado/`, `registro/`, `fases/`, `sesiones/` y la línea de estado de su tarea en `pendientes/`. Se comunican a través del repo, porque ninguno ve la conversación del otro.
+9. **Reparto del trabajo entre dos agentes** (desde el 2026-11-27; el agente de cambios pasa a la nube el 2026-11-28). El usuario habla con **Claude en la nube** (el coordinador), que apunta las tareas (`docs/contexto/pendientes/`, decisiones, estudios, issues), lanza y coordina al agente que hace los cambios, revisa sus PR y mantiene `docs/contexto/estado/seguimiento.html`. El **agente de cambios** es otra sesión de Claude en la nube, lanzada por el coordinador (antes era el agente de VS Code): hace el código, `ROADMAP.md`, `CLAUDE.md`, `README.md` y `docs/MANUAL.md`, y al cerrar cada tarea suya actualiza `estado/`, `registro/`, `fases/`, `sesiones/` y la línea de estado de su tarea en `pendientes/`. Se comunican por **mensajes entre sesiones** y por el repo: el agente de cambios avisa al coordinador con el número del PR y le pregunta cuando duda, en vez de adivinar. **El usuario solo revisa.**
+10. **El manual se mantiene al día.** Cada tarea o fase que cambie algo que se ve o se usa en la app actualiza `docs/MANUAL.md` (y sus capturas en `docs/manual/`, con `docs/contexto/pruebas/scripts/t11-capturas-manual.mjs`, sensores simulados y el atleta de ejemplo). El manual solo describe lo que ya existe; lo planificado se nombra como tal, con enlace al `ROADMAP`.
 
 ## Dónde se prueba
 
@@ -116,6 +117,7 @@ Cada fórmula vive en `domain/` con tests que incluyan al menos un caso calculad
 - Claude en la nube sube a `main` en pocos commits. Si un merge se rechaza porque `main` cambió mientras tanto, trae `main` a la rama con un merge normal (sin `rebase` forzado) y vuelve a intentarlo.
 - Nunca subas datos personales: exportaciones de entrenamientos y archivos `.tcx`/`.fit`/`.gpx` propios van en `data/`, que está en `.gitignore`.
 - Sin secretos en el repo (no hacen falta: no hay backend).
+- El repo es **público** y se queda así (decidido el 2026-11-28; el modo local con repo privado, T3, queda descartado). Licencia: **todos los derechos reservados**, sin licencia libre.
 
 ## Comandos
 

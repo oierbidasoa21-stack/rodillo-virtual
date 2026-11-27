@@ -5,9 +5,9 @@ Marca `[x]` al completar cada tarea.
 
 Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. La app es solo para ordenador: no hay fase de móvil.
 
-**Fase actual: 9 (mantenimiento).**
+**Fase actual: 13 (GitHub profesional).** La Fase 9 está cerrada (2026-11-28).
 
-**Orden de ejecución:** 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → T13 → T19. Los números no cambian; la 8 entra cuando haya rodillo inteligente. Las tareas Tn y el porqué del orden están en `docs/contexto/pendientes/PENDIENTES.md` (T2).
+**Orden de ejecución:** 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → Datos en Supabase → T13 → T19. Los números no cambian; la 8 entra cuando llegue el rodillo inteligente. Las tareas Tn y el porqué del orden están en `docs/contexto/pendientes/PENDIENTES.md` (T2).
 
 ---
 
@@ -121,9 +121,9 @@ Pendiente: probarlo con sensores reales cuando tenga el hardware. Hasta entonces
 - [x] Escenario procedural (terreno, árboles, cielo) con buen rendimiento en portátil
 - [x] HUD de la Fase 5 superpuesto sobre la vista 3D
 
-## Fase 8 — Rodillo inteligente (opcional)
+## Fase 8 — Rodillo inteligente
 
-Solo si compro uno.
+El usuario comprará un rodillo con FTMS (decidido el 2026-11-28). La fase sigue en espera hasta que lo tenga.
 
 - [ ] FTMS (0x1826): lectura de potencia, cadencia y velocidad reales
 - [ ] Modo ERG: el workout fija la potencia del rodillo
@@ -143,14 +143,14 @@ Hechas tras la Fase 7, a petición del usuario, antes de reordenar el roadmap. D
 - [x] Imagen Docker y `docs/ESTRUCTURA.md`
 - [x] Pantalla completa (botón y tecla F)
 
-## Fase 9 — Mantenimiento
+## Fase 9 — Mantenimiento ✅ cerrada (2026-11-28)
 
 El número de la antigua Fase 9 (móvil, descartada) queda libre y se reutiliza. Tareas en `docs/contexto/pendientes/PENDIENTES.md`.
 
 - [x] Zonas de pulso Z1…Z6 en lugar de L1…VO2, con migración de los datos guardados (T1)
-- [ ] Documentos de seguimiento al día (T2)
+- [x] Documentos de seguimiento al día (T2)
 - [x] Curvas suaves en la vista 3D (T12)
-- [ ] README corto y `docs/MANUAL.md` con el uso de toda la app (T11)
+- [x] README corto y `docs/MANUAL.md` con el uso de toda la app (T11)
 
 ## Fase 10 — Paisaje real · nivel 1 (relieve y satélite)
 
@@ -176,10 +176,10 @@ Solo si creo una clave de Google Maps Platform.
 
 ## Fase 13 — GitHub profesional
 
-Tarea T7 de `docs/contexto/pendientes/PENDIENTES.md`. Antes de empezar, el usuario decide entre repo público (todo gratis) o privado (las reglas de rama necesitan Pro o Team).
+Issues #38–#45 (etiqueta `fase-13`). Tarea T7 de `docs/contexto/pendientes/PENDIENTES.md`. El repo se queda **público** (decidido el 2026-11-28), así que las reglas de rama son gratis.
 
 - [ ] Presentación: descripción, temas, web e imagen para compartir; `README` con insignias, capturas y arranque rápido
-- [ ] Archivos estándar: `LICENSE` (la elige el usuario), `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md` y `CHANGELOG.md`
+- [ ] Archivos estándar: `LICENSE` con «todos los derechos reservados» (sin licencia libre, decidido el 2026-11-28), `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md` y `CHANGELOG.md`
 - [ ] `.github/`: plantillas de issue en formulario y de PR, `CODEOWNERS`, `dependabot.yml` y etiquetas `tipo:`, `área:` y `prioridad:`
 - [ ] Reglas de `main`: solo por PR con CI obligatorio, historial lineal sin `--force`, fusión _squash_ y borrado automático de ramas
 - [ ] Commitlint en CI, release-please (versiones, etiquetas y `CHANGELOG`) e imagen en GHCR por versión
@@ -189,7 +189,7 @@ Tarea T7 de `docs/contexto/pendientes/PENDIENTES.md`. Antes de empezar, el usuar
 
 ## Fase 14 — Docker de producción y seguridad
 
-Tarea T4. La CSP se pone aquí, antes de la Fase 10, que solo abrirá los servicios de teselas que necesite.
+Issues #46–#53 (etiqueta `fase-14`). Tarea T4. La CSP se pone aquí, antes de la Fase 10, que solo abrirá los servicios de teselas que necesite.
 
 - [ ] nginx sin root y con sistema de archivos de solo lectura; `cap_drop` y `no-new-privileges`
 - [ ] Cabeceras de seguridad con CSP, repetidas en cada `location`
@@ -202,6 +202,8 @@ Tarea T4. La CSP se pone aquí, antes de la Fase 10, que solo abrirá los servic
 
 ## Fase 15a — Mejoras aceptadas (antes del paisaje real)
 
+Issues #54–#60 (etiqueta `fase-15a`).
+
 - [ ] Selector de calidad gráfica del 3D
 - [ ] Panel de inicio
 - [ ] Strava sin API: descargar el archivo al guardar y botón «Abrir Strava para subir» (T8, opción b)
@@ -212,18 +214,28 @@ Tarea T4. La CSP se pone aquí, antes de la Fase 10, que solo abrirá los servic
 
 ## Fase 15b — Mejoras aceptadas (después del paisaje real)
 
+Issues #61–#62 (etiqueta `fase-15b`).
+
 - [ ] Exportar FIT junto al TCX (para el entrenador)
 - [ ] Zonas desde un test guiado y sugerencias de zonas con sensaciones al terminar (T20)
 
+## Datos en Supabase
+
+Issue #63 (etiqueta `datos-supabase`). Tarea T8. Fase propia, después de la 15b y antes de T13 y T19 (decidido el 2026-11-28). Se diseña antes de construir nada; al empezarla cambia la regla «sin backend, sin cuentas» de `CLAUDE.md`.
+
+- [ ] Tablas y políticas RLS con tests, en región UE
+- [ ] Login con enlace mágico
+- [ ] Sincronización con Dexie sin perder el modo sin conexión
+
 ## Tareas sueltas en el orden de ejecución
 
+Issues #64–#66 (etiqueta `tareas-sueltas`).
+
 - [ ] T14 · Crear una ruta eligiendo puntos en un mapa (justo después de la Fase 10)
-- [ ] T13 · Ciclista realista: modelo 3D propio o con licencia libre (después de la Fase 12)
-- [ ] T19 · Seguridad complementaria: copia cifrada, recordatorio de copia, límites al importar y señuelos (lo último de todo)
+- [ ] T13 · Ciclista realista: modelo 3D propio o con licencia libre (después de los datos en Supabase)
+- [ ] T19 · Seguridad complementaria: copia cifrada, recordatorio de copia, límites al importar y señuelos (lo último de todo; necesita los datos en Supabase)
 
 ## En espera o en estudio (sin número)
 
-- **Fase 8** (arriba): rodillo inteligente, cuando se compre uno con FTMS (T5); el casero queda descartado salvo como proyecto (T9).
-- **Base de datos centralizada** (T8): Supabase si se decide; cambia la regla «sin backend».
+- **Fase 8** (arriba): rodillo inteligente con FTMS, cuando llegue (el usuario lo comprará; T5). El casero queda descartado salvo como proyecto (T9).
 - **AWS** (T6): solo si se decide.
-- **Modo local con repo privado** (T3): depende de la Fase 13.

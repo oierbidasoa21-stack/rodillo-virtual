@@ -43,6 +43,8 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 | ----------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `ROADMAP.md`                        | Fases del proyecto con sus tareas marcadas.                                                       |
 | `ESTRUCTURA.md`                     | Este documento.                                                                                   |
+| `MANUAL.md`                         | Manual de uso de toda la app, para personas, con capturas.                                        |
+| `manual/`                           | Capturas del manual (PNG a 1280×900, con sensores simulados y el atleta de ejemplo).              |
 | `agente-entrenador.md`              | Cómo conectar la app con tu agente entrenador (informe hacia el agente y plan semanal de vuelta). |
 | `reference/rodillo-pulso-v1.html`   | La versión 1 en un solo HTML: referencia funcional de la Fase 1.                                  |
 | `contexto/README.md`                | Cómo se organiza el contexto entre conversaciones y qué se actualiza tras cada tarea.             |

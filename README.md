@@ -1,136 +1,63 @@
 # Rodillo Virtual
 
-Aplicación web de entrenamiento en rodillo para uso personal: workouts estructurados por pulso o potencia, métricas en directo, rutas virtuales con pendiente en un mundo 3D, grabación y exportación.
+Aplicación web para entrenar en rodillo, de uso personal: sesiones estructuradas por zonas de pulso o por potencia, métricas en directo, rutas con pendiente en un mundo 3D, grabación e historial.
 
-Todo corre en el navegador y los datos se quedan en el dispositivo. No hay backend ni cuentas.
+Todo corre en el navegador y **los datos se quedan en tu ordenador**. No hay servidor ni cuentas.
 
 **App:** https://oierbidasoa21-stack.github.io/rodillo-virtual/
 
+![Vista 3D al rodar una ruta](docs/manual/11-ruta-3d.png)
+
+## Qué hace
+
+- **Sesiones por zonas de pulso** (Z1…Z6, contadas en 10″) **o por % del FTP**, con biblioteca, editor de bloques y repeticiones, e importar y exportar `.zwo`.
+- **Player para leer a un metro**: zona con su color, reloj grande, avisos de voz y pitidos, contador de pulso de 10″ y pantalla completa.
+- **Sensores Bluetooth**: banda de pulso y sensor de velocidad y cadencia. Sensores simulados para probar sin hardware.
+- **Potencia estimada** en rodillo «tonto» con la curva de tu rodillo, ramp test para el FTP, NP, IF y TSS.
+- **Rutas** inventadas o tus GPX, con velocidad virtual según la pendiente, vista 3D, fantasma y demo sin sensores.
+- **Resumen, historial y forma**: tiempo en zona, carga, kcal, condición y fatiga, gráficas segundo a segundo y exportar TCX.
+- **Plan del entrenador** para trabajar con un agente de IA, **copia de seguridad** y **app instalable** que funciona sin conexión.
+
+Cómo se usa todo, paso a paso y con capturas: **[docs/MANUAL.md](docs/MANUAL.md)**.
+
 ## Requisitos
 
-- Node.js 24 (ver `.nvmrc`)
-- Chrome en el ordenador para los sensores Bluetooth. Web Bluetooth necesita HTTPS o `localhost`.
+- **Chrome** (o Edge) **en el ordenador**. Los sensores usan Web Bluetooth, que solo funciona con HTTPS o en `localhost`.
+- Para los sensores, Bluetooth en el ordenador. Sin ellos puedes probarla con los sensores simulados (Ajustes → Desarrollo).
 
-## Comandos
+## Arranque rápido
+
+**Web publicada** (lo normal): abre la dirección de arriba en Chrome y, si quieres, instálala desde el icono de la barra de direcciones.
+
+**Docker**, para usarla en tu ordenador:
 
 ```sh
-npm install       # instalar dependencias
+docker compose up -d        # después abre http://localhost:8080
+```
+
+**Desarrollo** (Node.js 24, ver `.nvmrc`):
+
+```sh
+npm install
 npm run dev       # servidor local en localhost
 npm run test      # tests (Vitest)
-npm run lint      # ESLint + comprobación de formato con Prettier
-npm run format    # formatear con Prettier
+npm run lint      # ESLint + Prettier
 npm run build     # build de producción en dist/
-npm run preview   # servir el build en local
 ```
 
-## Configuración del atleta
+Tus datos personales (peso y zonas) no se suben al repositorio: copia `config/athlete.example.json` a `config/athlete.local.json` (ignorado por git) e impórtalo en **Ajustes → Archivo del atleta**.
 
-Los datos personales (peso y zonas de pulso) no se suben al repositorio. Copia el ejemplo y edítalo:
+## Privacidad
 
-```sh
-cp config/athlete.example.json config/athlete.local.json
-```
-
-`config/athlete.local.json` está en `.gitignore`.
-
-## Instalar y usar sin conexión
-
-La app es una PWA: se instala como una aplicación y funciona sin conexión una vez cargada.
-
-1. Abre la app en Chrome, en el ordenador, con conexión.
-2. Pulsa el icono de instalar en la barra de direcciones, o menú ⋮ → **Transmitir, guardar y compartir → Instalar página como aplicación**.
-3. En **Ajustes**, importa tu `config/athlete.local.json`. Cada dispositivo guarda sus propios datos.
-
-Sin conexión funciona todo: biblioteca, editor, player, contador de pulso, resumen e historial. La primera carga necesita red; después, la app entera (código, fuentes e iconos) queda guardada en el dispositivo.
-
-Al pedir almacenamiento persistente, el navegador no borra tus sesiones ni el historial aunque le falte espacio. En **Ajustes → Datos en este dispositivo** puedes ver si lo ha concedido; con la app instalada suele concederlo.
-
-**Actualizaciones:** cuando hay una versión nueva aparece el aviso «Nueva versión disponible» con el botón **Actualizar**. La app nunca se recarga sola, y el aviso no sale mientras haces una sesión o editas una.
-
-## Sensores
-
-La app lee una **banda de pulso** (Heart Rate, 0x180D) y un **sensor de velocidad y cadencia** (CSC, 0x1816) por Bluetooth, con Chrome en el ordenador.
-
-1. Pestaña **Sensores** → **Conectar** y elige el sensor en la lista de Chrome. No lo emparejes antes en la configuración Bluetooth de Windows.
-2. Si no aparece: la banda necesita contacto con la piel, y el sensor no puede estar conectado a otro dispositivo (un reloj u otra app).
-3. Chrome pide elegir el sensor una vez cada vez que abres la app. Si se cae durante una sesión, la app avisa y reintenta sola.
-
-La velocidad sale de las vueltas de rueda × la **circunferencia de rueda** (Ajustes → Tus datos; 2155 mm por defecto, para 700×32). Si tu sensor solo mide la rueda, no se muestra cadencia: la app no inventa datos.
-
-Durante la sesión verás el pulso con «En zona / Por encima / Por debajo», además de la velocidad y la cadencia. Con al menos un minuto de pulso, el resumen calcula el tiempo en zona, la carga y las kcal con tu pulso real.
-
-**Sin hardware:** en Ajustes → Desarrollo, activa **Sensores simulados**. Aparecen un pulsómetro y un sensor de velocidad de mentira, con un panel para moverlos o simular una caída. Todo lo simulado va marcado como **SIMULADO**, también en el historial.
-
-## Potencia y ramp test
-
-Con un rodillo «tonto» no hay medidor de potencia: la app la **estima** a partir de la velocidad de rueda y la curva velocidad → potencia de tu rodillo. Todas las cifras de potencia van marcadas como estimadas.
-
-1. **Ajustes → Rodillo y potencia:** elige tu rodillo o escribe una curva personalizada (P = a·v + b·v³, v en km/h). La lista incluye rodillos de fluido con curva publicada y su fuente; los magnéticos no están, porque su curva depende del nivel de resistencia. Sin rodillo elegido, la app no muestra potencia.
-2. **Ramp test** (Sesiones → Pruebas): 5′ suaves y después +20 W cada minuto desde 100 W. Pulsa **No puedo más** cuando no puedas mantener el escalón. Tu FTP estimado es el 75 % de tu mejor minuto. Pulsa **Guardar como mi FTP**, o escribe el FTP a mano en Ajustes.
-3. **Sesiones por potencia:** en el editor, cada bloque puede ir por pulso o por % del FTP. Durante la sesión verás los vatios objetivo con una banda de ±5 % y si vas en objetivo, por encima o por debajo. La biblioteca trae «Sweet spot 3×12′» y «Umbral 2×20′ (potencia)».
-
-Con al menos un minuto de potencia, el resumen muestra potencia media, NP, máxima, trabajo (kJ), IF y TSS (si hay FTP) y el tiempo en zonas de potencia (Coggan Z1–Z7). Las kcal pasan a salir de los kJ. El historial añade una columna TSS.
-
-## Rutas
-
-En la pestaña **Rutas** hay 3 rutas de ejemplo inventadas (un llano, un puerto de 8 km al 6 % y un rompepiernas). También puedes **importar tus GPX**, que se guardan solo en el navegador. Cada ruta se remuestrea cada 10 m y su altitud se suaviza para que el ruido del GPS no dé pendientes falsas.
-
-- **Rodar:** vista de carrera con la pendiente, la velocidad, la potencia, el pulso, la cadencia, la distancia, lo que queda, el desnivel y el tiempo. Debajo, el perfil de altimetría con tu posición y los próximos 500 m, y el minimapa del recorrido (sin mapa de fondo, funciona sin conexión).
-- **Con una sesión…:** haces cualquier sesión de la biblioteca o tuya sobre la ruta. La ruta da vueltas hasta que acaba la sesión, y el resumen dice cuántas.
-
-Siempre se ve con qué modo estás rodando:
-
-- **Modo potencia** (con un rodillo elegido en Ajustes): la velocidad virtual sale de tu potencia estimada, tu peso más el de la bici, y la pendiente. En las subidas vas más despacio y en las bajadas ruedas sin pedalear.
-- **Modo velocidad de rueda · sin potencia** (sin rodillo elegido): avanzas a la velocidad real de tu rueda y la pendiente solo se muestra.
-
-**Vista 3D:** al rodar, la ruta se ve en 3D (si el navegador tiene WebGL, como Chrome): la carretera sale de la altimetría de la ruta, con asfalto con rodadas, arcenes de grava, balizas y quitamiedos en las curvas cerradas, terreno con bosque, matorrales y rocas, montañas en el horizonte, sol con sombras, cielo con nubes, **público que anima** (más en subidas, curvas, salida y llegada) y un ciclista que pedalea y se inclina en las curvas, seguido por la cámara. El botón **Pantalla completa** (o la tecla **F**; se sale con F o Esc) pone toda la pantalla de la sesión a pantalla completa, también en el reproductor de sesiones. El selector de **hora del día** cambia entre mañana, mediodía y atardecer. El HUD va encima y el perfil y el minimapa debajo. El botón **Vista 2D** vuelve a la vista de antes. La parte 3D se descarga la primera vez que se abre y después funciona sin conexión.
-
-**Demo 3D:** en **Rutas → Demo 3D**, elige una ruta y pulsa **Ver demo 3D** para ver cómo queda sin ningún sensor. El ciclista avanza solo a 200 W **simulados** con la física de siempre. Va marcada como DEMO y no se graba ni se guarda nada.
-
-Las rutas necesitan el sensor de velocidad. El resumen y el historial guardan la distancia, la velocidad media y el desnivel.
-
-## Grabación, historial y archivos
-
-Cada sesión y cada salida se **graban segundo a segundo** mientras corre el reloj: pulso, potencia estimada, velocidad, cadencia, distancia y, en ruta, altitud y posición. Lo que no mide ningún sensor no se graba.
-
-- **Sesión sin terminar:** la sesión en curso se guarda cada 10 s, al pausar y al cambiar de pestaña. Si se cierra la app a medias, al volver a abrirla aparece «Sesión sin terminar» con **Retomar** (sigue en pausa donde estaba), **Guardar** (la guarda con lo hecho) y **Descartar**.
-- **Detalle:** en **Historial**, pulsa una sesión para ver su resumen y una gráfica por cada dato grabado (el pulso sobre los colores de tus zonas). Pasa el ratón por encima para ver los valores de cada segundo. Desde ahí puedes **borrarla**.
-- **Exportar TCX:** en el detalle, para subir la salida a Strava, Garmin Connect o intervals.icu. Las sesiones de antes de la grabación solo tienen resumen.
-- **`.zwo`:** formato de sesiones estructuradas que usan muchas apps de rodillo (con la potencia en % del FTP). En **Sesiones**, **Importar .zwo** añade una a «Mis sesiones», y cada tarjeta tiene **Exportar .zwo**. Las rampas se convierten en escalones de 1 minuto. Los bloques por pulso, que `.zwo` no admite, se guardan como rodaje libre con la zona en un mensaje: otras apps no los siguen, pero esta app los recupera al importarlos.
-
-## Copia de seguridad
-
-**Ajustes → Datos en este dispositivo → Exportar copia** guarda en un archivo JSON tus sesiones, el historial con sus grabaciones, las rutas importadas y los ajustes. **Importar copia** te enseña qué contiene el archivo y, si confirmas, reemplaza todo lo guardado en ese navegador. Sirve para pasar tus datos a otro ordenador o recuperarlos si borras el navegador. La copia incluye datos personales: guárdala fuera del repositorio, por ejemplo en `data/`.
-
-## Despliegue
-
-Cada push y cada PR ejecutan lint, tests y build en GitHub Actions (workflow `CI`).
-
-Los push a `main` también publican la app en GitHub Pages (workflow `Deploy`), solo si lint, tests y build pasan. Si un push solo cambia `docs/` o archivos `.md`, no se vuelve a desplegar.
+Sesiones, historial, rutas y ajustes se guardan solo en el navegador (IndexedDB). Nada sale de tu ordenador salvo lo que tú exportes: la copia de seguridad, un TCX o el informe para tu entrenador. Cada navegador y cada dirección tiene sus propios datos.
 
 ## Documentación
 
+- [`docs/MANUAL.md`](docs/MANUAL.md): manual de uso.
+- [`docs/ESTRUCTURA.md`](docs/ESTRUCTURA.md): qué es cada carpeta y archivo del código.
 - [`docs/ROADMAP.md`](docs/ROADMAP.md): fases y tareas.
+- [`docs/contexto/`](docs/contexto/): estado del proyecto, decisiones y registro de cambios.
+- [`docs/agente-entrenador.md`](docs/agente-entrenador.md): cómo usar la app con un agente entrenador.
 - [`CLAUDE.md`](CLAUDE.md): arquitectura, stack y convenciones.
-- [`docs/reference/rodillo-pulso-v1.html`](docs/reference/rodillo-pulso-v1.html): versión 1 (un solo archivo), referencia funcional.
 
-## Entrenamiento
-
-- **Forma** (Historial): condición (media de 42 días de la carga), fatiga (7 días) y frescura (la diferencia), con la curva de 90 días y la carga por semana. Las sesiones con sensores simulados no cuentan.
-- **Fantasma**: al repetir una ruta, rueda contigo tu salida más rápida en ella (desde su grabación) y se ve cuántos segundos le sacas o te saca.
-- **Avisos de voz**: pulso fuera de zona de forma sostenida, mitad y último minuto de los bloques largos, subidas que se acercan en las rutas y un resumen al terminar.
-- **Plan del entrenador** (Sesiones): informe para tu agente y plan semanal importable. Ver [docs/agente-entrenador.md](docs/agente-entrenador.md).
-
-## Usarla con Docker
-
-La forma más fácil de usarla sigue siendo la web publicada, sin instalar nada: cada persona guarda sus datos en su propio navegador. Docker sirve para ejecutarla en tu ordenador o en un servidor propio:
-
-```
-docker compose up -d        # o: docker build -t rodillo-virtual . && docker run -p 8080:80 rodillo-virtual
-```
-
-Abre http://localhost:8080. La imagen (unos 80 MB, nginx) solo lleva el atleta de ejemplo: los datos de cada uno se meten en la app y se quedan en su navegador.
-
-**Bluetooth y HTTPS:** Chrome solo permite Web Bluetooth y la instalación como app en `localhost` o con HTTPS. Desde el mismo ordenador (`localhost:8080`) funciona todo. Para usarla desde otro equipo de la red hace falta ponerla detrás de un proxy con HTTPS (por ejemplo Caddy o Traefik con un certificado).
-
-Qué es cada carpeta y archivo: [docs/ESTRUCTURA.md](docs/ESTRUCTURA.md).
+Cada push y cada PR pasan lint, tests y build en GitHub Actions (`CI`); los push a `main` publican la app en GitHub Pages (`Deploy`).
