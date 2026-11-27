@@ -1,0 +1,42 @@
+# Dependabot: actualizaciones semanales, agrupadas para que no llenen la lista de PR.
+# Los títulos siguen Conventional Commits (chore(deps): …) para pasar commitlint.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore(deps)
+      prefix-development: chore(deps-dev)
+    labels: ['tipo: dependencias']
+    groups:
+      produccion:
+        dependency-type: production
+        update-types: [minor, patch]
+      desarrollo:
+        dependency-type: development
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: ci(deps)
+    labels: ['tipo: dependencias', 'área: ci']
+    groups:
+      acciones:
+        patterns: ['*']
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: chore(docker)
+    labels: ['tipo: dependencias', 'área: docker']
