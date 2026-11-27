@@ -27,6 +27,23 @@ Lo que solo puede hacer el usuario en _Settings_ de GitHub está en [`../pendien
 - Los workflows nuevos tienen permisos mínimos (`permissions:` por job) y acciones fijadas a una versión.
 - **Contexto (`estado/`, `registro/`, `sesiones/`, este archivo y las líneas de `PENDIENTES.md`) en un PR propio al cerrar la fase.** Motivo: los PR de la fase se revisan en paralelo; si cada uno tocara las mismas tablas y listas, chocarían entre sí al fusionarlos en orden. Mientras tanto, el estado de cada PR se ve en GitHub (issue y PR enlazados).
 
-## Hecho
+## Hecho (cerrada el 2026-11-28)
 
-_(se completa en el PR de cierre de la fase)_
+| Issue | PR  | Resultado                                                                                                                                       |
+| ----- | --- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| #39   | #68 | `LICENSE` (todos los derechos reservados), `CONTRIBUTING`, `CODE_OF_CONDUCT`, `SECURITY`, `SUPPORT` y `CHANGELOG`; este plan y los pasos        |
+| #40   | #69 | Formularios de issue (error, mejora, tarea), plantilla de PR, `CODEOWNERS`, Dependabot semanal agrupado y 19 etiquetas con su workflow          |
+| #43   | #70 | Workflow `Milestones`: crea los de las fases 9, 13, 14, 15a, 15b, Datos en Supabase y Tareas sueltas, y coloca los issues por su etiqueta       |
+| #44   | #71 | CodeQL (en cada PR, en `main` y semanal) y OpenSSF Scorecard                                                                                    |
+| #42   | #79 | Commitlint (commits y título del PR) y release-please desde la 0.9.0; su job no deja `main` en rojo mientras falte el permiso de Actions        |
+| #38   | #80 | Insignias y enlaces en el `README`, e imagen para compartir (`.github/social-preview.jpg`)                                                      |
+| #41   | #81 | `CLAUDE.md`: todo entra en `main` por PR con _squash_; el _ruleset_ lo activa el usuario tras la Fase 12 y hasta entonces se cumple por acuerdo |
+| #45   | —   | No se hace: opcional y no pedido                                                                                                                |
+
+**Pendiente del usuario, después de la Fase 12** (decidido el 2026-11-28): todo lo de [`pasos-usuario-fase-13.md`](../pendientes/pasos-usuario-fase-13.md), seguido en el issue #82. #41 se cerró como duplicado de #82. Al activar el permiso de Actions hay que quitar el `continue-on-error` del workflow de release-please.
+
+**Cosas que salieron por el camino:**
+
+- Al fusionar `dependabot.yml`, Dependabot abrió 7 PR (#72–#78). Los de versiones menores (#75, #76) los gestiona el coordinador; los saltos de versión mayor son una tarea propia antes de la Fase 14.
+- El issue #49 de la Fase 14 queda en Trivy y `npm audit` (CodeQL ya está), y #48 suma fijar las acciones por hash.
+- release-please no abrirá PR hasta el primer `feat` o `fix`: los de esta fase son `docs`, `ci` y `chore`.

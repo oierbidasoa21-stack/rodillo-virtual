@@ -170,3 +170,15 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Usuario · Comprará un rodillo FTMS** (la Fase 8 espera a que lo tenga).
 - **Usuario · Issues: decide Claude.** Creados el 2026-11-28: #37 (T11) y #38–#66 para las casillas pendientes. Como desde la nube no se pueden crear milestones, van con etiquetas `fase-9`, `fase-13`, `fase-14`, `fase-15a`, `fase-15b`, `datos-supabase` y `tareas-sueltas`. Los milestones los creará un workflow en la Fase 13 (#43). T10 hecha así.
 - **Usuario · Los pasos en Settings de GitHub** (`pendientes/pasos-usuario-fase-13.md`: ruleset de `main`, permisos de Actions, seguridad, tablero, presentación) **se hacen después de la Fase 12.** Mientras tanto: release-please no debe dejar `main` en rojo, los issues que dependen de esos ajustes quedan abiertos y la Fase 13 se cierra con eso pendiente. El coordinador sigue revisando cada PR antes de fusionar.
+
+## 2026-11-28 — Fase 13 · GitHub profesional (decisiones técnicas)
+
+- **Técnica · Commitlint como dependencia de desarrollo** (`@commitlint/cli` y `@commitlint/config-conventional`): es el comprobador estándar y mantenido de Conventional Commits. Revisa cada commit del PR y también el título, porque con _squash_ el título es el commit de `main`. `subject-case` desactivado (los asuntos llevan Z1, PR #36, T11) y las líneas largas del cuerpo solo avisan (pueden llevar URLs).
+- **Técnica · Versiones con release-please desde la 0.9.0**: la Fase 9 cerrada marca el número; antes de la 1.0 un `feat` sube la versión menor. Solo lee commits posteriores al `main` del cierre de la Fase 9 (`bootstrap-sha`), así que no reescribe el historial. Changelog en español (funciones nuevas, errores corregidos, rendimiento y documentación).
+- **Técnica · release-please con `continue-on-error`** hasta que el usuario permita a Actions abrir PR (tras la Fase 12). Usa el secreto `RELEASE_PLEASE_TOKEN` si existe, porque los PR abiertos con `GITHUB_TOKEN` no lanzan CI y, con el _ruleset_, no se podrían fusionar.
+- **Técnica · Milestones con un workflow** (`.github/milestones.json`): desde la nube no se pueden crear. Busca por título exacto, nunca borra ni reabre, y coloca cada issue nuevo según su etiqueta `fase-*`.
+- **Técnica · Etiquetas en `.github/labels.json`** con un workflow que crea o actualiza y nunca borra, para no perder las `fase-*`.
+- **Técnica · CodeQL con workflow propio** (JS/TS y los workflows, consultas `security-and-quality`) en lugar del «default setup», para controlar cuándo corre y que el job se llame `CodeQL` en el _ruleset_.
+- **Técnica · La imagen en GHCR por versión pasa a la Fase 14** (#52), junto a la firma y el SBOM (#50).
+- **Técnica · Imagen para compartir en JPG** (117 KB frente a 774 KB en PNG); GitHub acepta los dos.
+- **Proceso · Contexto en un PR de cierre de fase**: los PR de una fase se revisan en paralelo y, si todos tocaran `estado/`, `registro/` y `sesiones/`, chocarían al fusionarlos. Acordado con el coordinador, que solo toca `PENDIENTES.md` (decisiones del usuario), `decisiones/` (al final), `estudios/` y `seguimiento.html`.

@@ -159,6 +159,8 @@ S3 privado + CloudFront (OAC, ACM, cabeceras) + Route 53, Terraform en `infra/`,
 
 ### T7 · GitHub como el de una empresa
 
+**Estado (2026-11-28): hecha en la Fase 13** (PR #68–#71 y #79–#81; ver `fases/fase-13-github-profesional.md`). Quedan los ajustes de GitHub que hace el usuario **después de la Fase 12** ([`pasos-usuario-fase-13.md`](pasos-usuario-fase-13.md), issue #82). La organización gratuita (#45) no se hace.
+
 Pedido por el usuario el 2026-11-27. Detalle y porqué en el punto 7 del estudio.
 
 - [ ] **Antes de nada**, que el usuario decida entre público (todo gratis) o privado (necesita Pro o Team para las reglas de rama). Afecta a T3.

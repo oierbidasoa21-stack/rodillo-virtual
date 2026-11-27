@@ -1,6 +1,8 @@
 # Fase 13 · Lo que tienes que hacer tú en GitHub
 
-Estos ajustes solo los puede cambiar el dueño del repositorio desde la web de GitHub: los agentes no tienen permiso. Son unos 15 minutos. Hazlos en orden, **cuando el coordinador te diga que los PR de la Fase 13 están fusionados** (cada apartado dice de qué PR depende).
+**Se hacen después de la Fase 12** (decisión del 2026-11-28). Se siguen en el issue [#82](https://github.com/oierbidasoa21-stack/rodillo-virtual/issues/82), con una casilla por ajuste.
+
+Estos ajustes solo los puede cambiar el dueño del repositorio desde la web de GitHub: los agentes no tienen permiso. Son unos 15 minutos. Hazlos en orden. Los PR de la Fase 13 ya están fusionados.
 
 Todo se hace en https://github.com/oierbidasoa21-stack/rodillo-virtual, con tu sesión iniciada. Los nombres de los menús están en inglés porque así sale GitHub.
 
@@ -13,7 +15,7 @@ Todo se hace en https://github.com/oierbidasoa21-stack/rodillo-virtual, con tu s
 3. **Website:** marca **Use your GitHub Pages website**.
 4. **Topics** (escribe cada uno y pulsa Enter): `cycling`, `indoor-training`, `web-bluetooth`, `pwa`, `react`, `typescript`, `threejs`, `heart-rate`, `vite`.
 5. Deja marcados **Releases** y **Deployments**; desmarca **Packages** si no hay paquetes. Pulsa **Save changes**.
-6. **Imagen para compartir:** ve a **Settings → General**, baja a **Social preview**, pulsa **Edit → Upload an image…** y elige `.github/social-preview.png` del repo (descárgala antes desde GitHub: ábrela y pulsa el botón de descargar). Esta imagen llega con el PR del issue #38.
+6. **Imagen para compartir:** ve a **Settings → General**, baja a **Social preview**, pulsa **Edit → Upload an image…** y elige `.github/social-preview.jpg` del repo (descárgala antes desde GitHub: ábrela y pulsa el botón de descargar).
 
 ## 2. Pull requests y ramas (issue #41)
 
@@ -50,6 +52,20 @@ A partir de aquí nadie puede subir directo a `main`: todo entra por PR con CI e
 2. En **Workflow permissions**, deja **Read repository contents and packages permissions** (cada workflow pide lo que necesita).
 3. Marca **Allow GitHub Actions to create and approve pull requests**. Lo necesita release-please para abrir el PR de cada versión.
 4. Pulsa **Save**.
+5. Cuando lo actives, avisa al coordinador: hay que quitar la línea `continue-on-error: true` de `.github/workflows/release-please.yml`, que solo está para que `main` no salga en rojo mientras falta este permiso.
+
+### 4b. Token para release-please (opcional, recomendado con el ruleset)
+
+Los PR que abre GitHub Actions con su token normal no lanzan CI. Con el ruleset del apartado 3, el PR de cada versión se quedaría esperando sus comprobaciones. Para evitarlo:
+
+1. Tu foto (arriba a la derecha) → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**.
+2. **Token name:** `release-please rodillo-virtual`. **Expiration:** un año (pon un recordatorio para renovarlo).
+3. **Repository access → Only select repositories** → `rodillo-virtual`.
+4. **Permissions → Repository permissions:** **Contents: Read and write** y **Pull requests: Read and write**. Nada más.
+5. **Generate token** y copia el valor (solo se ve una vez). No lo pegues en ningún chat.
+6. En el repo: **Settings → Secrets and variables → Actions → New repository secret**. **Name:** `RELEASE_PLEASE_TOKEN`; **Secret:** el valor copiado. **Add secret**.
+
+El workflow lo usa solo si existe; sin él sigue funcionando con el token normal.
 
 ## 5. Seguridad (issue #44)
 
@@ -86,4 +102,4 @@ Cuando se fusione el PR del issue #43, el workflow **Milestones** se ejecuta sol
 
 ---
 
-Cuando termines, díselo al coordinador para que marque la Fase 13 como cerrada.
+Cuando termines, díselo al coordinador para que cierre el issue #82.

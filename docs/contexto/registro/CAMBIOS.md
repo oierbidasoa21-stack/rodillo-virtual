@@ -166,7 +166,7 @@ Ramas: feat/world-realism, feat/world-spectators, feat/fitness, feat/coach-plan
 - `7a3fe41` · 2026-11-27 · docs(contexto): split the 2026-11-26 session, complete the change log, T2 in review
 - `7302908` · 2026-11-27 · docs(contexto): PR #36 for T2
 
-### T11 · README y manual · rama `docs/t11-manual`, [PR #67](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/67) (en revisión)
+### T11 · README y manual · rama `docs/t11-manual`, [PR #67](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/67) (fusionado el 2026-11-28)
 
 - `ad29688` · 2026-11-27 · docs(manual): add desktop screenshots and the script that takes them
 - `650611b` · 2026-11-27 · docs(manual): user manual for the whole app
@@ -174,7 +174,21 @@ Ramas: feat/world-realism, feat/world-spectators, feat/fitness, feat/coach-plan
 - `1cc33bd` · 2026-11-27 · docs(claude): cloud change agent in the work split; keep the manual up to date
 - `907315e` · 2026-11-27 · docs(contexto): T11 in review in PR #67
 - `fd308cb` · 2026-11-27 · docs(roadmap): Supabase phase after 15b, public repo, all rights reserved, FTMS trainer to buy
-- _(y el commit que cierra la Fase 9 en el `ROADMAP` y en `estado/`)_
+- `c91929e` · 2026-11-27 · docs(roadmap): close phase 9, tick T2, link issues to phases; T2 commits in the log
+
+## Fase 13 — GitHub profesional
+
+Desde aquí cada PR se fusiona con _squash_: en `main` queda un commit por PR, con el título del PR.
+
+- `2fcb662` · 2026-11-27 · docs: plan de la Fase 13 y archivos estándar del repo ([#68](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/68), closes #39)
+- `01d6b54` · 2026-11-27 · chore(github): plantillas de issue y PR, CODEOWNERS, Dependabot y etiquetas ([#69](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/69), closes #40)
+- `d444219` · 2026-11-27 · ci(milestones): create phase milestones and file issues by their phase label ([#70](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/70), closes #43)
+- `c9c3570` · 2026-11-27 · ci(security): CodeQL on every PR and weekly, and OpenSSF Scorecard ([#71](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/71), closes #44)
+- `48f257e` · 2026-11-27 · ci: commitlint en cada PR y release-please ([#79](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/79), closes #42)
+- `f510567` · 2026-11-27 · docs(readme): badges, links to the standard files and a social preview image ([#80](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/80), closes #38)
+- `4cb666d` · 2026-11-27 · docs(claude): todo entra en main por PR con squash y checks obligatorios ([#81](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/81), refs #41)
+- `ea9dcf0` · 2026-11-27 · chore(deps): Bump the produccion group with 4 updates (#75, Dependabot)
+- _(y el PR de cierre de la fase, con este registro)_
 
 ## Documentación de contexto (`docs/contexto/`) desde `3250f48`
 
