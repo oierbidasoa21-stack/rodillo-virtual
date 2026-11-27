@@ -35,7 +35,7 @@ El usuario pide **apuntarlas, no hacerlas**: los cambios los hace su agente. Van
 - `CLAUDE.md`, `ESTRUCTURA.md` y `ARQUITECTURA.md` actualizados.
 - Sin archivos personales.
 
-**Le toca al usuario:** fusionar el PR, volver a dar las instrucciones a su agente entrenador y, cuando quiera, renombrar las zonas en su `athlete.local.json`.
+**Le toca al usuario:** fusionar el PR y, cuando quiera, renombrar las zonas en su `athlete.local.json`. **Las instrucciones del agente entrenador las vuelve a dar al final de todo** (decidido el 2026-11-28): la app sigue aceptando L1… en los planes, así que no se rompe nada mientras tanto.
 
 Sigue el diseño de abajo.
 
@@ -452,6 +452,8 @@ Ver el detalle en [`fases/`](../fases/) y en `docs/ROADMAP.md`. Cada tarea es un
 - El TCX aún no se ha subido de verdad a Strava ni a Garmin Connect (se genera siguiendo el orden del esquema TCX v2 y los tests comprueban ese orden, pero no se ha validado contra el XSD).
 
 ## Ideas y mejoras pedidas
+
+- **Fantasma más visible** (visto en la demo del 2026-11-28): a unos metros por delante casi no se distingue, porque es translúcido y pequeño. Propuesta: color propio con contorno, una etiqueta flotante encima («Tú, 22 nov») y una barra de diferencia en el perfil. Encaja en la Fase 15a.
 
 - **Importar rutas en otros formatos** (KML, TCX) además de GPX. Hoy solo GPX con altitud. Para rutas dibujadas a mano: gpx.studio, Strava, Komoot o RideWithGPS exportan GPX con altitud; Google Maps no exporta GPX y «Mis mapas» da KML sin altitud (pregunta del usuario, 2026-11-25).
 - **Ideas de seguridad, diseño y funciones** (2026-11-27): copia cifrada, recordatorio de copia, límites de tamaño al importar, panel de inicio, selector de calidad gráfica del 3D, exportar FIT, subida a Strava, zonas desde un test. **Aceptadas por el usuario** (van a la Fase 15 propuesta en T2), **salvo el modo daltónico**, que no le interesa por ahora. Ver el punto 5 del [estudio del 2026-11-27](../estudios/2026-11-27-rodillo-inteligente-produccion-aws.md).
