@@ -26,7 +26,14 @@ export interface WorldPath {
 const EARTH_RADIUS_M = 6_371_000;
 const rad = (deg: number) => (deg * Math.PI) / 180;
 
-/** Projects a route onto a flat local map around its centre (fine for a few tens of km). */
+/** Spacing of the smoothed path the 3D world is built from (the route itself is every 10 m). */
+export const SMOOTH_STEP_M = 1;
+
+/**
+ * Projects a route onto a flat local map around its centre (fine for a few tens
+ * of km) and smooths it in plan (see `smoothPath`), so curves are curves and
+ * not a polyline with a corner every 10 m.
+ */
 export function projectRoute(route: Route): WorldPath {
   const pts = route.points;
   const lat0 = pts.reduce((s, p) => s + p.lat, 0) / Math.max(1, pts.length);
@@ -43,7 +50,82 @@ export function projectRoute(route: Route): WorldPath {
   const last = points.at(-1);
   const closed =
     !!first && !!last && points.length > 2 && Math.hypot(first.x - last.x, first.z - last.z) < 30;
-  return { points, distanceM: route.distanceM, closed };
+  return { points: smoothPath(points, closed), distanceM: route.distanceM, closed };
+}
+
+/** Centripetal Catmull-Rom (alpha 0.5): no cusps or loops, even with uneven points. */
+function catmullRom(
+  p0: PathPoint,
+  p1: PathPoint,
+  p2: PathPoint,
+  p3: PathPoint,
+  u: number,
+): { x: number; z: number } {
+  const knot = (a: PathPoint, b: PathPoint) =>
+    Math.max(1e-6, Math.sqrt(Math.hypot(b.x - a.x, b.z - a.z)));
+  const t0 = 0;
+  const t1 = t0 + knot(p0, p1);
+  const t2 = t1 + knot(p1, p2);
+  const t3 = t2 + knot(p2, p3);
+  const t = t1 + (t2 - t1) * u;
+  const mix = (a: PathPoint | { x: number; z: number }, b: typeof a, ta: number, tb: number) => {
+    const wa = (tb - t) / (tb - ta);
+    const wb = (t - ta) / (tb - ta);
+    return { x: a.x * wa + b.x * wb, z: a.z * wa + b.z * wb };
+  };
+  const a1 = mix(p0, p1, t0, t1);
+  const a2 = mix(p1, p2, t1, t2);
+  const a3 = mix(p2, p3, t2, t3);
+  const b1 = mix(a1, a2, t0, t2);
+  const b2 = mix(a2, a3, t1, t3);
+  return mix(b1, b2, t1, t2);
+}
+
+/**
+ * The path through the route points as a smooth curve in plan, sampled every
+ * `stepM`. It passes through every original point. Height and distance along
+ * the route (`d`) are interpolated linearly, so `d` keeps meaning «metres of
+ * the route» and the 3D rider stays in step with the HUD and the recording.
+ */
+export function smoothPath(
+  pts: readonly PathPoint[],
+  closed: boolean,
+  stepM = SMOOTH_STEP_M,
+): PathPoint[] {
+  const n = pts.length;
+  if (n < 3) return pts.slice();
+  // Neighbours past the ends: wrap on a closed path (whose last point repeats
+  // the first), mirror on an open one.
+  const at = (i: number): PathPoint => {
+    if (closed) {
+      const m = n - 1;
+      return pts[((i % m) + m) % m] as PathPoint;
+    }
+    if (i < 0) {
+      const a = pts[0] as PathPoint;
+      const b = pts[1] as PathPoint;
+      return { x: 2 * a.x - b.x, y: a.y, z: 2 * a.z - b.z, d: a.d };
+    }
+    if (i > n - 1) {
+      const a = pts[n - 1] as PathPoint;
+      const b = pts[n - 2] as PathPoint;
+      return { x: 2 * a.x - b.x, y: a.y, z: 2 * a.z - b.z, d: a.d };
+    }
+    return pts[i] as PathPoint;
+  };
+  const out: PathPoint[] = [];
+  for (let i = 0; i < n - 1; i++) {
+    const p1 = pts[i] as PathPoint;
+    const p2 = pts[i + 1] as PathPoint;
+    const steps = Math.max(1, Math.round((p2.d - p1.d) / stepM));
+    for (let k = 0; k < steps; k++) {
+      const u = k / steps;
+      const { x, z } = catmullRom(at(i - 1), p1, p2, at(i + 2), u);
+      out.push({ x, z, y: p1.y + (p2.y - p1.y) * u, d: p1.d + (p2.d - p1.d) * u });
+    }
+  }
+  out.push({ ...(pts[n - 1] as PathPoint) });
+  return out;
 }
 
 /** Index of the segment containing distance `d` (already wrapped into the route). */
@@ -87,16 +169,23 @@ export interface Pose {
   pitch: number;
 }
 
-/** Where the rider is and which way they face, from the road ±`lookM` around them. */
+/** Half-window for the heading: on the smoothed path this is the tangent. */
+const TANGENT_M = SMOOTH_STEP_M;
+
+/**
+ * Where the rider is and which way they face. The heading is the tangent of
+ * the (smoothed) road; the pitch averages the slope over ±`lookM`, so small
+ * bumps in the altitude do not rock the rider.
+ */
 export function poseAt(path: WorldPath, d: number, lookM = 5): Pose {
+  const before = pointAt(path, d - TANGENT_M);
+  const after = pointAt(path, d + TANGENT_M);
   const back = pointAt(path, d - lookM);
   const ahead = pointAt(path, d + lookM);
-  const dx = ahead.x - back.x;
-  const dz = ahead.z - back.z;
   return {
     position: pointAt(path, d),
-    heading: Math.atan2(dx, -dz),
-    pitch: Math.atan2(ahead.y - back.y, Math.hypot(dx, dz) || 1),
+    heading: Math.atan2(after.x - before.x, -(after.z - before.z)),
+    pitch: Math.atan2(ahead.y - back.y, Math.hypot(ahead.x - back.x, ahead.z - back.z) || 1),
   };
 }
 

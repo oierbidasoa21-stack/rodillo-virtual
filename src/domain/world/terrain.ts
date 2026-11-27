@@ -146,9 +146,22 @@ function farHeight(far: RoadIndex['far'], x: number, z: number): number {
   return top + (bottom - top) * tz;
 }
 
+/**
+ * The ground follows the road through one point every this many metres. The
+ * smoothed path is much denser (every metre), but for the ground that only
+ * costs time and lets neighbours outweigh the point under the road.
+ */
+const ROAD_INDEX_STEP_M = 10;
+
 export function indexRoad(path: WorldPath, cellM = 100): RoadIndex {
   const cells = new Map<string, { x: number; y: number; z: number }[]>();
-  for (const p of path.points) {
+  const sampled = path.points.filter(
+    (p, i, all) =>
+      i === 0 ||
+      i === all.length - 1 ||
+      Math.floor(p.d / ROAD_INDEX_STEP_M) !== Math.floor((all[i - 1]?.d ?? 0) / ROAD_INDEX_STEP_M),
+  );
+  for (const p of sampled) {
     const key = `${Math.floor(p.x / cellM)},${Math.floor(p.z / cellM)}`;
     const list = cells.get(key);
     if (list) list.push(p);

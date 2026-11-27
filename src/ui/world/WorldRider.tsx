@@ -149,7 +149,7 @@ export default function WorldRider({
     const turnPerM = wrap(poseAt(path, s.d + 4).heading - poseAt(path, s.d - 4).heading) / 8;
     const v = moving ? m.speedMs : 0;
     const leanTarget = Math.max(-0.4, Math.min(0.4, Math.atan((v * v * turnPerM) / G)));
-    s.lean += (leanTarget - s.lean) * (1 - Math.exp(-dt * 4));
+    s.lean += (leanTarget - s.lean) * (1 - Math.exp(-dt * 3));
     // A little side-to-side rock with each pedal stroke.
     const rock = moving ? Math.sin(s.crank) * 0.025 : 0;
     // The ghost rides 1.3 m to the left so the two never overlap.
@@ -187,9 +187,12 @@ export default function WorldRider({
       camLook.current.copy(tmp.look);
       s.ready = true;
     } else {
-      const k = 1 - Math.exp(-dt * 3);
-      camPos.current.lerp(tmp.cam.set(cam.position.x, cam.position.y, cam.position.z), k);
-      camLook.current.lerp(tmp.look, k);
+      // The look-at point eases more slowly than the position: through a bend the
+      // view swings round gently instead of snapping to the road ahead.
+      const kPos = 1 - Math.exp(-dt * 2.5);
+      const kLook = 1 - Math.exp(-dt * 1.8);
+      camPos.current.lerp(tmp.cam.set(cam.position.x, cam.position.y, cam.position.z), kPos);
+      camLook.current.lerp(tmp.look, kLook);
     }
     camera.position.copy(camPos.current);
     camera.lookAt(camLook.current);
