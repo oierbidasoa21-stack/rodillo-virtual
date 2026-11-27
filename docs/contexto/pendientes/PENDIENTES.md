@@ -424,6 +424,8 @@ Pedido el 2026-11-27: que la app avise si las zonas configuradas no encajan con 
 
 ### T10 · Pasar las tareas a issues de GitHub (después)
 
+**Hecha el 2026-11-28** (el usuario dejó que decidiera Claude): issues #37–#66 con etiquetas por fase. Los milestones los creará un workflow de la Fase 13 (#43), porque desde la sesión en la nube no se pueden crear.
+
 Pedido el 2026-11-27: **apuntado para hacerlo más adelante, no ahora.** Cuando el usuario lo diga:
 
 - un issue por tarea o casilla (T0–T9), con criterios de «hecho»;
