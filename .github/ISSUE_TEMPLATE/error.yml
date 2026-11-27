@@ -1,0 +1,60 @@
+name: Error
+description: Algo de la app no funciona como debería.
+title: 'fix: '
+labels: ['tipo: error']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por avisar. **No pegues datos personales** (peso, zonas de pulso, entrenamientos ni rutas propias).
+        Si es un fallo de seguridad, no sigas: avisa en privado como explica `SECURITY.md`.
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Qué hiciste
+      description: Los pasos para que pase, uno por línea.
+      placeholder: |
+        1. Sesiones → Fondo Z2 → Empezar
+        2. …
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Qué esperabas
+    validations:
+      required: true
+  - type: textarea
+    id: pasado
+    attributes:
+      label: Qué pasó
+      description: Si puedes, añade una captura (sin datos personales).
+    validations:
+      required: true
+  - type: dropdown
+    id: donde
+    attributes:
+      label: Dónde
+      options:
+        - Web publicada (GitHub Pages)
+        - Docker (localhost:8080)
+        - npm run dev (localhost)
+    validations:
+      required: true
+  - type: dropdown
+    id: sensores
+    attributes:
+      label: Sensores
+      multiple: true
+      options:
+        - Ninguno
+        - Simulados
+        - Banda de pulso
+        - Sensor de velocidad o cadencia
+  - type: input
+    id: navegador
+    attributes:
+      label: Navegador y sistema
+      placeholder: Chrome 140 en Windows 11
+    validations:
+      required: true

@@ -1,0 +1,41 @@
+[
+  { "name": "tipo: error", "color": "d73a4a", "description": "Algo no funciona como debería" },
+  {
+    "name": "tipo: mejora",
+    "color": "a2eeef",
+    "description": "Función nueva o mejora de una existente"
+  },
+  { "name": "tipo: tarea", "color": "c5def5", "description": "Trabajo técnico o de mantenimiento" },
+  { "name": "tipo: documentación", "color": "0075ca", "description": "Manual, README o contexto" },
+  {
+    "name": "tipo: dependencias",
+    "color": "0366d6",
+    "description": "Actualización de dependencias"
+  },
+  {
+    "name": "tipo: seguridad",
+    "color": "b60205",
+    "description": "Seguridad del código o del repo"
+  },
+  { "name": "área: dominio", "color": "fbca04", "description": "Lógica pura en src/domain" },
+  { "name": "área: sensores", "color": "fbca04", "description": "Bluetooth y sensores simulados" },
+  { "name": "área: interfaz", "color": "fbca04", "description": "Pantallas y componentes" },
+  { "name": "área: 3d", "color": "fbca04", "description": "Mundo 3D" },
+  { "name": "área: rutas", "color": "fbca04", "description": "GPX, rutas y física" },
+  { "name": "área: grabación", "color": "fbca04", "description": "Grabación a 1 Hz y exportación" },
+  {
+    "name": "área: datos",
+    "color": "fbca04",
+    "description": "Dexie, copia de seguridad y migraciones"
+  },
+  { "name": "área: audio", "color": "fbca04", "description": "Pitidos y voz" },
+  { "name": "área: ci", "color": "fbca04", "description": "GitHub Actions y calidad" },
+  { "name": "área: docker", "color": "fbca04", "description": "Imagen Docker y despliegue" },
+  {
+    "name": "prioridad: alta",
+    "color": "b60205",
+    "description": "Bloquea o rompe algo importante"
+  },
+  { "name": "prioridad: media", "color": "fbca04", "description": "Importante, sin prisa" },
+  { "name": "prioridad: baja", "color": "0e8a16", "description": "Cuando haya tiempo" }
+]

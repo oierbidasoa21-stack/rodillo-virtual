@@ -1,0 +1,31 @@
+name: Mejora
+description: Una idea o una función nueva para la app.
+title: 'feat: '
+labels: ['tipo: mejora']
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Qué quieres conseguir
+      description: El problema o la necesidad, con tus palabras. Mejor el «para qué» que la solución.
+    validations:
+      required: true
+  - type: textarea
+    id: propuesta
+    attributes:
+      label: Cómo te lo imaginas
+      description: Opcional. Cómo se vería o se usaría.
+  - type: textarea
+    id: hecho
+    attributes:
+      label: Cuándo estaría hecho
+      description: Opcional. Qué tendría que pasar para darlo por terminado.
+  - type: checkboxes
+    id: reglas
+    attributes:
+      label: Comprobado
+      options:
+        - label: No pide inventar datos (si falta un sensor, la métrica no se muestra).
+          required: true
+        - label: No usa el nombre, rutas ni contenido de otras apps de rodillo.
+          required: true
