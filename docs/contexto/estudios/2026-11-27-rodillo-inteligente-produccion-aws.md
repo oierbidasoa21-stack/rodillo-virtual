@@ -250,3 +250,7 @@ A tener en cuenta:
 - Se genera en el navegador con la librería oficial de Garmin (FIT SDK de JavaScript), sin Supabase ni cuentas.
 - Lleva los mismos datos que el TCX.
 - Mientras tanto, el TCX de hoy ya sirve: casi todas las plataformas de entrenadores lo aceptan.
+
+**Decisión (2026-11-27):** subida **automática al guardar** la sesión, con cola y reintento si falla, y desactivable en Ajustes.
+
+**¿Hace falta Strava de pago?** No. Crear la app de la API y subir actividades es gratis con una cuenta normal, y la actividad guarda todos los datos del archivo. Lo que es de pago son algunos análisis de Strava (por ejemplo, ciertos gráficos de zonas o de potencia); la app de aquí no depende de ellos. Comprobar las condiciones actuales de Strava.

@@ -178,6 +178,14 @@ Al empezarla, cambiar la regla «sin backend, sin cuentas» de `CLAUDE.md`.
 - refresco del token en la función;
 - subida del TCX o FIT desde la app con el token.
 
+**Decisión del usuario (2026-11-27): la subida es automática al pulsar «Guardar»** al terminar la sesión. Detalles:
+
+- si no hay conexión o Strava falla, la subida queda en cola y se reintenta, con un aviso discreto y un botón de reintentar en el historial;
+- interruptor en Ajustes para desactivarla;
+- nunca se suben sesiones simuladas ni sesiones por debajo del mínimo que ya no se guardan (60 s).
+
+No hace falta Strava de pago: la API y la subida son gratis.
+
 Flujo paso a paso y qué datos llegan en el punto 8.4 del estudio:
 
 - vatios marcados como estimados en la descripción;
