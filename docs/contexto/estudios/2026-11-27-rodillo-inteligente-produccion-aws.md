@@ -260,3 +260,10 @@ Opciones:
 - **(a) Suscripción a Strava:** subida automática al guardar, con Supabase como se describe arriba.
 - **(b) Sin API, gratis:** al guardar, la app descarga el FIT (o TCX) y muestra un botón «Abrir Strava para subir» que lleva a la página de subida manual. Se sube en unos 20 segundos, sin Supabase ni secretos.
 - Para el **entrenador**, el FIT descargado (Fase 15b) sirve igual en los dos casos.
+
+**¿Y pasar por iGPSPORT?** El usuario tiene la app de iGPSPORT conectada a Strava y pregunta si subir a iGPSPORT para que se reenvíe a Strava (búsqueda del 2026-11-27):
+
+- **No hay una API pública documentada de iGPSPORT para subir actividades.** Hay herramientas no oficiales de la comunidad, pero piden tu usuario y contraseña, pueden saltarse sus condiciones y se rompen cuando iGPSPORT cambia algo. **No recomendado.**
+- **No consta que iGPSPORT reenvíe a Strava un FIT importado a mano** (su sincronización está pensada para los recorridos de sus ciclocomputadores). Hay que probarlo: exportar el TCX de una sesión, importarlo en iGPSPORT si lo permite y ver si aparece en Strava.
+- Aunque funcionara, seguiría siendo manual: no ahorra nada frente a subir a mano directamente a Strava (opción b).
+- Dato útil: iGPSPORT tiene integración con TrainingPeaks. Si el entrenador usa TrainingPeaks, también acepta el FIT directamente.
