@@ -186,6 +186,12 @@ Al empezarla, cambiar la regla «sin backend, sin cuentas» de `CLAUDE.md`.
 
 No hace falta Strava de pago: la API y la subida son gratis.
 
+**App de la API de Strava (2026-11-27):** el usuario la crea en `https://www.strava.com/settings/api`, con el dominio de retorno `localhost` mientras no exista la integración.
+
+- El _client secret_ lo guarda él, en su gestor de contraseñas: **nunca en el repo ni en el chat**. Irá a los secretos de Supabase al construir T8.
+- El _client id_ es público: puede ir en la configuración.
+- Al desplegar, cambiar el dominio de retorno al de la web.
+
 Flujo paso a paso y qué datos llegan en el punto 8.4 del estudio:
 
 - vatios marcados como estimados en la descripción;
