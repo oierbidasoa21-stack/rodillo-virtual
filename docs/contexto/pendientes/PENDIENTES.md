@@ -11,7 +11,10 @@ El usuario pide **apuntarlas, no hacerlas**: los cambios los hace su agente. Van
 - El usuario habla **solo con Claude en la nube**, que hace de intermediario: apunta las tareas aquí (y como issues), revisa los PR, vigila CI y mantiene `docs/contexto/` al día.
 - El **agente de VS Code** hace los cambios de código: una rama por tarea y un PR que la cierra.
 - Se comunican **a través del repo**, porque ninguno ve la conversación del otro.
-- Para no pisarse: Claude en la nube solo toca `docs/contexto/` y los issues; el resto de archivos (código, `ROADMAP.md`, `CLAUDE.md`, `README.md`) son del agente de VS Code. El porqué y el detalle de las preguntas están en [`../estudios/2026-11-27-rodillo-inteligente-produccion-aws.md`](../estudios/2026-11-27-rodillo-inteligente-produccion-aws.md).
+- **Para no pisarse** (ajustado el 2026-11-28, porque la regla 7 de `CLAUDE.md` pide al agente actualizar el contexto):
+  - El **agente de VS Code** actualiza, al cerrar cada tarea suya: `estado/`, `registro/`, `fases/`, `sesiones/` y la línea de estado de su tarea aquí. También es suyo todo lo demás: código, `ROADMAP.md`, `CLAUDE.md` y `README.md`.
+  - **Claude en la nube** escribe lo que sale de hablar con el usuario: tareas nuevas y decisiones (`pendientes/`, `decisiones/`, `estudios/`), la página `estado/seguimiento.html`, los issues y las revisiones de PR.
+  - Claude en la nube sube a `main` en pocos commits y siempre después de traer lo último, para no cruzarse con un merge del agente. Si un merge del agente se rechaza por eso, se trae `main` a la rama con un merge normal, sin forzar, como se hizo con el PR #32. El porqué y el detalle de las preguntas están en [`../estudios/2026-11-27-rodillo-inteligente-produccion-aws.md`](../estudios/2026-11-27-rodillo-inteligente-produccion-aws.md).
 
 ### T0 · «PR cero»: fusionar el plan de los niveles de realismo (#31)
 
@@ -23,7 +26,18 @@ El usuario pide **apuntarlas, no hacerlas**: los cambios los hace su agente. Van
 
 ### T1 · Zonas de pulso Z1…Z6
 
-**Estado (2026-11-28): hecha en el [PR #33](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/33), abierto para revisión** (CI en verde, 322 tests). Sigue el diseño de abajo. Al revisar, mirar sobre todo la migración v5→v6 y que las etiquetas escritas por el usuario se respetan. El usuario tendrá que volver a dar las instrucciones a su agente entrenador.
+**Estado (2026-11-28): hecha en el [PR #33](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/33). Revisada por Claude en la nube: aprobada para fusionar.**
+
+- Comprobado: lint, 322 tests y build pasan en local sobre la rama.
+- Migración v6 en las 5 tablas, con test v5→v6.
+- Nombres viejos aceptados en la copia, el archivo de atleta, el plan y los `.zwo` (con el fallo de `UA+` corregido).
+- Ningún nombre viejo suelto fuera de los mapas de compatibilidad.
+- `CLAUDE.md`, `ESTRUCTURA.md` y `ARQUITECTURA.md` actualizados.
+- Sin archivos personales.
+
+**Le toca al usuario:** fusionar el PR, volver a dar las instrucciones a su agente entrenador y, cuando quiera, renombrar las zonas en su `athlete.local.json`.
+
+Sigue el diseño de abajo.
 
 Pedido por el usuario: las zonas pasan de `L1, L2, L3, UA, UA+, VO2` a `Z1, Z2, Z3, Z4, Z5, Z6` (misma posición, mismos pesos y MET). Es un **cambio de modelo de datos guardados**, así que lleva migración (regla de `CLAUDE.md`). Diseño propuesto (se probó en una rama local el 2026-11-27, con todos los tests en verde, y se descartó porque el usuario prefiere que lo haga su agente):
 

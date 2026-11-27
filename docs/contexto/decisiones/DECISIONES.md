@@ -156,3 +156,5 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Técnica · Etiquetas:** la de ejemplo se renombra (`UA (umbral)` → `Z4 (umbral)`); la que escribió el usuario se respeta.
 - **Producto · Pulso frente a potencia:** las zonas de potencia también se llaman Z1…Z7 y no coinciden. Donde salen las dos se dice «de pulso» o «de potencia» («Potencia Z4 · Umbral» en el player).
 - **Proceso · El PR de T1 no se fusiona sin revisión** de Claude en la nube (pedido del usuario). Los PR solo de documentación (#31, #32) sí los fusiona el agente con CI en verde.
+- **Organización · Reparto ajustado:** el agente de VS Code actualiza `estado/`, `registro/`, `fases/` y `sesiones/` al cerrar sus tareas (regla 7 de `CLAUDE.md`); Claude en la nube escribe tareas, decisiones, estudios, la página de seguimiento y las revisiones. Claude en la nube agrupa sus commits y trae `main` antes de subir. Motivo: el merge del PR #32 se rechazó dos veces por commits simultáneos.
+- **Usuario · Orden completo** puesto en el roadmap por el agente (PR #32): 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → T13 → T19. Es el correcto.
