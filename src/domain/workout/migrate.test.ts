@@ -25,8 +25,8 @@ describe('migrateWorkout', () => {
       name: 'Antigua',
       description: 'v1',
       blocks: [
-        makeBlock(600, 'L1', 'warm'),
-        makeRepeat(3, [makeBlock(600, 'UA', 'work', 'fuerte'), makeBlock(240, 'L1', 'rec')]),
+        makeBlock(600, 'Z1', 'warm'),
+        makeRepeat(3, [makeBlock(600, 'Z4', 'work', 'fuerte'), makeBlock(240, 'Z1', 'rec')]),
       ],
     });
   });
@@ -37,7 +37,7 @@ describe('migrateWorkout', () => {
       name: 'Nueva',
       description: '',
       blocks: [
-        makeBlock(300, 'L2'),
+        makeBlock(300, 'Z2'),
         makeBlock(600, { type: 'power', pctFtp: 88 }, 'work'),
         makeBlock(60, { type: 'watts', watts: 200 }, 'work'),
       ],
@@ -58,7 +58,7 @@ describe('migrateWorkout', () => {
       id: 'c-3',
       name: '',
       description: '',
-      blocks: [makeBlock(60, 'L3', 'steady')],
+      blocks: [makeBlock(60, 'Z3', 'steady')],
     });
   });
 

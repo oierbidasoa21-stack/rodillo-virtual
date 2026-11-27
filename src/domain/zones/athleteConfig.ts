@@ -1,3 +1,4 @@
+import { migrateLegacyZoneIds } from './legacy';
 import { type HrZone, isZoneId, validateZones } from './zones';
 
 /** Shape of `config/athlete.*.json` and of the athlete part of the settings. */
@@ -35,7 +36,9 @@ const inRange = (v: unknown, min: number, max: number): v is number =>
   typeof v === 'number' && Number.isFinite(v) && v >= min && v <= max;
 
 /** Validates an imported athlete config. Error messages are shown to the user. */
-export function parseAthleteConfig(input: unknown): ParseResult<AthleteConfig> {
+export function parseAthleteConfig(raw: unknown): ParseResult<AthleteConfig> {
+  // Files and settings saved before phase 9 use L1…VO2: read them as Z1…Z6.
+  const input = migrateLegacyZoneIds(raw);
   if (!isRecord(input)) return { ok: false, errors: ['El archivo no contiene un objeto JSON.'] };
 
   const errors: string[] = [];

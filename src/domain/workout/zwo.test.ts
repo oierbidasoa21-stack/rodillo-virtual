@@ -50,8 +50,8 @@ describe('parseZwo', () => {
     );
   });
 
-  it('makes a free ride an L2 heart rate block and says so; the total time is kept', () => {
-    expect(workout.blocks[5]).toEqual(makeBlock(300, 'L2', 'steady', 'Rodaje libre'));
+  it('makes a free ride an Z2 heart rate block and says so; the total time is kept', () => {
+    expect(workout.blocks[5]).toEqual(makeBlock(300, 'Z2', 'steady', 'Rodaje libre'));
     expect(totalDurationSec(expandWorkout(workout.blocks))).toBe(150 + 600 + 540 + 300 + 120);
     expect(warnings).toContain('Las rampas se han convertido en escalones de 1 minuto.');
     expect(warnings.some((w) => w.startsWith('FreeRide'))).toBe(true);
@@ -78,12 +78,12 @@ describe('buildZwo', () => {
     name: 'Umbral "3×10′"',
     description: 'Por pulso & potencia',
     blocks: [
-      makeBlock(600, 'L2', 'warm', 'Suave'),
+      makeBlock(600, 'Z2', 'warm', 'Suave'),
       makeRepeat(3, [
         makeBlock(600, { type: 'power', pctFtp: 95 }, 'work'),
         makeBlock(300, { type: 'power', pctFtp: 55 }, 'rec'),
       ]),
-      makeRepeat(2, [makeBlock(60, 'UA'), makeBlock(60, 'L1')]),
+      makeRepeat(2, [makeBlock(60, 'Z4'), makeBlock(60, 'Z1')]),
     ],
   };
   const { xml, warnings } = buildZwo(ours);
@@ -97,7 +97,7 @@ describe('buildZwo', () => {
 
   it('writes heart rate blocks as FreeRide with the zone, and warns', () => {
     expect(xml).toContain(
-      '<FreeRide Duration="600"><textevent timeoffset="0" message="Zona L2 (pulso)"/><textevent timeoffset="0" message="Suave"/></FreeRide>',
+      '<FreeRide Duration="600"><textevent timeoffset="0" message="Zona Z2 (pulso)"/><textevent timeoffset="0" message="Suave"/></FreeRide>',
     );
     expect(xml.match(/<FreeRide/g)).toHaveLength(1 + 4); // the hr repeat is written out
     expect(warnings).toHaveLength(1);
@@ -128,5 +128,18 @@ describe('zwoFileName', () => {
   it('is plain ASCII', () => {
     expect(zwoFileName('Umbral 3×10′ (potencia)')).toBe('umbral-3-10-potencia.zwo');
     expect(zwoFileName('¿?')).toBe('sesion.zwo');
+  });
+
+  describe('parseZwo with files exported before phase 9', () => {
+    it('reads the old zone markers, UA+ included', () => {
+      const old = `<workout_file><name>Vieja</name><workout>
+      <FreeRide Duration="300"><textevent timeoffset="0" message="Zona UA+ (pulso)"/></FreeRide>
+      <FreeRide Duration="600"><textevent timeoffset="0" message="Zona L2 (pulso)"/></FreeRide>
+    </workout></workout_file>`;
+      expect(parseZwo(old).workout.blocks).toEqual([
+        makeBlock(300, 'Z5', 'steady'),
+        makeBlock(600, 'Z2', 'steady'),
+      ]);
+    });
   });
 });

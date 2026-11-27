@@ -3,6 +3,7 @@ import type { SessionSummary } from '../domain/metrics/summary';
 import type { TrainingPlan } from '../domain/plan/plan';
 import type { Route } from '../domain/route/route';
 import { migrateWorkout } from '../domain/workout/migrate';
+import { migrateLegacyZoneIds } from '../domain/zones/legacy';
 import type { Workout } from '../domain/workout/types';
 import type { SessionRecording, SessionSnapshot } from '../recording/session';
 import type { AppSettings } from './settings';
@@ -60,12 +61,27 @@ export class RodilloDb extends Dexie {
       inProgress: 'key',
     });
     // v5 (mejoras): training plans from the coaching agent.
-    this.version(5).stores({
+    const STORES_V5 = {
       ...STORES_V1,
       routes: 'id',
       recordings: 'sessionId',
       inProgress: 'key',
       plans: 'id',
-    });
+    };
+    this.version(5).stores(STORES_V5);
+    // v6 (phase 9): heart rate zones renamed L1…VO2 → Z1…Z6. Same indexes; data rewritten.
+    // Routes and recordings carry no zones and are left alone.
+    this.version(6)
+      .stores(STORES_V5)
+      .upgrade(async (tx) => {
+        for (const table of ['workouts', 'history', 'settings', 'inProgress', 'plans']) {
+          await tx
+            .table(table)
+            .toCollection()
+            .modify((stored: unknown, ctx: { value?: unknown }) => {
+              ctx.value = migrateLegacyZoneIds(stored);
+            });
+        }
+      });
   }
 }

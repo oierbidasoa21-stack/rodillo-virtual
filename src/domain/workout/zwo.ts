@@ -1,4 +1,4 @@
-import { type ZoneId, isZoneId } from '../zones/zones';
+import { type ZoneId, toZoneId } from '../zones/zones';
 import {
   type Block,
   type BlockKind,
@@ -25,8 +25,12 @@ export interface ZwoImport {
 /** Ramps become steps of this length, because our blocks have one fixed target. */
 export const RAMP_STEP_SEC = 60;
 
-/** Marker in a FreeRide's message that carries one of our heart rate zones. */
-const ZONE_MESSAGE = /^Zona (L1|L2|L3|UA\+?|VO2)\b/;
+/**
+ * Marker in a FreeRide's message that carries one of our heart rate zones:
+ * `Zona Z2 (pulso)`, or `Zona L2 (pulso)` in files exported before phase 9.
+ * The lookahead (not `\b`, which does not end `UA+` correctly) ends the name.
+ */
+const ZONE_MESSAGE = /^Zona (Z[1-6]|L1|L2|L3|UA\+?|VO2)(?=\s|$)/;
 
 interface Element {
   name: string;
@@ -189,17 +193,17 @@ export function parseZwo(xml: string): ZwoImport {
       case 'maxeffort': {
         // Our own heart rate blocks come back with their zone.
         const zone = messages(el)
-          .map((m) => ZONE_MESSAGE.exec(m)?.[1])
-          .find((z): z is ZoneId => !!z && isZoneId(z));
+          .map((m) => toZoneId(ZONE_MESSAGE.exec(m)?.[1]))
+          .find((z): z is ZoneId => z !== null);
         if (zone) {
           const rest = messages(el).filter((m) => !ZONE_MESSAGE.test(m));
           blocks.push(makeBlock(duration(el, type), zone, 'steady', rest[0] ?? ''));
         } else if (type === 'maxeffort') {
-          blocks.push(makeBlock(duration(el, type), 'VO2', 'work', note || 'Máximo esfuerzo'));
-          warnings.add('MaxEffort no tiene objetivo: se ha puesto como bloque por pulso en VO2.');
+          blocks.push(makeBlock(duration(el, type), 'Z6', 'work', note || 'Máximo esfuerzo'));
+          warnings.add('MaxEffort no tiene objetivo: se ha puesto como bloque por pulso en Z6.');
         } else {
-          blocks.push(makeBlock(duration(el, type), 'L2', 'steady', note || 'Rodaje libre'));
-          warnings.add('FreeRide no tiene objetivo: se ha puesto como bloque por pulso en L2.');
+          blocks.push(makeBlock(duration(el, type), 'Z2', 'steady', note || 'Rodaje libre'));
+          warnings.add('FreeRide no tiene objetivo: se ha puesto como bloque por pulso en Z2.');
         }
         break;
       }
