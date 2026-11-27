@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Fallo de seguridad
+    url: https://github.com/oierbidasoa21-stack/rodillo-virtual/security/advisories/new
+    about: No abras un issue público. Avisa en privado (ver SECURITY.md).
+  - name: Manual de uso
+    url: https://github.com/oierbidasoa21-stack/rodillo-virtual/blob/main/docs/MANUAL.md
+    about: Cómo se usa la app y problemas frecuentes.

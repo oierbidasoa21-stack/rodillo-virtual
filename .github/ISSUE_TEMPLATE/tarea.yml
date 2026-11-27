@@ -1,0 +1,31 @@
+name: Tarea
+description: Trabajo técnico o de mantenimiento con criterios de «hecho».
+title: 'chore: '
+labels: ['tipo: tarea']
+body:
+  - type: textarea
+    id: que
+    attributes:
+      label: Qué hay que hacer
+    validations:
+      required: true
+  - type: textarea
+    id: porque
+    attributes:
+      label: Por qué
+    validations:
+      required: true
+  - type: textarea
+    id: hecho
+    attributes:
+      label: Criterios de «hecho»
+      placeholder: |
+        - [ ] …
+        - [ ] lint, tests y build en verde
+    validations:
+      required: true
+  - type: input
+    id: fase
+    attributes:
+      label: Fase del roadmap
+      placeholder: Fase 13
