@@ -5,7 +5,7 @@ Marca `[x]` al completar cada tarea.
 
 Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. La app es solo para ordenador: no hay fase de móvil.
 
-**Fase actual: 8 (opcional: solo si compro un rodillo inteligente)**
+**Fase actual: 10 (paisaje real, nivel 1).** La 8 sigue en espera hasta que compre un rodillo inteligente.
 
 ---
 
@@ -126,3 +126,25 @@ Solo si compro uno.
 - [ ] FTMS (0x1826): lectura de potencia, cadencia y velocidad reales
 - [ ] Modo ERG: el workout fija la potencia del rodillo
 - [ ] Modo simulación: la pendiente de la ruta ajusta la resistencia
+
+## Fase 10 — Paisaje real · nivel 1 (relieve y satélite)
+
+Al importar un GPX, el paisaje 3D es el de verdad: relieve real y foto de satélite. Opcional por ruta (pide a servicios externos las imágenes de la zona) y guardado para usarlo sin conexión.
+
+- [ ] Matemática de teselas y decodificación del relieve (lógica pura con tests)
+- [ ] Descarga y caché de teselas con progreso, opt-in por ruta
+- [ ] Terreno con el relieve real (cerca y horizonte), ajustado a la carretera del GPX
+- [ ] Foto de satélite sobre el terreno
+- [ ] Interfaz: activar el paisaje real en cada ruta GPX, atribución y aviso de privacidad
+
+## Fase 11 — Paisaje real · nivel 2 (OpenStreetMap)
+
+- [ ] Datos de OpenStreetMap de la zona (edificios, bosques, agua, carreteras) con caché
+- [ ] Edificios en 3D con altura aproximada
+- [ ] Árboles solo donde hay bosque real; agua y carreteras de alrededor
+
+## Fase 12 — Paisaje real · nivel 3 (Google 3D, opcional)
+
+Solo si creo una clave de Google Maps Platform.
+
+- [ ] Clave en Ajustes (solo en el navegador) y Photorealistic 3D Tiles en lugar del terreno propio
