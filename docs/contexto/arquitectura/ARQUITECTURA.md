@@ -56,12 +56,14 @@ Fase 6:
 | 2             | 20        | 4    | Migración: los bloques pasan de `zoneId` a `target`        |
 | 3             | 30        | 5    | Tabla `routes`                                             |
 | 4             | 40        | 6    | Tablas `recordings` (por sesión) e `inProgress` (una fila) |
+| 5             | 50        | —    | Tabla `plans` (plan del agente entrenador)                 |
+| 6             | 60        | 9    | Migración: zonas de pulso L1…VO2 → Z1…Z6 en `workouts`, `history`, `settings`, `inProgress` y `plans` |
 
 Cada cambio de versión tiene un test que parte de una base de la versión anterior.
 
 ## Formato de la copia de seguridad
 
-`{ app: 'rodillo-virtual', format: 3, exportedAtMs, workouts, history, settings, routes, recordings }`. Los formatos 1 (sin `routes`) y 2 (sin `recordings`) se siguen leyendo. La sesión en curso no entra en la copia. Al importar se valida todo, se migran las sesiones antiguas y lo que no se puede leer se descarta y se cuenta.
+`{ app: 'rodillo-virtual', format: 4, exportedAtMs, workouts, history, settings, routes, recordings, plans }`. Los formatos 1 (sin `routes`), 2 (sin `recordings`) y 3 (sin `plans`) se siguen leyendo, y las copias con zonas L1…VO2 se leen como Z1…Z6. La sesión en curso no entra en la copia. Al importar se valida todo, se migran las sesiones antiguas y lo que no se puede leer se descarta y se cuenta.
 
 ## Principios que se han mantenido
 
