@@ -93,7 +93,7 @@ export default function EditorSheet({ initial }: { initial: Draft }) {
                 onMove={(d) => setBlocks((b) => moveItem(b, [i], d))}
                 onRemove={() => setBlocks((b) => removeItem(b, [i]))}
                 onAddBlock={() =>
-                  setBlocks((b) => appendToRepeat(b, i, makeBlock(120, 'L1', 'rec')))
+                  setBlocks((b) => appendToRepeat(b, i, makeBlock(120, 'Z1', 'rec')))
                 }
                 onBlockChange={(j, patch) => setBlocks((b) => updateBlock(b, [i, j], patch))}
                 onBlockMove={(j, d) => setBlocks((b) => moveItem(b, [i, j], d))}
@@ -116,7 +116,7 @@ export default function EditorSheet({ initial }: { initial: Draft }) {
           <button
             type="button"
             className="btn"
-            onClick={() => setBlocks((b) => appendItem(b, makeBlock(300, 'L2')))}
+            onClick={() => setBlocks((b) => appendItem(b, makeBlock(300, 'Z2')))}
           >
             Añadir bloque
           </button>
@@ -127,7 +127,7 @@ export default function EditorSheet({ initial }: { initial: Draft }) {
               setBlocks((b) =>
                 appendItem(
                   b,
-                  makeRepeat(3, [makeBlock(240, 'UA', 'work'), makeBlock(120, 'L1', 'rec')]),
+                  makeRepeat(3, [makeBlock(240, 'Z4', 'work'), makeBlock(120, 'Z1', 'rec')]),
                 ),
               )
             }

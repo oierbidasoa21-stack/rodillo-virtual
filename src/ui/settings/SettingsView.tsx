@@ -166,8 +166,8 @@ export default function SettingsView() {
       </div>
       <div className="card note">
         <p>
-          <b>Carga</b>: minutos en cada zona multiplicados por un peso (L1 1, L2 2, L3 3, UA 4, UA+
-          5, VO2 6). Sirve para comparar sesiones entre sí, al estilo del TRIMP.
+          <b>Carga</b>: minutos en cada zona multiplicados por un peso (Z1 1, Z2 2, Z3 3, Z4 4, Z5
+          5, Z6 6). Sirve para comparar sesiones entre sí, al estilo del TRIMP.
         </p>
         <p>
           <b>kcal</b>: MET de cada zona × peso × horas. Es una estimación con un margen de ±20 %.

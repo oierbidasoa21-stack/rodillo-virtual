@@ -11,7 +11,7 @@ const P = (min: number, pctFtp: number, kind: BlockKind = 'steady', note = ''): 
 
 const R = makeRepeat;
 
-const WARM_UP = [B(10, 'L1', 'warm'), B(5, 'L2', 'warm', 'Sube cadencia poco a poco')];
+const WARM_UP = [B(10, 'Z1', 'warm'), B(5, 'Z2', 'warm', 'Sube cadencia poco a poco')];
 
 const POWER_WARM_UP = [P(10, 55, 'warm'), P(5, 70, 'warm', 'Sube cadencia poco a poco')];
 
@@ -19,21 +19,21 @@ const POWER_WARM_UP = [P(10, 55, 'warm'), P(5, 70, 'warm', 'Sube cadencia poco a
 export const BUILTIN_WORKOUTS: readonly Workout[] = [
   {
     id: 'b-fondo',
-    name: 'Fondo L2',
+    name: 'Fondo Z2',
     description: 'Rodaje aeróbico continuo. Base para todo lo demás.',
-    blocks: [B(10, 'L1', 'warm'), B(55, 'L2', 'steady', 'Cadencia 85–95 rpm'), B(5, 'L1', 'cool')],
+    blocks: [B(10, 'Z1', 'warm'), B(55, 'Z2', 'steady', 'Cadencia 85–95 rpm'), B(5, 'Z1', 'cool')],
   },
   {
     id: 'b-tempo',
-    name: 'Tempo 3×12′ L3',
+    name: 'Tempo 3×12′ Z3',
     description: 'Ritmo sostenido por debajo del umbral, recuperaciones cortas.',
-    blocks: [...WARM_UP, R(3, [B(12, 'L3', 'work'), B(4, 'L1', 'rec')]), B(8, 'L1', 'cool')],
+    blocks: [...WARM_UP, R(3, [B(12, 'Z3', 'work'), B(4, 'Z1', 'rec')]), B(8, 'Z1', 'cool')],
   },
   {
     id: 'b-ua3x10',
     name: 'Umbral 3×10′',
-    description: 'Series en UA, el entrenamiento clave para subir el umbral.',
-    blocks: [...WARM_UP, R(3, [B(10, 'UA', 'work'), B(4, 'L1', 'rec')]), B(10, 'L1', 'cool')],
+    description: 'Series en Z4, el entrenamiento clave para subir el umbral.',
+    blocks: [...WARM_UP, R(3, [B(10, 'Z4', 'work'), B(4, 'Z1', 'rec')]), B(10, 'Z1', 'cool')],
   },
   {
     id: 'b-ua2x20',
@@ -41,36 +41,36 @@ export const BUILTIN_WORKOUTS: readonly Workout[] = [
     description: 'Versión larga del umbral. Para cuando 3×10′ ya sale cómodo.',
     blocks: [
       ...WARM_UP,
-      R(2, [B(20, 'UA', 'work', 'Constante, sin picos'), B(5, 'L1', 'rec')]),
-      B(10, 'L1', 'cool'),
+      R(2, [B(20, 'Z4', 'work', 'Constante, sin picos'), B(5, 'Z1', 'rec')]),
+      B(10, 'Z1', 'cool'),
     ],
   },
   {
     id: 'b-overunder',
     name: 'Over-unders 3×10′',
-    description: 'Alterna UA y UA+ dentro de la serie: enseña a recuperar bajo carga.',
+    description: 'Alterna Z4 y Z5 dentro de la serie: enseña a recuperar bajo carga.',
     blocks: [
       ...WARM_UP,
       R(3, [
-        B(4, 'UA', 'work'),
-        B(1, 'UA+', 'work'),
-        B(4, 'UA', 'work'),
-        B(1, 'UA+', 'work'),
-        B(5, 'L1', 'rec'),
+        B(4, 'Z4', 'work'),
+        B(1, 'Z5', 'work'),
+        B(4, 'Z4', 'work'),
+        B(1, 'Z5', 'work'),
+        B(5, 'Z1', 'rec'),
       ]),
-      B(8, 'L1', 'cool'),
+      B(8, 'Z1', 'cool'),
     ],
   },
   {
     id: 'b-vo2x5',
-    name: 'VO2 5×3′',
+    name: 'VO2máx 5×3′',
     description: 'Esfuerzos cortos al máximo sostenible, recuperación igual a la serie.',
     blocks: [
       ...WARM_UP,
-      B(2, 'L3', 'warm', 'Activación'),
-      B(3, 'L1', 'warm'),
-      R(5, [B(3, 'VO2', 'work'), B(3, 'L1', 'rec')]),
-      B(10, 'L1', 'cool'),
+      B(2, 'Z3', 'warm', 'Activación'),
+      B(3, 'Z1', 'warm'),
+      R(5, [B(3, 'Z6', 'work'), B(3, 'Z1', 'rec')]),
+      B(10, 'Z1', 'cool'),
     ],
   },
   {
@@ -79,32 +79,32 @@ export const BUILTIN_WORKOUTS: readonly Workout[] = [
     description: 'Diez repeticiones de 30″ fuerte y 30″ suave, dos bloques.',
     blocks: [
       ...WARM_UP,
-      R(10, [B(0.5, 'VO2', 'work'), B(0.5, 'L1', 'rec')]),
-      B(6, 'L1', 'rec'),
-      R(10, [B(0.5, 'VO2', 'work'), B(0.5, 'L1', 'rec')]),
-      B(10, 'L1', 'cool'),
+      R(10, [B(0.5, 'Z6', 'work'), B(0.5, 'Z1', 'rec')]),
+      B(6, 'Z1', 'rec'),
+      R(10, [B(0.5, 'Z6', 'work'), B(0.5, 'Z1', 'rec')]),
+      B(10, 'Z1', 'cool'),
     ],
   },
   {
     id: 'b-piramide',
     name: 'Pirámide',
-    description: 'Sube de L3 a VO2 y baja, con 2′ suaves entre escalones.',
+    description: 'Sube de Z3 a Z6 y baja, con 2′ suaves entre escalones.',
     blocks: [
       ...WARM_UP,
-      B(4, 'L3', 'work'),
-      B(2, 'L1', 'rec'),
-      B(4, 'UA', 'work'),
-      B(2, 'L1', 'rec'),
-      B(3, 'UA+', 'work'),
-      B(2, 'L1', 'rec'),
-      B(2, 'VO2', 'work'),
-      B(2, 'L1', 'rec'),
-      B(3, 'UA+', 'work'),
-      B(2, 'L1', 'rec'),
-      B(4, 'UA', 'work'),
-      B(2, 'L1', 'rec'),
-      B(4, 'L3', 'work'),
-      B(8, 'L1', 'cool'),
+      B(4, 'Z3', 'work'),
+      B(2, 'Z1', 'rec'),
+      B(4, 'Z4', 'work'),
+      B(2, 'Z1', 'rec'),
+      B(3, 'Z5', 'work'),
+      B(2, 'Z1', 'rec'),
+      B(2, 'Z6', 'work'),
+      B(2, 'Z1', 'rec'),
+      B(3, 'Z5', 'work'),
+      B(2, 'Z1', 'rec'),
+      B(4, 'Z4', 'work'),
+      B(2, 'Z1', 'rec'),
+      B(4, 'Z3', 'work'),
+      B(8, 'Z1', 'cool'),
     ],
   },
   {

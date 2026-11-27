@@ -153,7 +153,7 @@ export default function HrCounter({ target, zones, onCount, onClose }: Props) {
             </p>
             <p className="note" style={{ margin: '4px auto 0' }}>
               {hrPer10sToBpm(value)} ppm ·{' '}
-              {zoneOfValue ? `zona ${zoneOfValue.id}` : `por debajo de ${zones[0]?.id ?? 'L1'}`}
+              {zoneOfValue ? `zona ${zoneOfValue.id}` : `por debajo de ${zones[0]?.id ?? 'Z1'}`}
             </p>
           </div>
         )}

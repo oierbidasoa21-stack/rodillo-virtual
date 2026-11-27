@@ -12,12 +12,12 @@ import { positionAt } from '../domain/route/position';
 import { startRide } from '../domain/route/ride';
 
 const ZONES: HrZone[] = [
-  { id: 'L1', label: 'L1', min: 20, max: 21 },
-  { id: 'L2', label: 'L2', min: 22, max: 23 },
-  { id: 'L3', label: 'L3', min: 24, max: 25 },
-  { id: 'UA', label: 'UA', min: 26, max: 27 },
-  { id: 'UA+', label: 'UA+', min: 28, max: 28 },
-  { id: 'VO2', label: 'VO2', min: 29, max: null },
+  { id: 'Z1', label: 'Z1', min: 20, max: 21 },
+  { id: 'Z2', label: 'Z2', min: 22, max: 23 },
+  { id: 'Z3', label: 'Z3', min: 24, max: 25 },
+  { id: 'Z4', label: 'Z4', min: 26, max: 27 },
+  { id: 'Z5', label: 'Z5', min: 28, max: 28 },
+  { id: 'Z6', label: 'Z6', min: 29, max: null },
 ];
 
 const NONE: RecorderInput = {
@@ -44,7 +44,7 @@ describe('recorderTick', () => {
     const last = s.recording.samples.at(-1);
     expect(last).toMatchObject({ t: 10, speedKmh: 36, cadenceRpm: 90, hr: 132, altitudeM: null });
     expect(last?.distanceM).toBeCloseTo(100, 6);
-    expect(s.hrTime.secByZone.L2).toBeCloseTo(10, 6); // 132 / 6 = 22 → L2
+    expect(s.hrTime.secByZone.Z2).toBeCloseTo(10, 6); // 132 / 6 = 22 → Z2
   });
 
   it('records no distance at all without a speed sensor (nothing is made up)', () => {

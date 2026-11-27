@@ -4,15 +4,15 @@ import type { ZoneId } from '../domain/zones/zones';
 
 /** How each zone is read aloud in Spanish. */
 const SPOKEN_ZONE: Readonly<Record<ZoneId, string>> = {
-  L1: 'L uno',
-  L2: 'L dos',
-  L3: 'L tres',
-  UA: 'umbral',
-  'UA+': 'umbral más',
-  VO2: 'VO dos',
+  Z1: 'zona uno',
+  Z2: 'zona dos',
+  Z3: 'zona tres',
+  Z4: 'zona cuatro',
+  Z5: 'zona cinco',
+  Z6: 'zona seis',
 };
 
-/** "umbral", "ochenta y ocho por ciento" (digits; the voice reads them), "240 vatios" */
+/** "zona cuatro", "ochenta y ocho por ciento" (digits; the voice reads them), "240 vatios" */
 function spokenTarget(target: BlockTarget, ftpW: number | null): string {
   switch (target.type) {
     case 'hr':
@@ -33,7 +33,7 @@ function spokenDuration(durationSec: number): string {
   return `${min} ${min === 1 ? 'minuto' : 'minutos'}`;
 }
 
-/** "Serie, umbral, 10 minutos" */
+/** "Serie, zona cuatro, 10 minutos" */
 export function announceStep(step: Step, ftpW: number | null = null): string {
   return `${BLOCK_KIND_LABELS[step.kind]}, ${spokenTarget(step.target, ftpW)}, ${spokenDuration(step.durationSec)}`;
 }

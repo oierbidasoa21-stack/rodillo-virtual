@@ -17,10 +17,10 @@ import { emptySecByZone } from './timeInZone';
 
 describe('buildSessionSummary', () => {
   it('uses the time actually ridden, not the plan', () => {
-    // Plan: 10′ L1 + 20′ L2. Ride 10′ L1, then skip L2 after 5′.
-    const steps = expandWorkout([makeBlock(600, 'L1'), makeBlock(1200, 'L2')]);
+    // Plan: 10′ Z1 + 20′ Z2. Ride 10′ Z1, then skip Z2 after 5′.
+    const steps = expandWorkout([makeBlock(600, 'Z1'), makeBlock(1200, 'Z2')]);
     let p = togglePlay(createPlayer(steps)).state;
-    p = tick(p, 900).state; // 600 s L1 + 300 s L2
+    p = tick(p, 900).state; // 600 s Z1 + 300 s Z2
     p = skip(p).state; // finishes
 
     const s = buildSessionSummary({
@@ -32,8 +32,8 @@ describe('buildSessionSummary', () => {
     });
 
     expect(s.durationSec).toBe(900);
-    expect(s.plannedSecByZone).toEqual({ ...emptySecByZone(), L1: 600, L2: 1200 });
-    expect(s.actualSecByZone).toEqual({ ...emptySecByZone(), L1: 600, L2: 300 });
+    expect(s.plannedSecByZone).toEqual({ ...emptySecByZone(), Z1: 600, Z2: 1200 });
+    expect(s.actualSecByZone).toEqual({ ...emptySecByZone(), Z1: 600, Z2: 300 });
     // load: 10′ × 1 + 5′ × 2 = 20
     expect(s.load).toBeCloseTo(20, 9);
     // kcal: 5.0·80·(600/3600) + 6.8·80·(300/3600) = 66.667 + 45.333 = 112
@@ -43,22 +43,22 @@ describe('buildSessionSummary', () => {
 
 describe('buildSessionSummary with heart rate', () => {
   const zones: HrZone[] = [
-    { id: 'L1', label: 'L1', min: 20, max: 21 },
-    { id: 'L2', label: 'L2', min: 22, max: 23 },
-    { id: 'L3', label: 'L3', min: 24, max: 25 },
-    { id: 'UA', label: 'UA', min: 26, max: 27 },
-    { id: 'UA+', label: 'UA+', min: 28, max: 28 },
-    { id: 'VO2', label: 'VO2', min: 29, max: null },
+    { id: 'Z1', label: 'Z1', min: 20, max: 21 },
+    { id: 'Z2', label: 'Z2', min: 22, max: 23 },
+    { id: 'Z3', label: 'Z3', min: 24, max: 25 },
+    { id: 'Z4', label: 'Z4', min: 26, max: 27 },
+    { id: 'Z5', label: 'Z5', min: 28, max: 28 },
+    { id: 'Z6', label: 'Z6', min: 29, max: null },
   ];
   const ridden = () => {
-    const steps = expandWorkout([makeBlock(180, 'L2')]);
+    const steps = expandWorkout([makeBlock(180, 'Z2')]);
     return tick(togglePlay(createPlayer(steps)).state, 180).state;
   };
 
   it('uses measured time in zone when there is at least a minute of readings', () => {
     let hr = emptyHrTime();
-    hr = addHrSample(hr, 150, 120, zones); // L3
-    hr = addHrSample(hr, 114, 60, zones); // below L1
+    hr = addHrSample(hr, 150, 120, zones); // Z3
+    hr = addHrSample(hr, 114, 60, zones); // below Z1
     const s = buildSessionSummary({
       id: 'x',
       dateMs: 0,
@@ -80,7 +80,7 @@ describe('buildSessionSummary with heart rate', () => {
       simulated: true,
     });
     // The block-based time is still kept for planned vs ridden
-    expect(s.actualSecByZone.L2).toBe(180);
+    expect(s.actualSecByZone.Z2).toBe(180);
   });
 
   it('falls back to the blocks with under a minute of readings', () => {
@@ -94,7 +94,7 @@ describe('buildSessionSummary with heart rate', () => {
       hr,
     });
     expect(s.hrMeasured).toBeUndefined();
-    // 3′ in L2 × 2 = 6
+    // 3′ in Z2 × 2 = 6
     expect(s.load).toBeCloseTo(6, 9);
   });
 });
@@ -232,14 +232,14 @@ describe('buildRideSummary', () => {
 
   it('with a minute of heart rate gets load from it', () => {
     const zones: HrZone[] = [
-      { id: 'L1', label: 'L1', min: 20, max: 21 },
-      { id: 'L2', label: 'L2', min: 22, max: 23 },
-      { id: 'L3', label: 'L3', min: 24, max: 25 },
-      { id: 'UA', label: 'UA', min: 26, max: 27 },
-      { id: 'UA+', label: 'UA+', min: 28, max: 28 },
-      { id: 'VO2', label: 'VO2', min: 29, max: null },
+      { id: 'Z1', label: 'Z1', min: 20, max: 21 },
+      { id: 'Z2', label: 'Z2', min: 22, max: 23 },
+      { id: 'Z3', label: 'Z3', min: 24, max: 25 },
+      { id: 'Z4', label: 'Z4', min: 26, max: 27 },
+      { id: 'Z5', label: 'Z5', min: 28, max: 28 },
+      { id: 'Z6', label: 'Z6', min: 29, max: null },
     ];
-    const hr = addHrSample(emptyHrTime(), 150, 120, zones); // 2′ in L3
+    const hr = addHrSample(emptyHrTime(), 150, 120, zones); // 2′ in Z3
     const s = buildRideSummary({
       id: 'r',
       dateMs: 0,
@@ -254,7 +254,7 @@ describe('buildRideSummary', () => {
   });
 
   it('workout sessions always have load (from blocks)', () => {
-    const steps = expandWorkout([makeBlock(600, 'L2')]);
+    const steps = expandWorkout([makeBlock(600, 'Z2')]);
     const p = tick(togglePlay(createPlayer(steps)).state, 600).state;
     const s = buildSessionSummary({
       id: 'x',
@@ -283,7 +283,7 @@ describe('workout on a route', () => {
   });
 
   it('keeps the workout summary and adds the route', () => {
-    const steps = expandWorkout([makeBlock(600, 'L2')]);
+    const steps = expandWorkout([makeBlock(600, 'Z2')]);
     const p = tick(togglePlay(createPlayer(steps)).state, 600).state;
     const ride = rideSummaryOf(route, { distanceM: 5000, ascentM: 10, elapsedSec: 600 }, 'power');
     const s = buildSessionSummary({
@@ -296,6 +296,6 @@ describe('workout on a route', () => {
     });
     expect(s.workoutName).toBe('Fondo');
     expect(s.ride).toEqual(ride);
-    expect(s.load).toBeCloseTo(20, 9); // 10′ in L2 × 2, from the blocks
+    expect(s.load).toBeCloseTo(20, 9); // 10′ in Z2 × 2, from the blocks
   });
 });

@@ -9,26 +9,26 @@ const fondo = expandWorkout(BUILTIN_WORKOUTS.find((w) => w.id === 'b-fondo')?.bl
 
 describe('time in zone', () => {
   it('sums planned seconds per zone', () => {
-    // Fondo L2: 10′ L1 + 55′ L2 + 5′ L1
-    expect(plannedSecByZone(fondo)).toEqual({ ...emptySecByZone(), L1: 900, L2: 3300 });
+    // Fondo Z2: 10′ Z1 + 55′ Z2 + 5′ Z1
+    expect(plannedSecByZone(fondo)).toEqual({ ...emptySecByZone(), Z1: 900, Z2: 3300 });
   });
 
   it('sums actual seconds per zone from per-step timings', () => {
     expect(actualSecByZone(fondo, [600, 1000, 0])).toEqual({
       ...emptySecByZone(),
-      L1: 600,
-      L2: 1000,
+      Z1: 600,
+      Z2: 1000,
     });
   });
 });
 
 describe('zoneLoad', () => {
-  it('Fondo L2: 15′ × 1 + 55′ × 2 = 125', () => {
+  it('Fondo Z2: 15′ × 1 + 55′ × 2 = 125', () => {
     expect(zoneLoad(plannedSecByZone(fondo))).toBeCloseTo(125, 9);
   });
 
   it('weights every zone: 1′ in each = 1+2+3+4+5+6 = 21', () => {
-    const oneMinEach = { L1: 60, L2: 60, L3: 60, UA: 60, 'UA+': 60, VO2: 60 };
+    const oneMinEach = { Z1: 60, Z2: 60, Z3: 60, Z4: 60, Z5: 60, Z6: 60 };
     expect(zoneLoad(oneMinEach)).toBeCloseTo(21, 9);
   });
 
@@ -38,12 +38,12 @@ describe('zoneLoad', () => {
 });
 
 describe('kcalByMet', () => {
-  it('Fondo L2 at 70 kg: 5.0·70·0.25 + 6.8·70·(55/60) = 87.5 + 436.33 = 523.83', () => {
+  it('Fondo Z2 at 70 kg: 5.0·70·0.25 + 6.8·70·(55/60) = 87.5 + 436.33 = 523.83', () => {
     expect(kcalByMet(plannedSecByZone(fondo), 70)).toBeCloseTo(523.833, 2);
   });
 
-  it('1 h in UA at 80 kg = 11 · 80 = 880', () => {
-    expect(kcalByMet({ ...emptySecByZone(), UA: 3600 }, 80)).toBeCloseTo(880, 9);
+  it('1 h in Z4 at 80 kg = 11 · 80 = 880', () => {
+    expect(kcalByMet({ ...emptySecByZone(), Z4: 3600 }, 80)).toBeCloseTo(880, 9);
   });
 
   it('scales linearly with weight', () => {

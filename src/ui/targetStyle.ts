@@ -12,7 +12,7 @@ const FALLBACK_FTP_FOR_DRAWING_W = 250;
 /** Power zones share the six zone colours; Z7 reuses the top one. */
 function colourZoneForPct(pct: number): ZoneId {
   const index = Math.min(POWER_ZONE_IDS.indexOf(powerZoneOfPct(pct)), ZONE_IDS.length - 1);
-  return ZONE_IDS[index] ?? 'VO2';
+  return ZONE_IDS[index] ?? 'Z6';
 }
 
 /** Intensity step 0–5 used for bar height and colour. */
@@ -36,7 +36,7 @@ export function targetHeightPct(target: BlockTarget, ftpW: number | null = null)
   return 22 + ZONE_IDS.indexOf(colourZone(target, ftpW)) * 15.6;
 }
 
-/** "L3", "88 % FTP", "240 W" */
+/** "Z3", "88 % FTP", "240 W" */
 export function targetShortLabel(target: BlockTarget): string {
   switch (target.type) {
     case 'hr':
@@ -51,5 +51,5 @@ export function targetShortLabel(target: BlockTarget): string {
 /** Colour of a power zone (Z1–Z6 share the six zone colours; Z7 reuses the top one). */
 export function powerZoneColor(id: PowerZoneId): string {
   const index = Math.min(POWER_ZONE_IDS.indexOf(id), ZONE_IDS.length - 1);
-  return zoneColor(ZONE_IDS[index] ?? 'VO2');
+  return zoneColor(ZONE_IDS[index] ?? 'Z6');
 }

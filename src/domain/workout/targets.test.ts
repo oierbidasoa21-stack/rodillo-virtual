@@ -7,7 +7,7 @@ describe('power targets', () => {
     // 88 % of 240 W = 211.2 W
     expect(targetWatts({ type: 'power', pctFtp: 88 }, 240)).toBeCloseTo(211.2, 9);
     expect(targetWatts({ type: 'power', pctFtp: 88 }, null)).toBeNull();
-    expect(targetWatts({ type: 'hr', zoneId: 'L2' }, 240)).toBeNull();
+    expect(targetWatts({ type: 'hr', zoneId: 'Z2' }, 240)).toBeNull();
   });
 
   it('band is ±5 %: 211.2 W → 201–222 W', () => {

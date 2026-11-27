@@ -130,7 +130,7 @@ export function weeklyTotals(
 export type FreshnessLevel = 'fresh' | 'balanced' | 'loaded' | 'overloaded';
 
 /**
- * How to read the freshness. The load is minutes × zone weight (an hour in L2
+ * How to read the freshness. The load is minutes × zone weight (an hour in Z2
  * is 120), about twice the usual TSS scale, so the usual bands are doubled.
  * Orientative only.
  */

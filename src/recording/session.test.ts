@@ -15,14 +15,14 @@ import {
 } from './session';
 
 const ZONES: HrZone[] = [
-  { id: 'L1', label: 'L1', min: 20, max: 21 },
-  { id: 'L2', label: 'L2', min: 22, max: 23 },
-  { id: 'L3', label: 'L3', min: 24, max: 25 },
-  { id: 'UA', label: 'UA', min: 26, max: 27 },
-  { id: 'UA+', label: 'UA+', min: 28, max: 28 },
-  { id: 'VO2', label: 'VO2', min: 29, max: null },
+  { id: 'Z1', label: 'Z1', min: 20, max: 21 },
+  { id: 'Z2', label: 'Z2', min: 22, max: 23 },
+  { id: 'Z3', label: 'Z3', min: 24, max: 25 },
+  { id: 'Z4', label: 'Z4', min: 26, max: 27 },
+  { id: 'Z5', label: 'Z5', min: 28, max: 28 },
+  { id: 'Z6', label: 'Z6', min: 29, max: null },
 ];
-const workout = { id: 'w', name: 'Fondo corto', description: '', blocks: [makeBlock(600, 'L2')] };
+const workout = { id: 'w', name: 'Fondo corto', description: '', blocks: [makeBlock(600, 'Z2')] };
 
 function halfWorkout(): SessionSnapshot {
   const player = tick(togglePlay(createPlayer(expandWorkout(workout.blocks))).state, 300).state;
@@ -62,7 +62,7 @@ describe('session snapshot', () => {
     expect(snapshotElapsedSec(s)).toBe(300);
   });
 
-  it('turns it into the same summary the player would build: 5′ in L2 = load 10, power, simulated', () => {
+  it('turns it into the same summary the player would build: 5′ in Z2 = load 10, power, simulated', () => {
     const summary = summaryFromSnapshot(halfWorkout(), {
       id: 'x',
       dateMs: 2,

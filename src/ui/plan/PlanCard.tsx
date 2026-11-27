@@ -25,11 +25,11 @@ const dateMs = (date: string) => {
   return new Date(y ?? 1970, (m ?? 1) - 1, d ?? 1).getTime();
 };
 
-/** "UA", "90 % FTP" or "240 W". */
+/** "Z4", "90 % FTP" or "240 W". */
 const targetText = (t: BlockTarget) =>
   t.type === 'hr' ? t.zoneId : t.type === 'power' ? `${t.pctFtp} % FTP` : `${t.watts} W`;
 
-/** "4×4′ UA · 3′ L1" style summary of the main work of a day. */
+/** "4×4′ Z4 · 3′ Z1" style summary of the main work of a day. */
 function daySummary(day: PlanDay): string {
   if (!day.workout) return 'Descanso';
   const total = totalDurationSec(expandWorkout(day.workout.blocks));
@@ -42,7 +42,7 @@ function daySummary(day: PlanDay): string {
     }
     return `${formatMinutes(b.durationSec)} ${targetText(b.target)}`;
   });
-  // A single block already says it all: "1 h 15′ L2".
+  // A single block already says it all: "1 h 15′ Z2".
   if (parts.length === 1) return parts[0] ?? formatMinutes(total);
   return `${formatMinutes(total)} · ${parts.filter(Boolean).join(' · ')}`;
 }

@@ -22,9 +22,9 @@ describe('formatMinutes', () => {
 });
 
 describe('zone texts', () => {
-  const l3 = { id: 'L3', label: 'L3', min: 24, max: 25 } as const;
-  const uap = { id: 'UA+', label: 'UA+', min: 28, max: 28 } as const;
-  const vo2 = { id: 'VO2', label: 'VO2', min: 29, max: null } as const;
+  const l3 = { id: 'Z3', label: 'Z3', min: 24, max: 25 } as const;
+  const uap = { id: 'Z5', label: 'Z5', min: 28, max: 28 } as const;
+  const vo2 = { id: 'Z6', label: 'Z6', min: 29, max: null } as const;
 
   it('formats ranges, single values and open ends', () => {
     expect(zoneBounds(l3)).toBe('24–25');
