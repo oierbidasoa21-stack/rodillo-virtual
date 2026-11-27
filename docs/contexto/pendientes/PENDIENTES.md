@@ -64,8 +64,8 @@ Pedido por el usuario: las zonas pasan de `L1, L2, L3, UA, UA+, VO2` a `Z1, Z2, 
     2. **Fase 13** (GitHub profesional): fija la forma de trabajar (todo por PR, CI obligatorio, plantillas). Con dos agentes, cuanto antes mejor: todo lo que venga después ya pasa por ese filtro. Se puede hacer mientras el repo siga público, porque las reglas de rama son gratis en públicos.
     3. **Fase 14** (Docker de producción y seguridad): poner la CSP estricta **antes** de la Fase 10 es seguridad desde el diseño. Luego la Fase 10 solo abre, de forma explícita, los servicios de teselas que necesita, en vez de tener que cerrar después lo que quedó abierto.
     4. **Fase 15** partida en dos:
-       - **15a, antes de la 10**: lo pequeño (recordatorio de copia, límites al importar, copia cifrada, calidad gráfica del 3D, panel de inicio). Los límites al importar y la copia cifrada encajan con la Fase 14.
-       - **15b, después o en espera**: exportar FIT (botón «Descargar FIT» junto al TCX, con el FIT SDK oficial de Garmin, mismos datos; el usuario lo quiere para compartir con su entrenador) y zonas desde un test. **Strava sale de la Fase 15**: necesita un secreto (OAuth). **Decidido: se hará con Supabase** (Edge Function y tokens en una tabla con RLS), dentro de T8.
+       - **15a, antes de la 10**: lo pequeño (recordatorio de copia, límites al importar, copia cifrada, calidad gráfica del 3D, panel de inicio) y **Strava opción (b)**: descargar el archivo al guardar y botón «Abrir Strava para subir» (ver T8). Los límites al importar y la copia cifrada encajan con la Fase 14.
+       - **15b, después o en espera**: exportar FIT (botón «Descargar FIT» junto al TCX, con el FIT SDK oficial de Garmin, mismos datos; el usuario lo quiere para compartir con su entrenador) y zonas desde un test. ~~Strava sale de la Fase 15 y va con Supabase~~. **Cambio (2026-11-27):** la API de Strava es de pago, y el usuario elige la opción (b) sin API, que vuelve a la Fase 15a.
     5. **Fases 10 → 11 → 12** (paisaje real): lo más grande y con más riesgo (servicios externos, rendimiento, licencias). Mejor con la base ya limpia y segura.
     6. **Fase 8** cuando haya rodillo: es independiente y puede entrar en cualquier momento.
     - **Los números no se cambian**, aunque el orden sea otro: los issues y milestones de #31 ya usan 10–12. En `ROADMAP.md` basta con poner «Fase actual: 9» y una línea con el orden de ejecución. Recordar la regla 1 de `CLAUDE.md` (trabajar solo en la fase actual).
@@ -162,7 +162,7 @@ Pedido por el usuario el 2026-11-27. Detalle y porqué en el punto 7 del estudio
 
 ### T8 · Base de datos centralizada (en estudio)
 
-**Decisión (2026-11-27):** el proveedor será **Supabase**, primero para Strava y después, si se centralizan los datos, para la base de datos (opción C). Antes de construir nada, hay que diseñarlo en una fase propia:
+**Decisión (2026-11-27):** el proveedor será **Supabase** si se centralizan los datos (opción C). ~~Primero para Strava~~: Strava va sin API, opción (b), así que **Supabase ya no hace falta para Strava** y T8 sigue en estudio. Antes de construir nada, hay que diseñarlo en una fase propia:
 
 - tablas y políticas RLS con tests;
 - login;
@@ -186,7 +186,17 @@ Al empezarla, cambiar la regla «sin backend, sin cuentas» de `CLAUDE.md`.
 
 **Corrección (2026-11-27):** **la API de Strava ahora es solo para suscriptores.** El usuario lo comprobó en la página de la API («La API de Strava está disponible para suscriptores»). Claude había dicho que era gratis: era información desfasada. Subir un archivo a mano en la web de Strava sí es gratis.
 
-**Pendiente de que el usuario elija:**
+**Decisión del usuario (2026-11-27): opción (b), sin API y gratis.** Así se hará (Fase 15a):
+
+- **Al pulsar «Guardar»**, la app descarga sola el archivo de la sesión: FIT cuando exista (Fase 15b), TCX mientras tanto.
+- Aparece un botón **«Abrir Strava para subir»** que abre en otra pestaña la página de subida manual de Strava (`https://www.strava.com/upload/select`; comprobar la URL al construirlo).
+- El mismo botón y la descarga están en el detalle de cada sesión del historial, por si se cierra el aviso.
+- Interruptor en Ajustes: «Descargar el archivo al guardar» (activado por defecto).
+- No se descarga ni se ofrece subir en sesiones con sensores simulados (se avisa).
+- Contenido del archivo: vatios marcados como estimados (en las notas del archivo si el formato lo permite), sin posición en rutas inventadas.
+- **Strava ya no necesita Supabase ni secretos.** La subida automática con la API (opción a) queda descartada mientras no haya suscripción, y sustituye lo descrito arriba sobre la Edge Function `strava-oauth`, que solo vale si algún día se paga.
+
+Opciones que se valoraron:
 
 - **(a)** pagar la suscripción y mantener la subida automática con Supabase;
 - **(b) recomendada si no quiere pagar:** sin API. Al guardar, la app descarga el FIT (o TCX) y ofrece un botón **«Abrir Strava para subir»** con la página de subida manual. Son unos 20 segundos, gratis y sin Supabase.

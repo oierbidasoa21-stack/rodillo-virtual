@@ -267,3 +267,5 @@ Opciones:
 - **No consta que iGPSPORT reenvíe a Strava un FIT importado a mano** (su sincronización está pensada para los recorridos de sus ciclocomputadores). Hay que probarlo: exportar el TCX de una sesión, importarlo en iGPSPORT si lo permite y ver si aparece en Strava.
 - Aunque funcionara, seguiría siendo manual: no ahorra nada frente a subir a mano directamente a Strava (opción b).
 - Dato útil: iGPSPORT tiene integración con TrainingPeaks. Si el entrenador usa TrainingPeaks, también acepta el FIT directamente.
+
+**Decisión del usuario (2026-11-27): opción (b).** Al guardar, la app descarga el archivo (FIT, o TCX mientras no exista FIT) y ofrece «Abrir Strava para subir». Gratis, sin API, sin Supabase. El detalle está en T8 de `pendientes/PENDIENTES.md`; se construye en la Fase 15a.
