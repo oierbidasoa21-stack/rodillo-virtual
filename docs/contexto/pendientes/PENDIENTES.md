@@ -54,7 +54,7 @@ Pedido por el usuario: las zonas pasan de `L1, L2, L3, UA, UA+, VO2` a `Z1, Z2, 
   - imagen Docker y `ESTRUCTURA.md`;
   - pantalla completa.
 - [ ] `docs/ROADMAP.md` (pedido el 2026-11-27): además de lo anterior y de fusionar #31, que el roadmap recoja **todo lo apuntado aquí**. Propuesta (el orden se puede cambiar):
-  - **Fase 9 — Mantenimiento** (el número de la 9 descartada queda libre): zonas Z1…Z6 (T1) y seguimiento al día (T2).
+  - **Fase 9 — Mantenimiento** (el número de la 9 descartada queda libre): zonas Z1…Z6 (T1), seguimiento al día (T2) y README con `docs/MANUAL.md` (T11).
   - **Fase 10–12 — Paisaje real** niveles 1–3 (#31, sin cambios).
   - **Fase 13 — GitHub profesional** (T7) y **Fase 14 — Docker de producción y seguridad** (T4). Van juntas o seguidas, porque la CSP y CI se tocan en las dos.
   - **Fase 15 — Mejoras aceptadas** (punto 5 del estudio, sin el modo daltónico): copia cifrada, recordatorio de copia, límites al importar, panel de inicio, calidad gráfica del 3D, FIT, Strava y zonas desde un test.
@@ -246,6 +246,35 @@ El usuario quiere saber si le sale más barato montar uno con piezas y el softwa
 - **Casero:** solo como proyecto opcional. Si sale adelante, el firmware va en `firmware/` o en otro repo, y la app no cambia (Fase 8).
 - **Si compra un rodillo magnético tonto:** la app hoy solo trae curvas de fluido, así que habría que meter una curva personalizada.
 - Cuando compre, actualizar «Atleta y equipo» en `CLAUDE.md`.
+
+### T11 · README y manual de uso de toda la app
+
+Pedido el 2026-11-27: que el agente de VS Code actualice la documentación para que explique bien cómo funciona **toda** la app. Hoy el `README.md` (136 líneas) mezcla presentación, comandos y funciones; `docs/ESTRUCTURA.md` explica el código, no el uso.
+
+**Reparto de archivos:**
+
+- `README.md`: la portada, corta. Qué es, captura o GIF, funciones principales en una lista, arranque rápido (web publicada, Docker y `npm run dev`), requisitos (Chrome en el ordenador y Bluetooth), privacidad (los datos se quedan en el navegador) y enlaces al manual, a `ESTRUCTURA.md`, al `ROADMAP` y a `docs/contexto/`. Las insignias y el estilo de empresa llegan con la Fase 13 (T7).
+- **`docs/MANUAL.md`** (nuevo): cómo se usa todo, en español sencillo y con capturas a tamaño de escritorio. Contenido propuesto:
+  1. Primeros pasos: abrir, instalar como app, configurar el atleta (peso, bici, rueda) y las zonas de pulso Z1…Z6.
+  2. Sensores: emparejar banda y sensor de velocidad, qué pasa si se cae uno y sensores simulados.
+  3. Rodillo y potencia: elegir modelo o curva, qué significa «estimado», ramp test y FTP, zonas de potencia.
+  4. Biblioteca y editor de sesiones: bloques por pulso o por potencia, repeticiones, importar y exportar `.zwo`.
+  5. El player: lo que se ve en pantalla, avisos de voz y pitidos, contador de 10″, +1′, saltar y pantalla completa (F).
+  6. Rutas: rutas inventadas e importar GPX, modo potencia y modo rueda, vista 3D, hora del día, fantasma y demo 3D (y el paisaje real cuando exista).
+  7. Al terminar: resumen (tiempo en zona, carga, kcal, NP, IF, TSS), guardar, descarga del archivo y subida a Strava (opción b), y FIT para el entrenador.
+  8. Historial: detalle con gráficas, forma y fatiga, exportar y borrar, retomar una sesión sin terminar.
+  9. Plan del entrenador: copiar el informe y pegar el plan (resume y enlaza `docs/agente-entrenador.md`).
+  10. Datos y copia de seguridad: dónde se guardan, exportar e importar, qué se pierde si se borran los datos de Chrome.
+  11. Cálculos explicados: carga por pulso, kcal, NP, IF, TSS y la velocidad virtual. Las fórmulas de `CLAUDE.md` contadas para personas.
+  12. Problemas frecuentes: Bluetooth no aparece, el sensor se desconecta, la app no se actualiza, `localhost` frente a la web publicada.
+
+**Cuándo:** después de la Fase 9, para que ya salgan las zonas Z1…Z6. Puede ir como última tarea de la 9 o junto a la 13. A partir de ahí, **cada fase que cambie algo visible actualiza el manual** (añadir la regla a «Forma de trabajar» en `CLAUDE.md`).
+
+**Criterio de hecho:**
+
+- alguien que no conoce la app puede hacer una sesión completa solo con el manual;
+- no hay datos personales en capturas ni en ejemplos;
+- la regla de `CLAUDE.md` está añadida.
 
 ### T10 · Pasar las tareas a issues de GitHub (después)
 
