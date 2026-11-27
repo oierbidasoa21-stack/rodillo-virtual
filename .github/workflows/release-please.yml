@@ -18,6 +18,12 @@ jobs:
   release-please:
     name: Release Please
     runs-on: ubuntu-latest
+    # Until the owner enables "Allow GitHub Actions to create and approve pull
+    # requests" (Settings → Actions → General; planned after phase 12,
+    # decided on 2026-11-28), opening the release PR fails. This keeps main
+    # green meanwhile: the failure only shows in the job log. Remove this line
+    # once that setting is on.
+    continue-on-error: true
     permissions:
       contents: write
       pull-requests: write
