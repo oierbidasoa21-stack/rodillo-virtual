@@ -310,7 +310,7 @@ Pedido el 2026-11-27: que el agente de VS Code actualice la documentación para 
 
 ### T12 · Curvas suaves en la vista 3D (fallo, Fase 9)
 
-**Estado (2026-11-28): hecha en un PR abierto para revisión** (ver `fases/fase-9-mantenimiento.md`): spline cada metro, rumbo desde la tangente, cámara amortiguada y test del arco de radio conocido.
+**Estado (2026-11-28): hecha en el [PR #35](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/35), abierto para revisión** (ver `fases/fase-9-mantenimiento.md`): spline cada metro, rumbo desde la tangente, cámara amortiguada y test del arco de radio conocido.
 
 **El usuario lo confirma (2026-11-28): curvas antes que el realismo.**
 
