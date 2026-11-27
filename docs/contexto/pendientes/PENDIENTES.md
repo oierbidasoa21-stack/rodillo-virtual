@@ -109,7 +109,9 @@ El usuario quiere poder hacer el repo **privado sin GitHub Pro**. GitHub Pages n
 - [ ] Guía corta para el usuario: exportar la copia en la web publicada (si tiene datos), cambiar la visibilidad (Settings → General → Danger Zone, eso lo hace él), arrancar Docker e importar la copia. Usar siempre el mismo puerto: cada dirección tiene su propia base.
 - [ ] Anotar la decisión cuando el usuario cambie la visibilidad.
 
-**Estado (2026-11-27): apuntado, todavía no.** El usuario no cambia la visibilidad por ahora.
+**Estado (2026-11-28): descartado.** El usuario prefiere no complicarse: el repo **se queda público**. Así sigue la web en GitHub Pages y la Fase 13 sale gratis (las reglas de rama funcionan en públicos). Las casillas de T3 ya no se hacen.
+
+~~Estado (2026-11-27): apuntado, todavía no.~~
 
 **Qué se rompería al pasarlo a privado** (respuesta del 2026-11-27):
 
