@@ -129,6 +129,20 @@ Solo si compro uno.
 - [ ] Modo ERG: el workout fija la potencia del rodillo
 - [ ] Modo simulación: la pendiente de la ruta ajusta la resistencia
 
+## Mejoras fuera de fase (2026-11-26/27)
+
+Hechas tras la Fase 7, a petición del usuario, antes de reordenar el roadmap. Detalle en `docs/contexto/fases/mejoras-entrenamiento.md` y `docs/contexto/decisiones/`.
+
+- [x] Realismo 3D, ronda 1: sombras, texturas de asfalto y hierba, cielo con sol y nubes, líneas laterales y balizas
+- [x] Realismo 3D, ronda 2: horizonte con montañas, vegetación a lo largo de la carretera, ciclista detallado que se inclina en las curvas y cámara que acompaña
+- [x] Realismo 3D, ronda 3: público animando, quitamiedos, rodadas, arcén de grava y hora del día
+- [x] Forma y fatiga (condición, fatiga y frescura en Historial)
+- [x] Fantasma de tu mejor salida en la misma ruta
+- [x] Avisos de voz: pulso fuera de zona, mitad y último minuto, subidas y resumen
+- [x] Plan del entrenador: informe para el agente y plan semanal importable
+- [x] Imagen Docker y `docs/ESTRUCTURA.md`
+- [x] Pantalla completa (botón y tecla F)
+
 ## Fase 9 — Mantenimiento
 
 El número de la antigua Fase 9 (móvil, descartada) queda libre y se reutiliza. Tareas en `docs/contexto/pendientes/PENDIENTES.md`.
@@ -159,3 +173,57 @@ Al importar un GPX, el paisaje 3D es el de verdad: relieve real y foto de satél
 Solo si creo una clave de Google Maps Platform.
 
 - [ ] Clave en Ajustes (solo en el navegador) y Photorealistic 3D Tiles en lugar del terreno propio
+
+## Fase 13 — GitHub profesional
+
+Tarea T7 de `docs/contexto/pendientes/PENDIENTES.md`. Antes de empezar, el usuario decide entre repo público (todo gratis) o privado (las reglas de rama necesitan Pro o Team).
+
+- [ ] Presentación: descripción, temas, web e imagen para compartir; `README` con insignias, capturas y arranque rápido
+- [ ] Archivos estándar: `LICENSE` (la elige el usuario), `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md` y `CHANGELOG.md`
+- [ ] `.github/`: plantillas de issue en formulario y de PR, `CODEOWNERS`, `dependabot.yml` y etiquetas `tipo:`, `área:` y `prioridad:`
+- [ ] Reglas de `main`: solo por PR con CI obligatorio, historial lineal sin `--force`, fusión _squash_ y borrado automático de ramas
+- [ ] Commitlint en CI, release-please (versiones, etiquetas y `CHANGELOG`) e imagen en GHCR por versión
+- [ ] Tablero de GitHub Projects junto a los milestones
+- [ ] Seguridad del repo: escaneo de secretos con bloqueo, alertas de Dependabot y CodeQL, informe privado de vulnerabilidades y OpenSSF Scorecard
+- [ ] Opcional: organización gratuita con el nombre de la «empresa» y transferir el repo
+
+## Fase 14 — Docker de producción y seguridad
+
+Tarea T4. La CSP se pone aquí, antes de la Fase 10, que solo abrirá los servicios de teselas que necesite.
+
+- [ ] nginx sin root y con sistema de archivos de solo lectura; `cap_drop` y `no-new-privileges`
+- [ ] Cabeceras de seguridad con CSP, repetidas en cada `location`
+- [ ] Imágenes fijadas por digest
+- [ ] Trivy, `npm audit` y CodeQL en CI; Dependabot
+- [ ] SBOM y firma de la imagen
+- [ ] Perfil `prod` con Caddy y HTTPS
+- [ ] Release a GHCR
+- [ ] `docs/despliegue/` y `SECURITY.md`
+
+## Fase 15a — Mejoras aceptadas (antes del paisaje real)
+
+- [ ] Selector de calidad gráfica del 3D
+- [ ] Panel de inicio
+- [ ] Strava sin API: descargar el archivo al guardar y botón «Abrir Strava para subir» (T8, opción b)
+- [ ] Arco de meta y cámara de llegada (T16)
+- [ ] Pulso máximo de la sesión con aviso inmediato (T17)
+- [ ] Reconexión de Bluetooth sin preguntar, si Chrome lo permite (T18)
+- [ ] Transiciones entre bloques, cuenta atrás grande en los últimos 5 s y gráfica de zonas tipo donut en el resumen
+
+## Fase 15b — Mejoras aceptadas (después del paisaje real)
+
+- [ ] Exportar FIT junto al TCX (para el entrenador)
+- [ ] Zonas desde un test guiado y sugerencias de zonas con sensaciones al terminar (T20)
+
+## Tareas sueltas en el orden de ejecución
+
+- [ ] T14 · Crear una ruta eligiendo puntos en un mapa (justo después de la Fase 10)
+- [ ] T13 · Ciclista realista: modelo 3D propio o con licencia libre (después de la Fase 12)
+- [ ] T19 · Seguridad complementaria: copia cifrada, recordatorio de copia, límites al importar y señuelos (lo último de todo)
+
+## En espera o en estudio (sin número)
+
+- **Fase 8** (arriba): rodillo inteligente, cuando se compre uno con FTMS (T5); el casero queda descartado salvo como proyecto (T9).
+- **Base de datos centralizada** (T8): Supabase si se decide; cambia la regla «sin backend».
+- **AWS** (T6): solo si se decide.
+- **Modo local con repo privado** (T3): depende de la Fase 13.
