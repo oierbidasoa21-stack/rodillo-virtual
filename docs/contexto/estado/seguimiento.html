@@ -394,7 +394,7 @@
     <div class="stat">
       <span>En curso</span><b>T1</b><span>Zonas Z1…Z6 (agente de VS Code)</span>
     </div>
-    <div class="stat"><span>Por decidir</span><b>7</b><span>Decisiones tuyas abiertas</span></div>
+    <div class="stat"><span>Por decidir</span><b>6</b><span>Decisiones tuyas abiertas</span></div>
     <div class="stat">
       <span>Hechas</span><b>Fases 0–7</b><span>Publicadas, con extras de 3D y entreno</span>
     </div>
@@ -547,6 +547,21 @@
         <div class="km"><div class="dot">10</div></div>
         <div class="stage">
           <div class="stage-top">
+            <h3>Datos en Supabase</h3>
+            <span class="chip wait">Lugar por confirmar</span>
+          </div>
+          <ul>
+            <li>
+              Base de datos central: tablas, login, reglas RLS y sincronización sin perder el modo
+              sin conexión <span class="ref">T8</span>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li>
+        <div class="km"><div class="dot">11</div></div>
+        <div class="stage">
+          <div class="stage-top">
             <h3>Ciclista realista</h3>
             <span class="chip next">Pendiente</span>
           </div>
@@ -556,7 +571,7 @@
         </div>
       </li>
       <li>
-        <div class="km"><div class="dot">11</div></div>
+        <div class="km"><div class="dot">12</div></div>
         <div class="stage">
           <div class="stage-top">
             <h3>Seguridad complementaria</h3>
@@ -564,7 +579,8 @@
           </div>
           <ul>
             <li>
-              Copia cifrada, recordatorio de copia, límites al importar <span class="ref">T19</span>
+              Copia cifrada, recordatorio de copia, límites al importar y trampas que avisan
+              (canary tokens) <span class="ref">T19</span>
             </li>
           </ul>
         </div>
@@ -586,12 +602,6 @@
           FTMS: vatios medidos, ERG y pendiente que cambia la resistencia sola.
           <span class="ref">#10–#12</span>
         </p>
-      </div>
-      <div class="item">
-        <div class="stage-top">
-          <strong>Base de datos centralizada</strong><span class="chip wait">En estudio</span>
-        </div>
-        <p>Carpeta sincronizada, PocketBase o Supabase. <span class="ref">T8</span></p>
       </div>
       <div class="item">
         <div class="stage-top">
@@ -617,11 +627,8 @@
       <div class="sechead"><h2 id="decidir">Por decidir (tú)</h2></div>
       <ul class="list">
         <li class="item decide">
-          <strong>«Context bombs»</strong>
-          <p>
-            ¿Te refieres a la CSP (bloquear código inyectado) o a trampas que avisan de un acceso
-            indebido (canary tokens)?
-          </p>
+          <strong>Cuándo hacer «Datos en Supabase»</strong>
+          <p>Propuesta: justo después de la Fase 15b y antes del ciclista realista.</p>
         </li>
         <li class="item decide">
           <strong>Repo público o privado</strong>
@@ -633,10 +640,6 @@
         <li class="item decide">
           <strong>Licencia del repo</strong>
           <p>«Todos los derechos reservados» o abierta (MIT). Hace falta para la Fase 13.</p>
-        </li>
-        <li class="item decide">
-          <strong>Base de datos centralizada</strong>
-          <p>A (carpeta sincronizada, recomendada), B (PocketBase en Docker) o C (Supabase).</p>
         </li>
         <li class="item decide">
           <strong>Rodillo inteligente</strong>
@@ -662,11 +665,14 @@
         </li>
         <li class="item tip">
           <strong>Curvas antes que realismo</strong>
-          <p>Los giros a tirones son un fallo de geometría; se arreglan en la Fase 9.</p>
+          <p>Decidido: los giros a tirones se arreglan en la Fase 9 (T12).</p>
         </li>
         <li class="item tip">
           <strong>CSP antes del paisaje real</strong>
-          <p>Así la Fase 10 solo abre los servicios de mapas que necesita.</p>
+          <p>
+            La CSP es una lista de lo que la web puede cargar y ejecutar; lo demás se bloquea. Así
+            la Fase 10 solo abre los servicios de mapas que necesita.
+          </p>
         </li>
         <li class="item tip">
           <strong>Manda ya el TCX a tu entrenador</strong>

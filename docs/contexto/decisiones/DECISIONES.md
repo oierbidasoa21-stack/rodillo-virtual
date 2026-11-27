@@ -144,3 +144,6 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Técnica · Los niveles de paisaje real no mejoran el ciclista.** El ciclista realista es una tarea aparte (T13).
 - **Usuario · Prueba de hardware:** PWA instalada y botón de actualizar visto; el player cabe sin scroll en su pantalla.
 - **Estado · PR #31 fusionado** (lo hizo el agente de VS Code).
+- **Usuario · «Context bombs» = las dos cosas:** CSP en la Fase 14 y trampas que avisan (_canary tokens_) en T19, sobre todo una vez exista Supabase.
+- **Usuario · Curvas suaves antes que el realismo** (T12 en la Fase 9).
+- **Usuario · Datos centralizados en Supabase** (T8, opción C). Ubicación propuesta: fase propia después de la 15b; pendiente de confirmar.

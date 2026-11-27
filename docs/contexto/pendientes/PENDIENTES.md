@@ -170,7 +170,15 @@ Pedido por el usuario el 2026-11-27. Detalle y porqué en el punto 7 del estudio
 
 ### T8 · Base de datos centralizada (en estudio)
 
-**Decisión (2026-11-27):** el proveedor será **Supabase** si se centralizan los datos (opción C). ~~Primero para Strava~~: Strava va sin API, opción (b), así que **Supabase ya no hace falta para Strava** y T8 sigue en estudio. Antes de construir nada, hay que diseñarlo en una fase propia:
+**Decisión (2026-11-28): los datos se centralizan en Supabase** (opción C). El usuario lo confirma: «para los datos, ¿no íbamos a usar Supabase?». Strava no lo necesita (va con la opción b).
+
+- **Ubicación propuesta en el orden:** una fase propia, **«Datos en Supabase»**, después de la 15b y antes del ciclista realista (T13), y siempre antes de la seguridad complementaria (T19), que la necesita para las trampas. **[POR CONFIRMAR]**
+- **Lo que lleva:**
+  - tablas y RLS con tests;
+  - login con enlace mágico;
+  - sincronización con Dexie sin perder el modo sin conexión;
+  - región UE;
+  - cambiar la regla «sin backend» de `CLAUDE.md`. Antes de construir nada, hay que diseñarlo en una fase propia:
 
 - tablas y políticas RLS con tests;
 - login;
@@ -286,6 +294,8 @@ Pedido el 2026-11-27: que el agente de VS Code actualice la documentación para 
 
 ### T12 · Curvas suaves en la vista 3D (fallo, Fase 9)
 
+**El usuario lo confirma (2026-11-28): curvas antes que el realismo.**
+
 El usuario lo notó el 2026-11-27: en las curvas el ciclista gira «a tirones». **No depende de los niveles de realismo**: es un fallo de la geometría, y se arregla antes.
 
 - **Causa probable** (`src/domain/world/path.ts`):
@@ -370,7 +380,14 @@ Decisión del usuario (2026-11-28): las ideas de seguridad del punto 5 del estud
 - límites de tamaño al importar;
 - y lo que salga de la revisión de seguridad.
 
-La CSP y las cabeceras siguen en la Fase 14. **[POR ACLARAR]** El usuario pide «context bombs»: preguntarle si se refiere a la CSP (_Content Security Policy_) o a trampas que avisan de un acceso indebido (_canary tokens_).
+La CSP y las cabeceras siguen en la Fase 14. **«Context bombs» (aclarado el 2026-11-28): el usuario quiere las dos cosas.**
+
+- **CSP:** en la Fase 14 (T4), como ya estaba.
+- **Trampas que avisan (_canary tokens_, _honeytokens_):** aquí, al final. En una app sin servidor hay poco que vigilar; tienen sentido sobre todo con Supabase:
+  - filas y usuarios señuelo que nadie legítimo lee, con aviso si alguien accede;
+  - una ruta o tabla señuelo;
+  - un token web señuelo en un documento interno.
+- **Ojo con poner claves falsas en el repo** (por ejemplo, claves de AWS de canarytokens.org): el escaneo de secretos de GitHub las detecta y las puede bloquear o hacer revocar. Si se usan, fuera del repo público o como token web, no como clave.
 
 ### T20 · Sugerencias de zonas («X podría ser tu Z2»)
 
