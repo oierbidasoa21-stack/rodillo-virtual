@@ -116,3 +116,10 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Producto · La web publicada sigue siendo la vía recomendada** para otras personas (sin instalar, datos en su navegador). Docker añade autoalojamiento; fuera de `localhost` necesita HTTPS para Bluetooth y PWA (documentado, sin incluir proxy).
 - **Limpieza · `demo3d.png`** se había subido por error (captura por defecto de un script de prueba): borrada, el script guarda en la carpeta temporal y `.gitignore` ignora `/*.png`.
 - **Usuario · Pantalla completa.** Con la API Fullscreen sobre toda la capa de la sesión (no solo el lienzo 3D), para que el HUD, el perfil y los botones sigan a mano; botón y tecla F en la ruta y en el reproductor; al cerrar la sesión se sale sola.
+
+## 2026-11-27 — Tareas apuntadas, no hechas
+
+- **Usuario · Los cambios los hace su propio agente.** Claude solo apunta las tareas (`pendientes/PENDIENTES.md`, T0–T6) y no toca el código. Un primer intento del cambio de zonas se deshizo sin subirlo.
+- **Usuario · Zonas de pulso Z1…Z6** en lugar de L1, L2, L3, UA, UA+ y VO2. Pendiente de hacer (T1), con migración Dexie v6 y aceptando los nombres viejos al importar.
+- **Usuario · Quiere poder hacer el repo privado sin GitHub Pro.** Opción recomendada: Docker en local (`localhost:8080`); Pages solo publica repos públicos en el plan gratuito. Pendiente (T3); la visibilidad la cambia él.
+- **Técnica · Licencia de la imagen de satélite (Fase 10):** Sentinel-2 cloudless de EOX es CC BY-NC-SA, no comercial. Vale para uso personal; si la app se vendiera, habría que cambiar de fuente.

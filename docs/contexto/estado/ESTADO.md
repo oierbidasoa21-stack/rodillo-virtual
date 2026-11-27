@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-25._
+_Última actualización: 2026-11-27._
 
 **Forma de trabajar:** en automático, sin pedir aprobación (plan en `fases/`, commits, push y fast-forward a `main`). **Solo ordenador**: no hay móvil.
 
@@ -52,3 +52,5 @@ _2026-11-26 (3): público animando en los bordes, quitamiedos, rodadas, arcén d
 _2026-11-26 (4): mejoras de entrenamiento: forma y fatiga en Historial, fantasma en las rutas, avisos de voz y plan del entrenador (informe y plan semanal con el agente del usuario). Ver `fases/mejoras-entrenamiento.md` y `docs/agente-entrenador.md`._
 
 _2026-11-27: imagen Docker (`Dockerfile`, `compose.yaml`, `docker/nginx.conf`) y `docs/ESTRUCTURA.md` con qué es cada carpeta y archivo._
+
+_2026-11-27 (2): el usuario pide **apuntar, no hacer**, una lista de tareas para su agente de cambios: fusionar el PR #31 (plan de los niveles de realismo, fases 10–12), zonas Z1…Z6, seguimiento al día, modo local con repo privado, Docker de producción, Fase 8 y AWS. Ver `pendientes/PENDIENTES.md` (T0–T6) y `estudios/2026-11-27-rodillo-inteligente-produccion-aws.md`._

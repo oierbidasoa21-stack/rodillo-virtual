@@ -14,6 +14,7 @@ Esta carpeta guarda **todo el contexto de Rodillo Virtual** para que no se pierd
 | [`arquitectura/`](arquitectura/ARQUITECTURA.md) | Módulos, modelo de datos, versiones de la base de datos, formatos de archivo.                    |
 | [`pruebas/`](pruebas/PRUEBAS.md)                | Cómo se prueba (tests, navegador headless, sensores simulados) y los scripts de prueba.          |
 | [`pendientes/`](pendientes/PENDIENTES.md)       | Lo que falta: pruebas con hardware, limitaciones conocidas, ideas y mejoras pedidas.             |
+| [`estudios/`](estudios/)                        | Respuestas largas a preguntas del usuario (opciones, costes, riesgos), sin código.               |
 | [`registro/`](registro/CAMBIOS.md)              | Todos los commits, agrupados por fase.                                                           |
 | [`entorno/`](entorno/ENTORNO.md)                | Repositorio, despliegue, herramientas y problemas del entorno ya resueltos.                      |
 | [`sesiones/`](sesiones/)                        | Resumen de cada sesión de trabajo: qué se pidió y qué se hizo.                                   |
