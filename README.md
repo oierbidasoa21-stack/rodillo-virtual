@@ -1,5 +1,12 @@
 # Rodillo Virtual
 
+[![CI](https://github.com/oierbidasoa21-stack/rodillo-virtual/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/oierbidasoa21-stack/rodillo-virtual/actions/workflows/ci.yml)
+[![Deploy](https://github.com/oierbidasoa21-stack/rodillo-virtual/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/oierbidasoa21-stack/rodillo-virtual/actions/workflows/deploy.yml)
+[![CodeQL](https://github.com/oierbidasoa21-stack/rodillo-virtual/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/oierbidasoa21-stack/rodillo-virtual/actions/workflows/codeql.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/oierbidasoa21-stack/rodillo-virtual/badge)](https://scorecard.dev/viewer/?uri=github.com/oierbidasoa21-stack/rodillo-virtual)
+[![Versión](https://img.shields.io/github/package-json/v/oierbidasoa21-stack/rodillo-virtual?label=versi%C3%B3n)](https://github.com/oierbidasoa21-stack/rodillo-virtual/blob/main/CHANGELOG.md)
+[![Licencia: todos los derechos reservados](https://img.shields.io/badge/licencia-todos%20los%20derechos%20reservados-lightgrey)](LICENSE)
+
 Aplicación web para entrenar en rodillo, de uso personal: sesiones estructuradas por zonas de pulso o por potencia, métricas en directo, rutas con pendiente en un mundo 3D, grabación e historial.
 
 Todo corre en el navegador y **los datos se quedan en tu ordenador**. No hay servidor ni cuentas.
@@ -60,4 +67,10 @@ Sesiones, historial, rutas y ajustes se guardan solo en el navegador (IndexedDB)
 - [`docs/agente-entrenador.md`](docs/agente-entrenador.md): cómo usar la app con un agente entrenador.
 - [`CLAUDE.md`](CLAUDE.md): arquitectura, stack y convenciones.
 
+Para colaborar: [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md), [`SECURITY.md`](SECURITY.md) y [`SUPPORT.md`](SUPPORT.md). Cambios por versión: [`CHANGELOG.md`](CHANGELOG.md).
+
 Cada push y cada PR pasan lint, tests y build en GitHub Actions (`CI`); los push a `main` publican la app en GitHub Pages (`Deploy`).
+
+## Licencia
+
+Todos los derechos reservados: el código se puede ver, pero no reutilizar sin permiso. Ver [`LICENSE`](LICENSE).
