@@ -64,6 +64,8 @@ Pedido por el usuario: las zonas pasan de `L1, L2, L3, UA, UA+, VO2` a `Z1, Z2, 
 
 ### T2 · Documentos de seguimiento al día
 
+**Estado (2026-11-28): hecha en un PR abierto para revisión** (ver `fases/fase-9-mantenimiento.md`): `ROADMAP` con las mejoras fuera de fase, las fases 13, 14, 15a y 15b, las tareas sueltas y lo que está en espera; reparto de trabajo en `CLAUDE.md`; sesión del 2026-11-26 separada; registro completo. Los milestones e issues de las fases nuevas los crea Claude en la nube (T10).
+
 - [ ] `docs/ROADMAP.md`: añadir una sección **«Mejoras fuera de fase (2026-11-26/27)»** con lo hecho tras la Fase 7, que hoy solo está en `estado/` y `decisiones/`:
   - realismo 3D en tres rondas: (1) sombras, texturas, cielo, marcas viales y balizas; (2) horizonte con montañas, vegetación, ciclista detallado y cámara; (3) público, quitamiedos, rodadas, arcén de grava y hora del día;
   - forma y fatiga, fantasma, avisos de voz y plan del entrenador;
@@ -430,10 +432,16 @@ Lo hará Claude en la nube (los issues son suyos según el reparto). El agente d
 
 ## Fases por hacer
 
-Ver el detalle en [`fases/`](../fases/) y en `docs/ROADMAP.md`. Cada tarea es un issue en su milestone de GitHub. Las fases 0–7 están hechas.
+Ver el detalle en [`fases/`](../fases/) y en `docs/ROADMAP.md`, que ya recoge todas (T2). Las fases 0–7 y las mejoras fuera de fase están hechas. En el orden de ejecución:
 
-- **Fases 10–12 · Paisaje real** (niveles 1, 2 y 3): planificadas en el PR #31, sin fusionar (ver T0).
-- **Fase 8 · Rodillo inteligente (opcional)**: FTMS, modo ERG, modo simulación. Solo si se compra uno.
+- **Fase 9 · Mantenimiento** (en curso): T1 y T12 hechas; T2 en revisión; queda T11 (README y manual).
+- **Fase 13 · GitHub profesional** (T7) y **Fase 14 · Docker de producción y seguridad** (T4).
+- **Fase 15a · Mejoras aceptadas**, antes del paisaje real (incluye T16, T17 y T18).
+- **Fases 10–12 · Paisaje real** (niveles 1, 2 y 3; plan fusionado en el PR #31), con **T14** (ruta en un mapa) justo después de la 10.
+- **Fase 15b** (FIT, zonas desde un test y T20), **T13** (ciclista realista) y **T19** (seguridad complementaria) al final.
+- **Fase 8 · Rodillo inteligente**: cuando se compre uno con FTMS.
+
+Milestones e issues: existen los de las fases 8 y 10–12; los de 9, 13, 14 y 15 los crea Claude en la nube (T10).
 
 ## Pruebas con hardware real (milestone propio)
 

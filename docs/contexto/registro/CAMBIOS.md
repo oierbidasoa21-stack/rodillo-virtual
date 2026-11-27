@@ -139,7 +139,10 @@ Ramas: feat/world-realism, feat/world-spectators, feat/fitness, feat/coach-plan
 - `fdb32bd` · 2026-11-26 · feat(ride): race a ghost of your fastest earlier ride on the route
 - `31f8f15` · 2026-11-26 · feat(plan): bridge with the coaching agent: training report out, weekly plan in
 - `37a6215` · 2026-11-27 · chore(docker): self-hostable image and a guide to every folder and file
-- _(y la pantalla completa, el plan de las fases 10–12 en #31 y el roadmap de la Fase 9 en #32)_
+- `e3f81ec` · 2026-11-27 · feat(ui): full screen for rides and workouts (button or F key)
+- `7d4c444` · 2026-11-27 · docs: plan phases 10–12 (real landscape from the GPX) — [PR #31](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/31)
+- `6a48260` · 2026-11-27 · docs(roadmap): current phase 9 and the execution order — [PR #32](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/32)
+- `74ebba5` · 2026-11-27 · docs(roadmap): full execution order with tasks T14, T13 and T19, and T12 in phase 9 — PR #32
 
 ## Fase 9 — Mantenimiento
 
@@ -150,8 +153,42 @@ Ramas: feat/world-realism, feat/world-spectators, feat/fitness, feat/coach-plan
 - `cb0799c` · 2026-11-27 · docs: zones Z1…Z6 in CLAUDE.md, the structure guide, the agent guide and Dexie v6
 - `5e00464` · 2026-11-27 · style: format the docs touched by the zone rename
 
-### T12 · Curvas suaves · rama `fix/smooth-curves`, [PR #35](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/35) (en revisión)
+### T12 · Curvas suaves · rama `fix/smooth-curves`, [PR #35](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/35) (fusionado el 2026-11-28)
 
 - `7583d2a` · 2026-11-27 · fix(world): smooth curves: spline path every metre, heading from the tangent, gentler camera
 - `8be9924` · 2026-11-27 · docs: phase 9 plan, T12 done and in review
 - `856ae4b` · 2026-11-27 · fix(world): no stack overflow on long routes; close loops explicitly
+
+### T2 · Seguimiento al día · rama `docs/tracking-up-to-date`
+
+- _(commits de esta tarea al fusionar su PR)_
+
+## Documentación de contexto (`docs/contexto/`) desde `3250f48`
+
+Commits de Claude en la nube (tareas, decisiones, estudios y página de seguimiento) y del agente de VS Code (estado y registro), que no estaban en ninguna fase:
+
+- `fd5fa65` · 2026-11-27 · docs(contexto): note tasks T0–T6 and answers of 2026-11-27
+- `176a5ec` · 2026-11-27 · docs(contexto): note roadmap proposal, GitHub, database and DIY trainer
+- `0eb5b21` · 2026-11-27 · docs(contexto): Supabase without own backend, trainer to buy, private repo
+- `df693d4` · 2026-11-27 · docs(contexto): propose execution order 9, 13, 14, 15a, then 10–12
+- `4f10fa8` · 2026-11-27 · docs(contexto): confirm execution order, Supabase for Strava, buy a trainer
+- `94ab5f7` · 2026-11-27 · docs(contexto): note what sharing the project means for Strava uploads
+- `ad32059` · 2026-11-27 · docs(contexto): Strava flow for a single user and FIT for the coach
+- `fc11f55` · 2026-11-27 · docs(contexto): Strava upload happens automatically on save
+- `28e2ade` · 2026-11-27 · docs(contexto): note how the Strava API app is created and where the secret goes
+- `0972364` · 2026-11-27 · docs(contexto): correct Strava API, now only for subscribers
+- `def98fa` · 2026-11-27 · docs(contexto): note why going through iGPSPORT does not help with Strava
+- `26591e8` · 2026-11-27 · docs(contexto): Strava via file download on save and manual upload (option b)
+- `1dcf14f` · 2026-11-27 · docs(contexto): note README rewrite and a user manual for the whole app (T11)
+- `ce4b946` · 2026-11-27 · docs(contexto): note tasks T12–T20 and the user's notes of 2026-11-28
+- `d801afd` · 2026-11-27 · docs(contexto): place tasks T12–T20 in the execution order
+- `872aa72` · 2026-11-27 · docs(contexto): add the tracking page source and link it
+- `07792f8` · 2026-11-27 · docs(contexto): context bombs, curves first and data in Supabase
+- `1876f6c` · 2026-11-27 · style(contexto): format the tracking page
+- `c44b779` · 2026-11-27 · docs(contexto): T0 done, phase 9 current, T1 in review in PR #33
+- `4a3ea52` · 2026-11-27 · docs(contexto): review of PR #33 and a clearer work split
+- `e25ad76` · 2026-11-27 · docs(contexto): coach instructions at the end; make the ghost easier to see
+- `e7f9270` · 2026-11-27 · docs(contexto): PR #35 for T12 in the log, phase plan and task status
+- `4256c85` · 2026-11-27 · docs(contexto): tracking page with T1 done and T12 in review
+- `b631779` · 2026-11-27 · docs(contexto): T12 review fixes in the phase plan, log and session
+- `61fa23b` · 2026-11-27 · docs(contexto): T12 approved on the tracking page
