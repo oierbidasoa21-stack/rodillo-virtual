@@ -8,34 +8,41 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 
 ## Raíz
 
-| Archivo                                                    | Para qué sirve                                                                                               |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `README.md`                                                | Qué es la app, cómo se usa y cómo se arranca.                                                                |
-| `CLAUDE.md`                                                | Reglas del proyecto para Claude Code (stack, arquitectura, convenciones, forma de trabajar).                 |
-| `package.json` / `package-lock.json`                       | Dependencias y scripts (`dev`, `build`, `test`, `lint`). El lock fija las versiones exactas.                 |
-| `index.html`                                               | Página de entrada que carga `src/main.tsx`.                                                                  |
-| `vite.config.ts`                                           | Configuración de Vite: ruta base (`/rodillo-virtual/` en GitHub Pages, `/` en Docker), PWA y tests.          |
-| `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json` | TypeScript en modo estricto: para la app y para los archivos de configuración que corren en Node.            |
-| `eslint.config.js`                                         | Reglas de ESLint, incluidas las de React Hooks.                                                              |
-| `.prettierrc.json`, `.prettierignore`                      | Formato del código con Prettier y qué archivos no se formatean.                                              |
-| `.nvmrc`                                                   | Versión de Node (24) que usan CI y Docker.                                                                   |
-| `.gitignore`, `.gitattributes`                             | Qué no se sube a git (dependencias, builds, datos personales, capturas de prueba) y finales de línea.        |
-| `Dockerfile`                                               | Imagen Docker: compila la app con Node y la sirve con nginx.                                                 |
-| `compose.yaml`                                             | `docker compose up -d` y la app queda en http://localhost:8080.                                              |
-| `.dockerignore`                                            | Qué no entra en la imagen: dependencias, `data/`, `config/*.local.json` (datos personales), `.git`, `docs/`. |
+| Archivo                                                       | Para qué sirve                                                                                               |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `README.md`                                                   | Qué es la app, cómo se usa y cómo se arranca.                                                                |
+| `CLAUDE.md`                                                   | Reglas del proyecto para Claude Code (stack, arquitectura, convenciones, forma de trabajar).                 |
+| `package.json` / `package-lock.json`                          | Dependencias y scripts (`dev`, `build`, `test`, `lint`). El lock fija las versiones exactas.                 |
+| `index.html`                                                  | Página de entrada que carga `src/main.tsx`.                                                                  |
+| `vite.config.ts`                                              | Configuración de Vite: ruta base (`/rodillo-virtual/` en GitHub Pages, `/` en Docker), PWA y tests.          |
+| `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`    | TypeScript en modo estricto: para la app y para los archivos de configuración que corren en Node.            |
+| `eslint.config.js`                                            | Reglas de ESLint, incluidas las de React Hooks.                                                              |
+| `.prettierrc.json`, `.prettierignore`                         | Formato del código con Prettier y qué archivos no se formatean.                                              |
+| `.nvmrc`                                                      | Versión de Node (24) que usan CI y Docker.                                                                   |
+| `.gitignore`, `.gitattributes`                                | Qué no se sube a git (dependencias, builds, datos personales, capturas de prueba) y finales de línea.        |
+| `Dockerfile`                                                  | Imagen Docker: compila la app con Node y la sirve con nginx.                                                 |
+| `compose.yaml`                                                | `docker compose up -d` y la app queda en http://localhost:8080.                                              |
+| `.dockerignore`                                               | Qué no entra en la imagen: dependencias, `data/`, `config/*.local.json` (datos personales), `.git`, `docs/`. |
+| `LICENSE`                                                     | Todos los derechos reservados: el código se puede ver, pero no reutilizar sin permiso.                       |
+| `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`                       | Cómo proponer cambios y normas de trato.                                                                     |
+| `SECURITY.md`, `SUPPORT.md`                                   | Cómo avisar de un fallo de seguridad en privado y dónde pedir ayuda.                                         |
+| `CHANGELOG.md`                                                | Cambios por versión; lo mantiene release-please.                                                             |
+| `commitlint.config.js`                                        | Reglas de Conventional Commits que CI comprueba en cada PR.                                                  |
+| `release-please-config.json`, `.release-please-manifest.json` | Configuración de release-please y última versión publicada.                                                  |
 
 ## Carpetas de primer nivel
 
-| Carpeta                  | Para qué sirve                                                                                                                    |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| `.github/workflows/`     | `ci.yml`: lint, tests, build y construcción de la imagen Docker en cada push. `deploy.yml`: publica en GitHub Pages desde `main`. |
-| `config/`                | `athlete.example.json`: atleta de ejemplo (peso, bici, zonas de pulso). El tuyo va en `athlete.local.json`, que no se sube.       |
-| `docker/`                | `nginx.conf`: servidor de la imagen (caché larga de los assets, sin caché del service worker, rutas a `index.html`).              |
-| `public/icons/`          | Iconos de la app y de la PWA (192, 512, maskable, Apple y SVG).                                                                   |
-| `docs/`                  | Documentación (ver abajo).                                                                                                        |
-| `src/`                   | Código de la app (ver abajo).                                                                                                     |
-| `data/`                  | _(No se sube.)_ Tus exportaciones y archivos `.tcx`, `.fit` y `.gpx` personales.                                                  |
-| `node_modules/`, `dist/` | _(No se suben.)_ Dependencias instaladas y build de producción.                                                                   |
+| Carpeta                  | Para qué sirve                                                                                                                                                                                                                                                                            |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.github/workflows/`     | `ci.yml`: lint, tests, build e imagen Docker. `deploy.yml`: publica en GitHub Pages desde `main`. `commitlint.yml`, `codeql.yml`, `scorecard.yml`, `release-please.yml`, `labels.yml` y `milestones.yml`: Conventional Commits, análisis de seguridad, versiones, etiquetas y milestones. |
+| `.github/`               | Plantillas de issue y de PR, `CODEOWNERS`, `dependabot.yml`, `labels.json`, `milestones.json` e imagen para compartir el repo.                                                                                                                                                            |
+| `config/`                | `athlete.example.json`: atleta de ejemplo (peso, bici, zonas de pulso). El tuyo va en `athlete.local.json`, que no se sube.                                                                                                                                                               |
+| `docker/`                | `nginx.conf`: servidor de la imagen (caché larga de los assets, sin caché del service worker, rutas a `index.html`).                                                                                                                                                                      |
+| `public/icons/`          | Iconos de la app y de la PWA (192, 512, maskable, Apple y SVG).                                                                                                                                                                                                                           |
+| `docs/`                  | Documentación (ver abajo).                                                                                                                                                                                                                                                                |
+| `src/`                   | Código de la app (ver abajo).                                                                                                                                                                                                                                                             |
+| `data/`                  | _(No se sube.)_ Tus exportaciones y archivos `.tcx`, `.fit` y `.gpx` personales.                                                                                                                                                                                                          |
+| `node_modules/`, `dist/` | _(No se suben.)_ Dependencias instaladas y build de producción.                                                                                                                                                                                                                           |
 
 ## `docs/`
 

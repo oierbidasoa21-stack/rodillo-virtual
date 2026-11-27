@@ -2,29 +2,30 @@
 
 _Última actualización: 2026-11-28._
 
-**Forma de trabajar:** en automático, sin pedir aprobación (plan en `fases/`, commits, push y fast-forward a `main`). **Solo ordenador**: no hay móvil.
+**Forma de trabajar:** en automático, sin pedir aprobación. El coordinador (Claude en la nube) reparte las tareas al agente de cambios, que trabaja con una rama y un PR por issue; el coordinador revisa y fusiona con _squash_. Desde la Fase 13 nadie sube directo a `main`. **Solo ordenador**: no hay móvil.
 
 ## En una frase
 
-Las **fases 0 a 7 están hechas y publicadas** en https://oierbidasoa21-stack.github.io/rodillo-virtual/, más las mejoras de después (realismo 3D, forma y fatiga, fantasma, voz, plan del entrenador, Docker y pantalla completa). **La Fase 9 (mantenimiento) está cerrada; fase actual: 13 (GitHub profesional).** Orden de ejecución: 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → Datos en Supabase → T13 → T19; la 8 queda en espera hasta que llegue el rodillo FTMS que el usuario va a comprar. El repo se queda público (T3 descartada) y la licencia es «todos los derechos reservados» (decisiones del 2026-11-28). Las fases 3 a 7 están comprobadas con **sensores simulados**; falta probarlas con hardware real.
+Las **fases 0 a 7 están hechas y publicadas** en https://oierbidasoa21-stack.github.io/rodillo-virtual/, más las mejoras de después (realismo 3D, forma y fatiga, fantasma, voz, plan del entrenador, Docker y pantalla completa). **Las fases 9 (mantenimiento) y 13 (GitHub profesional) están cerradas; fase actual: 14 (Docker de producción y seguridad).** Orden de ejecución: 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → Datos en Supabase → T13 → T19; la 8 queda en espera hasta que llegue el rodillo FTMS que el usuario va a comprar. El repo se queda público (T3 descartada) y la licencia es «todos los derechos reservados» (decisiones del 2026-11-28). Las fases 3 a 7 están comprobadas con **sensores simulados**; falta probarlas con hardware real.
 
 ## Fases
 
-| Fase            | Qué trae                                                                                                             | Estado                                                    |
-| --------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| 0               | Base: Vite + React + TS, lint, tests, CI y despliegue en GitHub Pages                                                | ✅ Hecha                                                  |
-| 1               | Port de la v1: zonas por pulso, biblioteca, editor, player con voz y pitidos, contador de 10″, resumen, historial    | ✅ Hecha                                                  |
-| 2               | PWA: instalable y sin conexión, aviso de actualización, almacenamiento persistente                                   | ✅ Hecha · falta tu prueba de instalación en el ordenador |
-| 3               | Sensores Bluetooth: pulsómetro y velocidad/cadencia, sensores simulados, reconexión                                  | ✅ Hecha con simulados · falta prueba con hardware        |
-| 4               | Potencia estimada (curvas de rodillo), ramp test con FTP, NP/IF/TSS/kJ, bloques por potencia, copia de seguridad     | ✅ Hecha con simulados · falta prueba con rodillo real    |
-| 5               | Rutas 2D: GPX, 3 rutas inventadas, vista de carrera, perfil, minimapa, modo potencia y modo rueda, sesión sobre ruta | ✅ Hecha con simulados · falta prueba con hardware        |
-| 6               | Grabación a 1 Hz, recuperar sesión, exportar TCX, detalle con gráficas, `.zwo`                                       | ✅ Hecha con simulados · falta subir un TCX real          |
-| 7               | Mundo 3D (Three.js): carretera desde la altimetría, ciclista, escenario, HUD                                         | ✅ Hecha · falta verla en tu portátil                     |
-| 8               | Rodillo inteligente FTMS: lectura, ERG y simulación                                                                  | ⏳ En espera: el usuario comprará uno                     |
-| 9               | Mantenimiento: zonas Z1…Z6, curvas suaves, seguimiento al día, README y manual                                       | ✅ Cerrada (2026-11-28)                                   |
-| ~~9 (antigua)~~ | ~~Pruebas en móvil~~                                                                                                 | ❌ Descartada (solo ordenador)                            |
+| Fase            | Qué trae                                                                                                             | Estado                                                                        |
+| --------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 0               | Base: Vite + React + TS, lint, tests, CI y despliegue en GitHub Pages                                                | ✅ Hecha                                                                      |
+| 1               | Port de la v1: zonas por pulso, biblioteca, editor, player con voz y pitidos, contador de 10″, resumen, historial    | ✅ Hecha                                                                      |
+| 2               | PWA: instalable y sin conexión, aviso de actualización, almacenamiento persistente                                   | ✅ Hecha · falta tu prueba de instalación en el ordenador                     |
+| 3               | Sensores Bluetooth: pulsómetro y velocidad/cadencia, sensores simulados, reconexión                                  | ✅ Hecha con simulados · falta prueba con hardware                            |
+| 4               | Potencia estimada (curvas de rodillo), ramp test con FTP, NP/IF/TSS/kJ, bloques por potencia, copia de seguridad     | ✅ Hecha con simulados · falta prueba con rodillo real                        |
+| 5               | Rutas 2D: GPX, 3 rutas inventadas, vista de carrera, perfil, minimapa, modo potencia y modo rueda, sesión sobre ruta | ✅ Hecha con simulados · falta prueba con hardware                            |
+| 6               | Grabación a 1 Hz, recuperar sesión, exportar TCX, detalle con gráficas, `.zwo`                                       | ✅ Hecha con simulados · falta subir un TCX real                              |
+| 7               | Mundo 3D (Three.js): carretera desde la altimetría, ciclista, escenario, HUD                                         | ✅ Hecha · falta verla en tu portátil                                         |
+| 8               | Rodillo inteligente FTMS: lectura, ERG y simulación                                                                  | ⏳ En espera: el usuario comprará uno                                         |
+| 9               | Mantenimiento: zonas Z1…Z6, curvas suaves, seguimiento al día, README y manual                                       | ✅ Cerrada (2026-11-28)                                                       |
+| 13              | GitHub profesional: archivos estándar, plantillas, milestones, CodeQL y Scorecard, commitlint, release-please        | ✅ Cerrada (2026-11-28) · ajustes de GitHub del usuario tras la Fase 12 (#82) |
+| ~~9 (antigua)~~ | ~~Pruebas en móvil~~                                                                                                 | ❌ Descartada (solo ordenador)                                                |
 
-GitHub tiene un **milestone por fase** (0–7 cerrados, 8 abierto, 9 cerrado por descartado) y otro, **«Pruebas con hardware real»**, con las pruebas que faltan. Las tareas pendientes están como **issues** dentro de su milestone.
+GitHub tiene un **milestone por fase** y otro, **«Pruebas con hardware real»**, con las pruebas que faltan. Los milestones de las fases 9, 13, 14, 15a, 15b, Datos en Supabase y Tareas sueltas los crea el workflow `Milestones`, que coloca cada issue según su etiqueta `fase-*`. Las tareas pendientes están como **issues** dentro de su milestone.
 
 ## Qué funciona hoy (resumen)
 
@@ -67,3 +68,5 @@ _2026-11-28 (3): PR #35 (T12, curvas suaves) revisado dos veces y fusionado; Dep
 _2026-11-28 (4): el agente de cambios pasa a ser una sesión en la nube lanzada y coordinada por Claude en la nube (regla 9 de `CLAUDE.md`); el usuario solo revisa. **T11 (README y manual) en el [PR #67](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/67), abierto para revisión**: `README.md` corto y [`docs/MANUAL.md`](../../MANUAL.md) con 12 apartados y capturas. Con T11 fusionada, la Fase 9 queda completa y la siguiente es la 13 (GitHub profesional)._
 
 _2026-11-28 (5): PR #67 (T11) revisado por el coordinador. Con él se cierran T11 (issue #37) y la **Fase 9**; no hay milestone que cerrar, porque desde la nube no se crean (lo hará el workflow del issue #43 en la Fase 13). Las tareas pendientes del `ROADMAP` ya tienen issues con etiqueta de fase (#38–#66). **Siguiente: Fase 13 (GitHub profesional).**_
+
+_2026-11-28 (6): **Fase 13 (GitHub profesional) cerrada**, en 7 PR (#68–#71, #79–#81) más este de cierre: archivos estándar con licencia «todos los derechos reservados», plantillas de issue y PR, Dependabot, etiquetas, milestones automáticos, CodeQL, Scorecard, commitlint, release-please (desde la 0.9.0) e insignias. Todo entra en `main` por PR con *squash*. **Pendiente del usuario tras la Fase 12:** los ajustes de GitHub de `pendientes/pasos-usuario-fase-13.md` (issue #82). Siguiente: actualizaciones mayores de Dependabot (#72–#78) y la **Fase 14**._

@@ -5,7 +5,7 @@ Marca `[x]` al completar cada tarea.
 
 Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. La app es solo para ordenador: no hay fase de móvil.
 
-**Fase actual: 13 (GitHub profesional).** La Fase 9 está cerrada (2026-11-28).
+**Fase actual: 14 (Docker de producción y seguridad).** Las fases 9 y 13 están cerradas (2026-11-28); de la 13 quedan los ajustes de GitHub que hace el usuario después de la Fase 12 (issue #82).
 
 **Orden de ejecución:** 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → Datos en Supabase → T13 → T19. Los números no cambian; la 8 entra cuando llegue el rodillo inteligente. Las tareas Tn y el porqué del orden están en `docs/contexto/pendientes/PENDIENTES.md` (T2).
 
@@ -174,18 +174,18 @@ Solo si creo una clave de Google Maps Platform.
 
 - [ ] Clave en Ajustes (solo en el navegador) y Photorealistic 3D Tiles en lugar del terreno propio
 
-## Fase 13 — GitHub profesional
+## Fase 13 — GitHub profesional ✅ cerrada (2026-11-28)
 
-Issues #38–#45 (etiqueta `fase-13`). Tarea T7 de `docs/contexto/pendientes/PENDIENTES.md`. El repo se queda **público** (decidido el 2026-11-28), así que las reglas de rama son gratis.
+Issues #38–#45 (etiqueta `fase-13`). Tarea T7 de `docs/contexto/pendientes/PENDIENTES.md`. El repo se queda **público** (decidido el 2026-11-28), así que las reglas de rama son gratis. Lo que es un ajuste de GitHub (descripción y temas, reglas de `main`, tablero, seguridad del repo) lo hace el usuario **después de la Fase 12**: pasos en `docs/contexto/pendientes/pasos-usuario-fase-13.md`, seguimiento en #82.
 
-- [ ] Presentación: descripción, temas, web e imagen para compartir; `README` con insignias, capturas y arranque rápido
-- [ ] Archivos estándar: `LICENSE` con «todos los derechos reservados» (sin licencia libre, decidido el 2026-11-28), `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md` y `CHANGELOG.md`
-- [ ] `.github/`: plantillas de issue en formulario y de PR, `CODEOWNERS`, `dependabot.yml` y etiquetas `tipo:`, `área:` y `prioridad:`
-- [ ] Reglas de `main`: solo por PR con CI obligatorio, historial lineal sin `--force`, fusión _squash_ y borrado automático de ramas
-- [ ] Commitlint en CI, release-please (versiones, etiquetas y `CHANGELOG`) e imagen en GHCR por versión
-- [ ] Tablero de GitHub Projects junto a los milestones
-- [ ] Seguridad del repo: escaneo de secretos con bloqueo, alertas de Dependabot y CodeQL, informe privado de vulnerabilidades y OpenSSF Scorecard
-- [ ] Opcional: organización gratuita con el nombre de la «empresa» y transferir el repo
+- [x] Presentación: `README` con insignias, capturas y arranque rápido, e imagen para compartir (#80). Descripción, temas y subir la imagen: el usuario (#82)
+- [x] Archivos estándar: `LICENSE` con «todos los derechos reservados» (sin licencia libre, decidido el 2026-11-28), `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md` y `CHANGELOG.md`
+- [x] `.github/`: plantillas de issue en formulario y de PR, `CODEOWNERS`, `dependabot.yml` y etiquetas `tipo:`, `área:` y `prioridad:`
+- [x] Reglas de `main` en `CLAUDE.md` (#81): solo por PR con CI obligatorio, historial lineal sin `--force`, fusión _squash_ y borrado automático de ramas. El _ruleset_ lo activa el usuario (#82)
+- [x] Commitlint en CI y release-please (versiones, etiquetas y `CHANGELOG`) (#79). La imagen en GHCR por versión pasa a la Fase 14 (#52)
+- [x] Milestones por fase con un workflow (#70). El tablero de GitHub Projects lo crea el usuario (#82)
+- [x] Seguridad del repo: CodeQL y OpenSSF Scorecard (#71). Escaneo de secretos con bloqueo, alertas de Dependabot e informe privado: el usuario (#82)
+- [ ] Opcional, no pedido: organización gratuita con el nombre de la «empresa» y transferir el repo
 
 ## Fase 14 — Docker de producción y seguridad
 
