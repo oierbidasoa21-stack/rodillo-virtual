@@ -1,6 +1,6 @@
 # Estado del proyecto
 
-_Última actualización: 2026-11-27._
+_Última actualización: 2026-11-28._
 
 **Forma de trabajar:** en automático, sin pedir aprobación (plan en `fases/`, commits, push y fast-forward a `main`). **Solo ordenador**: no hay móvil.
 
@@ -62,3 +62,5 @@ _2026-11-28: el agente de VS Code fusiona el PR #31 (plan de las fases 10–12) 
 _2026-11-28 (2): PR #33 (T1, zonas Z1…Z6) revisado por Claude en la nube y fusionado. **T12 (curvas suaves) hecha en el [PR #35](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/35), abierto para revisión.** Plan y estado de la Fase 9 en `fases/fase-9-mantenimiento.md`. 328 tests._
 
 _2026-11-28 (3): PR #35 (T12, curvas suaves) revisado dos veces y fusionado; Deploy en verde y demo comprobada en la web publicada. **T2 (seguimiento al día) en el [PR #36](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/36), abierto para revisión**: el `ROADMAP` ya recoge todas las fases y tareas apuntadas (13, 14, 15a, 15b, T14, T13, T19 y lo que está en espera). Queda T11 para cerrar la Fase 9._
+
+_2026-11-28 (4): el agente de cambios pasa a ser una sesión en la nube lanzada y coordinada por Claude en la nube (regla 9 de `CLAUDE.md`); el usuario solo revisa. **T11 (README y manual) en el [PR #67](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/67), abierto para revisión**: `README.md` corto y [`docs/MANUAL.md`](../../MANUAL.md) con 12 apartados y capturas. Con T11 fusionada, la Fase 9 queda completa y la siguiente es la 13 (GitHub profesional)._

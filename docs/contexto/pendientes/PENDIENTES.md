@@ -283,6 +283,8 @@ El usuario quiere saber si le sale más barato montar uno con piezas y el softwa
 
 ### T11 · README y manual de uso de toda la app
 
+**Estado (2026-11-28): hecha en el [PR #67](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/67), abierto para revisión.** `README.md` corto, `docs/MANUAL.md` con los 12 apartados y 14 capturas en `docs/manual/`, y la regla 10 de `CLAUDE.md` (manual al día). Ver `fases/fase-9-mantenimiento.md`.
+
 Pedido el 2026-11-27: que el agente de VS Code actualice la documentación para que explique bien cómo funciona **toda** la app. Hoy el `README.md` (136 líneas) mezcla presentación, comandos y funciones; `docs/ESTRUCTURA.md` explica el código, no el uso.
 
 **Reparto de archivos:**

@@ -163,6 +163,13 @@ Ramas: feat/world-realism, feat/world-spectators, feat/fitness, feat/coach-plan
 
 - _(commits de esta tarea al fusionar su PR)_
 
+### T11 · README y manual · rama `docs/t11-manual`, [PR #67](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/67) (en revisión)
+
+- `ad29688` · 2026-11-27 · docs(manual): add desktop screenshots and the script that takes them
+- `650611b` · 2026-11-27 · docs(manual): user manual for the whole app
+- `33f3718` · 2026-11-27 · docs(readme): short front page that links to the manual
+- `1cc33bd` · 2026-11-27 · docs(claude): cloud change agent in the work split; keep the manual up to date
+
 ## Documentación de contexto (`docs/contexto/`) desde `3250f48`
 
 Commits de Claude en la nube (tareas, decisiones, estudios y página de seguimiento) y del agente de VS Code (estado y registro), que no estaban en ninguna fase:
