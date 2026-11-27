@@ -111,10 +111,13 @@ Cada fórmula vive en `domain/` con tests que incluyan al menos un caso calculad
 ## Git y GitHub
 
 - Rama `main` siempre funcional. Trabajo en ramas: `feat/…`, `fix/…`, `chore/…`, `docs/…`.
-- Commits con **Conventional Commits**: `feat(workout): add repeat blocks`, `fix(sensors): handle HR disconnect`.
+- Commits con **Conventional Commits**: `feat(workout): add repeat blocks`, `fix(sensors): handle HR disconnect`. CI lo comprueba en cada PR, también el **título del PR**, que es el asunto del commit en `main` (reglas en `commitlint.config.js`).
 - Commits pequeños, uno por cambio lógico.
-- **Una rama y un PR por tarea.** Los PR de código no se fusionan hasta que los revisa Claude en la nube; los que solo tocan documentación pueden fusionarse con CI en verde. Tras fusionar, vigila **CI** y **Deploy** y, si cambia la app, repite la prueba contra la web publicada. Nunca `--force` sobre `main`.
-- Claude en la nube sube a `main` en pocos commits. Si un merge se rechaza porque `main` cambió mientras tanto, trae `main` a la rama con un merge normal (sin `rebase` forzado) y vuelve a intentarlo.
+- **Todo entra en `main` por PR** (desde la Fase 13, issue #41): nadie sube directo, tampoco Claude en la nube. Una rama y un PR por issue o tarea, con `Closes #n` y la plantilla de PR rellena.
+- `main` tiene un _ruleset_: CI obligatorio (`Lint, test and build`, `Docker image builds`, `Conventional Commits` y `CodeQL`), rama al día con `main`, historial lineal, solo fusión **_squash_**, sin `--force` y sin borrar la rama. Las ramas se borran solas al fusionar.
+- Los PR los revisa y fusiona Claude en la nube; el usuario solo revisa. Tras fusionar, vigila **CI** y **Deploy** y, si cambia la app, repite la prueba contra la web publicada.
+- Si un PR se queda atrás porque `main` cambió, se pone al día con **Update branch** en GitHub o trayendo `main` a la rama con un merge normal, nunca con `--force`.
+- Las versiones las hace **release-please**: cada `feat` o `fix` que llega a `main` actualiza un PR de release con la versión y el `CHANGELOG`; al fusionarlo se crean la etiqueta y la release.
 - Nunca subas datos personales: exportaciones de entrenamientos y archivos `.tcx`/`.fit`/`.gpx` propios van en `data/`, que está en `.gitignore`.
 - Sin secretos en el repo (no hacen falta: no hay backend).
 - El repo es **público** y se queda así (decidido el 2026-11-28; el modo local con repo privado, T3, queda descartado). Licencia: **todos los derechos reservados**, sin licencia libre.
