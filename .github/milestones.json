@@ -1,0 +1,38 @@
+[
+  {
+    "title": "Fase 9 — Mantenimiento",
+    "description": "Zonas Z1…Z6, curvas suaves, seguimiento al día, README y manual. Cerrada el 2026-11-28.",
+    "state": "closed",
+    "issues": [37]
+  },
+  {
+    "title": "Fase 13 — GitHub profesional",
+    "description": "Archivos estándar, plantillas, todo por PR con CI obligatorio, versiones y seguridad del repo (T7).",
+    "label": "fase-13"
+  },
+  {
+    "title": "Fase 14 — Docker de producción y seguridad",
+    "description": "nginx sin root, CSP, imágenes fijadas, escáneres en CI, SBOM, HTTPS y release a GHCR (T4).",
+    "label": "fase-14"
+  },
+  {
+    "title": "Fase 15a — Mejoras aceptadas (antes del paisaje real)",
+    "description": "Calidad gráfica, panel de inicio, Strava sin API, meta, pulso máximo, reconexión y transiciones.",
+    "label": "fase-15a"
+  },
+  {
+    "title": "Fase 15b — Mejoras aceptadas (después del paisaje real)",
+    "description": "Exportar FIT y zonas desde un test con sugerencias (T20).",
+    "label": "fase-15b"
+  },
+  {
+    "title": "Datos en Supabase",
+    "description": "Tablas con RLS en la UE, login con enlace mágico y sincronización con Dexie (T8).",
+    "label": "datos-supabase"
+  },
+  {
+    "title": "Tareas sueltas",
+    "description": "T14 (ruta en un mapa), T13 (ciclista realista) y T19 (seguridad complementaria), en su sitio del orden de ejecución.",
+    "label": "tareas-sueltas"
+  }
+]

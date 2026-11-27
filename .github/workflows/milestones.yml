@@ -1,0 +1,115 @@
+name: Milestones
+
+# Creates the milestones listed in .github/milestones.json and puts each issue
+# in the milestone of its phase label (fase-13, fase-14…). The cloud agents
+# cannot create milestones, so this workflow does it with GITHUB_TOKEN.
+# - On push to main (when the list changes) or by hand: full sync.
+# - When an issue is opened or labelled: only that issue, and only if it has
+#   no milestone yet.
+# It never deletes milestones, never reopens a closed one and never takes an
+# issue out of a milestone it was put in by hand, unless its label says otherwise.
+on:
+  push:
+    branches: [main]
+    paths: ['.github/milestones.json', '.github/workflows/milestones.yml']
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: milestones
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync milestones
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github/milestones.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('node:fs');
+            const wanted = JSON.parse(fs.readFileSync('.github/milestones.json', 'utf8'));
+            const repo = context.repo;
+
+            const all = await github.paginate(github.rest.issues.listMilestones, {
+              ...repo,
+              state: 'all',
+              per_page: 100,
+            });
+            const byTitle = new Map(all.map((m) => [m.title, m]));
+
+            // Find or create each milestone; set its state only when the list asks for it.
+            for (const w of wanted) {
+              let m = byTitle.get(w.title);
+              if (!m) {
+                m = (
+                  await github.rest.issues.createMilestone({
+                    ...repo,
+                    title: w.title,
+                    description: w.description,
+                  })
+                ).data;
+                core.info(`Created milestone "${w.title}" (#${m.number})`);
+                byTitle.set(w.title, m);
+              }
+              w.number = m.number;
+            }
+
+            const place = async (issue, w) => {
+              if (issue.pull_request) return;
+              if (issue.milestone?.number === w.number) return;
+              await github.rest.issues.update({
+                ...repo,
+                issue_number: issue.number,
+                milestone: w.number,
+              });
+              core.info(`#${issue.number} → "${w.title}"`);
+            };
+
+            if (context.eventName === 'issues') {
+              const issue = context.payload.issue;
+              if (issue.milestone) return;
+              const labels = issue.labels.map((l) => l.name);
+              const w = wanted.find(
+                (x) => (x.label && labels.includes(x.label)) || x.issues?.includes(issue.number),
+              );
+              if (w) await place(issue, w);
+              return;
+            }
+
+            for (const w of wanted) {
+              if (w.label) {
+                const issues = await github.paginate(github.rest.issues.listForRepo, {
+                  ...repo,
+                  labels: w.label,
+                  state: 'all',
+                  per_page: 100,
+                });
+                for (const issue of issues) await place(issue, w);
+              }
+              for (const n of w.issues ?? []) {
+                const { data: issue } = await github.rest.issues.get({ ...repo, issue_number: n });
+                await place(issue, w);
+              }
+              // Close after placing the issues, so they land in it.
+              const m = byTitle.get(w.title);
+              if (w.state === 'closed' && m.state !== 'closed') {
+                await github.rest.issues.updateMilestone({
+                  ...repo,
+                  milestone_number: w.number,
+                  state: 'closed',
+                });
+                core.info(`Closed milestone "${w.title}"`);
+              }
+            }
