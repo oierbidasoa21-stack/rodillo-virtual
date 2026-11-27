@@ -253,4 +253,10 @@ A tener en cuenta:
 
 **Decisión (2026-11-27):** subida **automática al guardar** la sesión, con cola y reintento si falla, y desactivable en Ajustes.
 
-**¿Hace falta Strava de pago?** No. Crear la app de la API y subir actividades es gratis con una cuenta normal, y la actividad guarda todos los datos del archivo. Lo que es de pago son algunos análisis de Strava (por ejemplo, ciertos gráficos de zonas o de potencia); la app de aquí no depende de ellos. Comprobar las condiciones actuales de Strava.
+~~**¿Hace falta Strava de pago?** No.~~ **Corrección:** **sí, para la API.** La página de la API de Strava dice ahora que está disponible solo para suscriptores (comprobado por el usuario el 2026-11-27). Lo que sigue siendo gratis es **subir un archivo a mano** desde la web de Strava, y la actividad conserva todos los datos del archivo.
+
+Opciones:
+
+- **(a) Suscripción a Strava:** subida automática al guardar, con Supabase como se describe arriba.
+- **(b) Sin API, gratis:** al guardar, la app descarga el FIT (o TCX) y muestra un botón «Abrir Strava para subir» que lleva a la página de subida manual. Se sube en unos 20 segundos, sin Supabase ni secretos.
+- Para el **entrenador**, el FIT descargado (Fase 15b) sirve igual en los dos casos.

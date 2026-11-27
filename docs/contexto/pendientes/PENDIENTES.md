@@ -184,7 +184,14 @@ Al empezarla, cambiar la regla «sin backend, sin cuentas» de `CLAUDE.md`.
 - interruptor en Ajustes para desactivarla;
 - nunca se suben sesiones simuladas ni sesiones por debajo del mínimo que ya no se guardan (60 s).
 
-No hace falta Strava de pago: la API y la subida son gratis.
+**Corrección (2026-11-27):** **la API de Strava ahora es solo para suscriptores.** El usuario lo comprobó en la página de la API («La API de Strava está disponible para suscriptores»). Claude había dicho que era gratis: era información desfasada. Subir un archivo a mano en la web de Strava sí es gratis.
+
+**Pendiente de que el usuario elija:**
+
+- **(a)** pagar la suscripción y mantener la subida automática con Supabase;
+- **(b) recomendada si no quiere pagar:** sin API. Al guardar, la app descarga el FIT (o TCX) y ofrece un botón **«Abrir Strava para subir»** con la página de subida manual. Son unos 20 segundos, gratis y sin Supabase.
+
+Con (b), Strava deja de necesitar Supabase, y Supabase solo hace falta si se centralizan los datos (resto de T8).
 
 **App de la API de Strava (2026-11-27):** el usuario la crea en `https://www.strava.com/settings/api`, con el dominio de retorno `localhost` mientras no exista la integración.
 
