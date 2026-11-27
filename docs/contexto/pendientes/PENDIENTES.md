@@ -2,9 +2,16 @@
 
 _Última actualización: 2026-11-27._
 
-## Tareas apuntadas el 2026-11-27 (para el agente de cambios)
+## Tareas apuntadas el 2026-11-27 (para el agente de VS Code)
 
-El usuario pide **apuntarlas, no hacerlas**: los cambios los hace su agente. Van en este orden. El porqué y el detalle de las preguntas están en [`../estudios/2026-11-27-rodillo-inteligente-produccion-aws.md`](../estudios/2026-11-27-rodillo-inteligente-produccion-aws.md).
+El usuario pide **apuntarlas, no hacerlas**: los cambios los hace su agente. Van en este orden.
+
+**Reparto del trabajo (decidido el 2026-11-27):**
+
+- El usuario habla **solo con Claude en la nube**, que hace de intermediario: apunta las tareas aquí (y como issues), revisa los PR, vigila CI y mantiene `docs/contexto/` al día.
+- El **agente de VS Code** hace los cambios de código: una rama por tarea y un PR que la cierra.
+- Se comunican **a través del repo**, porque ninguno ve la conversación del otro.
+- Para no pisarse: Claude en la nube solo toca `docs/contexto/` y los issues; el resto de archivos (código, `ROADMAP.md`, `CLAUDE.md`, `README.md`) son del agente de VS Code. El porqué y el detalle de las preguntas están en [`../estudios/2026-11-27-rodillo-inteligente-produccion-aws.md`](../estudios/2026-11-27-rodillo-inteligente-produccion-aws.md).
 
 ### T0 · «PR cero»: fusionar el plan de los niveles de realismo (#31)
 
@@ -46,6 +53,13 @@ Pedido por el usuario: las zonas pasan de `L1, L2, L3, UA, UA+, VO2` a `Z1, Z2, 
   - forma y fatiga, fantasma, avisos de voz y plan del entrenador;
   - imagen Docker y `ESTRUCTURA.md`;
   - pantalla completa.
+- [ ] `docs/ROADMAP.md` (pedido el 2026-11-27): además de lo anterior y de fusionar #31, que el roadmap recoja **todo lo apuntado aquí**. Propuesta (el orden se puede cambiar):
+  - **Fase 9 — Mantenimiento** (el número de la 9 descartada queda libre): zonas Z1…Z6 (T1) y seguimiento al día (T2).
+  - **Fase 10–12 — Paisaje real** niveles 1–3 (#31, sin cambios).
+  - **Fase 13 — GitHub profesional** (T7) y **Fase 14 — Docker de producción y seguridad** (T4). Van juntas o seguidas, porque la CSP y CI se tocan en las dos.
+  - **Fase 15 — Mejoras aceptadas** (punto 5 del estudio, sin el modo daltónico): copia cifrada, recordatorio de copia, límites al importar, panel de inicio, calidad gráfica del 3D, FIT, Strava y zonas desde un test.
+  - **En espera o en estudio**, sin número: Fase 8 (rodillo inteligente o casero, T5 y T9), base de datos centralizada (T8), AWS (T6) y modo local con repo privado (T3, depende de T7).
+  - Cada fase con su milestone y un issue por casilla (regla 8 de `CLAUDE.md`). Añadir también la regla del reparto de trabajo de arriba a `CLAUDE.md` («Forma de trabajar» y «Git y GitHub»).
 - [ ] Esta lista «Fases por hacer» estaba desfasada (decía que faltaban la 6 y la 7): ya corregida abajo; repasarla tras T0.
 - [ ] `sesiones/`: la sesión del 2026-11-26 está metida al final de `2026-11-25.md`; separarla en `2026-11-26.md`.
 - [ ] `registro/CAMBIOS.md`: añadir los commits que falten desde `3250f48`.
@@ -76,13 +90,70 @@ Ver la tabla del punto 2 del estudio:
 
 La CSP tendrá que permitir los servicios de teselas de la Fase 10 (`connect-src` e `img-src`).
 
+Explicación de cada punto (el porqué) en la tabla del punto 2 del estudio, que el usuario pidió apuntar entera. Si algún día fuese un producto comercial, además:
+
+- [ ] cambiar la imagen de satélite de la Fase 10, que es no comercial (CC BY-NC-SA), por una fuente con licencia comercial;
+- [ ] revisar las condiciones de Google 3D Tiles (Fase 12);
+- [ ] mantener fuera cualquier marca de terceros;
+- [ ] con cuentas o sincronización, aplicar el RGPD para datos de salud (ver T8).
+
 ### T5 · Fase 8 · Rodillo inteligente
 
-Sigue en espera hasta que el usuario compre uno con **Bluetooth FTMS**. Se puede adelantar un FTMS simulado. Detalle en el punto 1 del estudio.
+Sigue en espera hasta que el usuario compre uno con **Bluetooth FTMS** o monte uno casero (T9). Se puede adelantar un FTMS simulado. Detalle en el punto 1 del estudio.
 
 ### T6 · AWS (solo si se decide)
 
 S3 privado + CloudFront (OAC, ACM, cabeceras) + Route 53, Terraform en `infra/`, despliegue desde GitHub Actions con OIDC. Detalle en el punto 4 del estudio. No hay nada decidido.
+
+### T7 · GitHub como el de una empresa
+
+Pedido por el usuario el 2026-11-27. Detalle y porqué en el punto 7 del estudio.
+
+- [ ] **Antes de nada**, que el usuario decida entre público (todo gratis) o privado (necesita Pro o Team para las reglas de rama). Afecta a T3.
+- [ ] Presentación:
+  - descripción, temas, web e imagen para compartir;
+  - `README` con insignias, capturas y arranque rápido.
+- [ ] Archivos estándar:
+  - `LICENSE` (que la decida el usuario);
+  - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md` y `CHANGELOG.md`.
+- [ ] `.github/`:
+  - plantillas de issue en formulario y de PR;
+  - `CODEOWNERS` y `dependabot.yml`;
+  - etiquetas `tipo:`, `área:` y `prioridad:`.
+- [ ] Reglas de `main`:
+  - solo por PR y con CI obligatorio;
+  - historial lineal y sin `--force`;
+  - fusión _squash_ y borrado automático de ramas.
+
+  Actualizar «Git y GitHub» en `CLAUDE.md`: se acaba el push directo a `main`.
+
+- [ ] Commitlint en CI, release-please (versiones, etiquetas y `CHANGELOG`) y la imagen en GHCR por versión (enlaza con T4).
+- [ ] GitHub Project (tablero) junto a los milestones.
+- [ ] Seguridad del repo:
+  - escaneo de secretos con bloqueo;
+  - alertas de Dependabot y CodeQL;
+  - informe privado de vulnerabilidades;
+  - OpenSSF Scorecard.
+- [ ] Opcional: organización gratuita con el nombre de la «empresa» y transferir el repo.
+
+### T8 · Base de datos centralizada (en estudio)
+
+Pregunta del usuario el 2026-11-27. Opciones en el punto 8 del estudio:
+
+- **A**: copia automática en una carpeta sincronizada, sin servidor;
+- **B**: PocketBase o PostgreSQL propio en Docker;
+- **C**: Supabase o AWS.
+
+Recomendación: A ya, B si se quiere una base de datos de verdad. **B y C cambian la regla «sin backend»: lo decide el usuario.** Nada que hacer hasta que elija.
+
+### T9 · Rodillo inteligente casero (en estudio)
+
+El usuario quiere saber si le sale más barato montar uno con piezas y el software de aquí. Respuesta en el punto 6 del estudio:
+
+- con rodillo de **fluido**, no es viable;
+- con rodillo **magnético con palanca**, sí: ESP32 + servo que se anuncia como FTMS, unos 40–80 € en piezas, a cambio de muchas horas y menos precisión.
+
+**Falta que el usuario diga el modelo de su rodillo tonto.** Si sale adelante, el firmware va en `firmware/` o en otro repo, y la app no cambia (Fase 8).
 
 ## Fases por hacer
 
@@ -112,5 +183,5 @@ Ver el detalle en [`fases/`](../fases/) y en `docs/ROADMAP.md`. Cada tarea es un
 ## Ideas y mejoras pedidas
 
 - **Importar rutas en otros formatos** (KML, TCX) además de GPX. Hoy solo GPX con altitud. Para rutas dibujadas a mano: gpx.studio, Strava, Komoot o RideWithGPS exportan GPX con altitud; Google Maps no exporta GPX y «Mis mapas» da KML sin altitud (pregunta del usuario, 2026-11-25).
-- **Ideas de seguridad, diseño y funciones** (2026-11-27): copia cifrada, recordatorio de copia, límites de tamaño al importar, panel de inicio, selector de calidad gráfica del 3D, modo daltónico, exportar FIT, subida a Strava, zonas desde un test. Ver el punto 5 del [estudio del 2026-11-27](../estudios/2026-11-27-rodillo-inteligente-produccion-aws.md).
+- **Ideas de seguridad, diseño y funciones** (2026-11-27): copia cifrada, recordatorio de copia, límites de tamaño al importar, panel de inicio, selector de calidad gráfica del 3D, exportar FIT, subida a Strava, zonas desde un test. **Aceptadas por el usuario** (van a la Fase 15 propuesta en T2), **salvo el modo daltónico**, que no le interesa por ahora. Ver el punto 5 del [estudio del 2026-11-27](../estudios/2026-11-27-rodillo-inteligente-produccion-aws.md).
 - _(Añadir aquí las mejoras que pida el usuario.)_

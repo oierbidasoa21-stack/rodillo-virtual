@@ -54,3 +54,5 @@ _2026-11-26 (4): mejoras de entrenamiento: forma y fatiga en Historial, fantasma
 _2026-11-27: imagen Docker (`Dockerfile`, `compose.yaml`, `docker/nginx.conf`) y `docs/ESTRUCTURA.md` con qué es cada carpeta y archivo._
 
 _2026-11-27 (2): el usuario pide **apuntar, no hacer**, una lista de tareas para su agente de cambios: fusionar el PR #31 (plan de los niveles de realismo, fases 10–12), zonas Z1…Z6, seguimiento al día, modo local con repo privado, Docker de producción, Fase 8 y AWS. Ver `pendientes/PENDIENTES.md` (T0–T6) y `estudios/2026-11-27-rodillo-inteligente-produccion-aws.md`._
+
+_2026-11-27 (3): más tareas apuntadas: propuesta de roadmap (fases 9 y 13–15), GitHub profesional (T7), base de datos centralizada (T8, en estudio), rodillo casero (T9, en estudio). **Reparto:** Claude en la nube hace de intermediario y el agente de VS Code hace los cambios._

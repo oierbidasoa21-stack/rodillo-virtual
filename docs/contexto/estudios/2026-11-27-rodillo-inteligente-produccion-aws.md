@@ -94,3 +94,72 @@ GitHub Actions → OIDC (sin claves guardadas) → sube dist/ a S3 e invalida la
 - Exportar **FIT** además de TCX (Garmin lo prefiere).
 - Subida directa a Strava (necesita OAuth y por tanto un pequeño backend; se puede dejar para la versión con AWS).
 - Zonas de pulso calculadas a partir de un test (umbral en 30′) en vez de meterlas a mano.
+
+**Decisión del usuario sobre estas ideas (2026-11-27, segunda parte):** le parecen bien todas **menos el modo daltónico**, que no le interesa por ahora.
+
+## 6. ¿Hacer «mi propio rodillo inteligente» con hardware barato y el software de aquí?
+
+La idea: comprar piezas baratas, ponerlas en el rodillo tonto y que la app lo controle, en lugar de comprar un rodillo inteligente. **Depende del tipo de rodillo tonto que se tenga.**
+
+- **De fluido** (resistencia por aceite): la resistencia solo depende de la velocidad y **no hay nada que mover**. Ningún software puede hacer ERG ni simular pendientes. **No es viable.** Lo único que se puede hacer ya está hecho: estimar los vatios con su curva y decirte qué marcha meter.
+- **Magnético con palanca de niveles** (un mando en el manillar con un cable): **sí es viable** como proyecto propio.
+  - Un **ESP32** (microcontrolador con Bluetooth) mueve la palanca con un **servo o motor paso a paso** y un soporte impreso en 3D.
+  - El ESP32 se anuncia como rodillo **FTMS**, así que la app lo controla igual que a uno comprado (Fase 8, sin cambios en la app).
+  - Hay proyectos libres que lo hacen con bicis de spinning, por ejemplo SmartSpin2k: sirven de referencia.
+  - El firmware no es parte de la web: iría en una carpeta `firmware/` o en otro repo (C++ con Arduino o ESP-IDF).
+- **Limitaciones del casero:**
+  - pocos niveles, así que el ERG es a saltos y no fino;
+  - la potencia **sigue siendo estimada**, y además hay que calibrar una curva por cada nivel;
+  - hace falta impresora 3D o alguien que imprima el soporte;
+  - lleva muchas horas de montaje y pruebas.
+- **¿Es más barato?** En dinero, sí: unos **40–80 € en piezas** (orientativo, hay que comprobar precios), frente a unos **250–400 €** de un rodillo inteligente de rodillo-sobre-rueda nuevo de gama de entrada o **150–250 € de segunda mano** (también orientativo). En tiempo y en calidad, no.
+- **Recomendación:**
+  - Rodillo de fluido: buscar un rodillo **FTMS de segunda mano**.
+  - Rodillo magnético con palanca: el casero es un proyecto bonito y barato, pero hay que tomarlo como proyecto, no como ahorro seguro.
+  - Si solo se quieren **vatios reales** (sin control de resistencia), un medidor de potencia también vale con el rodillo tonto.
+- **Pregunta abierta para el usuario:** marca y modelo de su rodillo tonto (fluido o magnético, y si tiene palanca de niveles).
+
+## 7. ¿Cómo dejar el GitHub «como el de una empresa»?
+
+- **Presentación:**
+  - descripción, temas (_topics_), web y una imagen para compartir el repo;
+  - `README` con insignias (CI, despliegue, versión, licencia), capturas o GIF y arranque rápido.
+- **Archivos estándar:**
+  - `LICENSE`: hay que decidirla. Si es para empresa, «todos los derechos reservados»; si se abre, MIT;
+  - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md` y `CHANGELOG.md`.
+- **`.github/`:**
+  - plantillas de issue en formulario (error, mejora, tarea) y de PR;
+  - `CODEOWNERS` y `dependabot.yml`;
+  - etiquetas ordenadas (`tipo:`, `área:`, `prioridad:`).
+- **Forma de trabajar:**
+  - **todo por PR**, que cierra su issue (`Closes #n`), con fusión _squash_ y borrado automático de ramas;
+  - CI obligatorio antes de fusionar;
+  - comprobación de Conventional Commits en CI;
+  - versiones semánticas con **releases** y `CHANGELOG` automáticos (release-please);
+  - un **GitHub Project** (tablero Backlog → Listo → En curso → Revisión → Hecho) junto a los milestones.
+  - Esto **sustituye** la regla actual de `CLAUDE.md` de hacer push y fast-forward directo a `main`.
+- **Seguridad del repo:**
+  - escaneo de secretos con bloqueo al subir;
+  - alertas de Dependabot y CodeQL;
+  - informe privado de vulnerabilidades;
+  - insignia de OpenSSF Scorecard.
+- **Organización:** crear una **organización gratuita** de GitHub con el nombre de la «empresa» y transferirle el repo. GitHub redirige las URLs viejas; la de Pages cambia.
+- **Choque con hacerlo privado:** en el plan gratuito, las **reglas de protección de rama y los rulesets solo funcionan en repos públicos**. Público y profesional sale gratis; privado y profesional necesita GitHub Pro o Team (unos pocos dólares al mes por usuario; comprobar precio). Hay que elegir: **T3 (privado) y T7 (profesional) dependen de esta decisión.**
+
+## 8. ¿Una base de datos centralizada?
+
+**Ya hay una base de datos** (IndexedDB, 7 tablas ordenadas, punto 3). El problema es que vive **dentro de cada navegador**. Centralizarla significa sacarla a un sitio común. Hay tres opciones, de menos a más:
+
+| Opción                                 | Cómo                                                                                                                                                                     | Coste              | A favor                                                                            | En contra                                                                              |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------ | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| **A · Carpeta sincronizada**           | Chrome deja a la web escribir en una carpeta que elijas (File System Access API). Tras cada sesión la app guarda sola la copia en, por ejemplo, una carpeta de OneDrive. | 0 €                | Sin servidor ni cuentas; la regla «sin backend» sigue valiendo.                    | Son archivos, no una base de datos consultable.                                        |
+| **B · Base de datos propia en Docker** | **PocketBase** (SQLite, API y usuarios en un solo programa) o PostgreSQL con una API pequeña, en el mismo `compose.yaml`. La app sincroniza con ella.                    | 0 € (tu ordenador) | Una base de datos de verdad, consultable y tuya. Encaja con el Docker profesional. | El ordenador tiene que estar encendido; fuera de casa, red privada (p. ej. Tailscale). |
+| **C · En la nube**                     | Supabase (PostgreSQL y usuarios, región UE) o AWS (DynamoDB o RDS + Cognito + Lambda, punto 4).                                                                          | 0–25 €/mes         | Desde cualquier sitio; base para un producto.                                      | El pulso es **dato de salud** (RGPD); hay que asegurar mucho más.                      |
+
+- En todas, **Dexie se queda** como copia local, para que la app siga funcionando sin conexión y sincronice al volver la red.
+- B y C cambian la regla «sin backend» de `CLAUDE.md`: es una decisión del usuario.
+- Tablas de un modelo centralizado:
+  - atleta y zonas, sesiones propias y sus bloques;
+  - historial, rutas y planes;
+  - grabaciones. Son una fila por segundo, unas 3600 por hora: mejor comprimidas por sesión que fila a fila.
+- **Recomendación:** A ya (barato y sin riesgo); B si se quiere una base de datos de verdad; C solo si hay producto o empresa.
