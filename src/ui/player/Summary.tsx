@@ -99,7 +99,7 @@ export default function Summary({
       {showHrZones && (
         <>
           <div className="sectionhead">
-            <h2>Tiempo en cada zona</h2>
+            <h2>Tiempo en cada zona de pulso</h2>
             <span className="tag">
               {hr ? 'Medido por pulsómetro' : 'Según los bloques realizados'}
               {hr?.simulated && <span className="sim-tag">SIMULADO</span>}
@@ -128,7 +128,7 @@ export default function Summary({
             <p className="note">
               Barra de color: lo realizado{hr ? ', según tu pulso' : ''}. Línea gris: lo
               planificado.
-              {hr && hr.belowSec >= 1 && ` Además, ${formatClock(hr.belowSec)} por debajo de L1.`}
+              {hr && hr.belowSec >= 1 && ` Además, ${formatClock(hr.belowSec)} por debajo de Z1.`}
               {hr &&
                 hr.coveredSec < summary.durationSec - 30 &&
                 ` Hubo pulso durante ${formatClock(hr.coveredSec)} de ${formatClock(summary.durationSec)}.`}

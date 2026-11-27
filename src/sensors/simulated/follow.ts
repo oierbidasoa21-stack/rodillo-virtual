@@ -8,12 +8,12 @@ export const SIM_REFERENCE_FTP_W = 250;
 
 /** Rough heart rate zone for an effort as a fraction of FTP. Simulation only. */
 function zoneForEffort(effort: number): ZoneId {
-  if (effort < 0.56) return 'L1';
-  if (effort < 0.76) return 'L2';
-  if (effort < 0.91) return 'L3';
-  if (effort < 1.06) return 'UA';
-  if (effort < 1.21) return 'UA+';
-  return 'VO2';
+  if (effort < 0.56) return 'Z1';
+  if (effort < 0.76) return 'Z2';
+  if (effort < 0.91) return 'Z3';
+  if (effort < 1.06) return 'Z4';
+  if (effort < 1.21) return 'Z5';
+  return 'Z6';
 }
 
 /** Middle of a zone in bpm (open-ended top zone: one beat per 10 s above its start). */

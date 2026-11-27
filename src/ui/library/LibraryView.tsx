@@ -13,7 +13,7 @@ const NEW_WORKOUT = {
   id: null,
   name: '',
   description: '',
-  blocks: [makeBlock(600, 'L1', 'warm'), makeBlock(1200, 'L2'), makeBlock(300, 'L1', 'cool')],
+  blocks: [makeBlock(600, 'Z1', 'warm'), makeBlock(1200, 'Z2'), makeBlock(300, 'Z1', 'cool')],
 };
 
 export default function LibraryView() {

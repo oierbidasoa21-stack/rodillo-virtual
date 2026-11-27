@@ -16,11 +16,11 @@ import {
 } from './player';
 import { makeBlock } from './types';
 
-// 60 s L1, 20 s UA, 10 s L1
+// 60 s Z1, 20 s Z4, 10 s Z1
 const steps = expandWorkout([
-  makeBlock(60, 'L1', 'warm'),
-  makeBlock(20, 'UA', 'work'),
-  makeBlock(10, 'L1', 'cool'),
+  makeBlock(60, 'Z1', 'warm'),
+  makeBlock(20, 'Z4', 'work'),
+  makeBlock(10, 'Z1', 'cool'),
 ]);
 
 const started = (): PlayerState => togglePlay(createPlayer(steps)).state;
@@ -71,13 +71,13 @@ describe('player', () => {
       'stepChanged',
     ]);
     const warn = events[0];
-    expect(warn?.type === 'warn10s' && warn.next?.target).toEqual({ type: 'hr', zoneId: 'UA' });
+    expect(warn?.type === 'warn10s' && warn.next?.target).toEqual({ type: 'hr', zoneId: 'Z4' });
     expect(state.index).toBe(1);
   });
 
   it('skips the 10 s warning on steps of 15 s or less', () => {
     const short = togglePlay(
-      createPlayer(expandWorkout([makeBlock(15, 'L1'), makeBlock(15, 'L2')])),
+      createPlayer(expandWorkout([makeBlock(15, 'Z1'), makeBlock(15, 'Z2')])),
     );
     expect(types(run(short.state, 15).events)).not.toContain('warn10s');
   });
@@ -132,8 +132,8 @@ describe('player', () => {
   });
 
   it('records hand counts against the target zone', () => {
-    const ua: HrZone = { id: 'UA', label: 'UA', min: 26, max: 27 };
+    const ua: HrZone = { id: 'Z4', label: 'Z4', min: 26, max: 27 };
     const s = addCount(tick(started(), 65).state, 28, ua);
-    expect(s.counts).toEqual([{ atSec: 65, valuePer10s: 28, targetZoneId: 'UA', status: 'above' }]);
+    expect(s.counts).toEqual([{ atSec: 65, valuePer10s: 28, targetZoneId: 'Z4', status: 'above' }]);
   });
 });

@@ -18,9 +18,9 @@ describe('plan import', () => {
     expect(r.errors).toEqual([]);
     const [first, rest] = r.plan?.days ?? [];
     expect(first?.workout?.blocks).toEqual([
-      makeBlock(600, 'L1', 'warm'),
-      makeRepeat(4, [makeBlock(240, 'UA', 'work'), makeBlock(180, 'L1', 'rec')]),
-      makeBlock(600, 'L1', 'cool', 'Soltar piernas'),
+      makeBlock(600, 'Z1', 'warm'),
+      makeRepeat(4, [makeBlock(240, 'Z4', 'work'), makeBlock(180, 'Z1', 'rec')]),
+      makeBlock(600, 'Z1', 'cool', 'Soltar piernas'),
     ]);
     expect(first?.workout && validateWorkout(first.workout)).toEqual([]);
     expect(rest).toMatchObject({ date: '2026-12-01', workout: null, notes: 'Descanso total' });
@@ -28,14 +28,14 @@ describe('plan import', () => {
 
   it('finds the JSON inside prose and a code fence, and sorts the days', () => {
     const text = `Aquí tienes el plan:\n\`\`\`json\n${planText([
-      day('2026-12-02', { titulo: 'B', bloques: [{ min: 30, zona: 'L2' }] }),
-      day('2026-12-01', { titulo: 'A', bloques: [{ seg: 90, zona: 'VO2', tipo: 'serie' }] }),
+      day('2026-12-02', { titulo: 'B', bloques: [{ min: 30, zona: 'Z2' }] }),
+      day('2026-12-01', { titulo: 'A', bloques: [{ seg: 90, zona: 'Z6', tipo: 'serie' }] }),
     ])}\n\`\`\`\n¡Suerte!`;
     const r = parsePlan(text);
     expect(r.errors).toEqual([]);
     expect(r.plan?.days.map((d) => d.date)).toEqual(['2026-12-01', '2026-12-02']);
-    expect(r.plan?.days[0]?.workout?.blocks[0]).toEqual(makeBlock(90, 'VO2', 'work'));
-    expect(r.plan?.days[1]?.workout?.blocks[0]).toEqual(makeBlock(1800, 'L2', 'steady'));
+    expect(r.plan?.days[0]?.workout?.blocks[0]).toEqual(makeBlock(90, 'Z6', 'work'));
+    expect(r.plan?.days[1]?.workout?.blocks[0]).toEqual(makeBlock(1800, 'Z2', 'steady'));
   });
 
   it('reports every problem in Spanish and imports nothing', () => {
@@ -46,7 +46,7 @@ describe('plan import', () => {
           day('2026-12-01', { titulo: 'X', bloques: [{ min: 10, zona: 'Z9' }] }),
           day('2026-12-02', {
             titulo: 'Y',
-            bloques: [{ repetir: 2, bloques: [{ repetir: 2, bloques: [] }] }, { zona: 'L1' }],
+            bloques: [{ repetir: 2, bloques: [{ repetir: 2, bloques: [] }] }, { zona: 'Z1' }],
           }),
           day('2026-12-02', { descanso: true }),
         ],
@@ -65,7 +65,7 @@ describe('plan import', () => {
 
   it('marks a day done when a session with its name was saved that day', () => {
     const r = parsePlan(
-      planText([day('2026-12-01', { titulo: 'A', bloques: [{ min: 5, zona: 'L1' }] })]),
+      planText([day('2026-12-01', { titulo: 'A', bloques: [{ min: 5, zona: 'Z1' }] })]),
     );
     const d = r.plan?.days[0];
     if (!d) throw new Error('day');
@@ -79,8 +79,8 @@ describe('plan import', () => {
 
 describe('coach report', () => {
   const zones: HrZone[] = [
-    { id: 'L1', label: 'L1', min: 20, max: 21 },
-    { id: 'VO2', label: 'VO2', min: 29, max: null },
+    { id: 'Z1', label: 'Z1', min: 20, max: 21 },
+    { id: 'Z6', label: 'Z6', min: 29, max: null },
   ];
   const session = {
     id: 's',
@@ -89,8 +89,8 @@ describe('coach report', () => {
     durationSec: 3600,
     load: 150,
     kcalEstimated: 0,
-    plannedSecByZone: { L1: 0, L2: 0, L3: 0, UA: 0, 'UA+': 0, VO2: 0 },
-    actualSecByZone: { L1: 1800, L2: 0, L3: 0, UA: 1800, 'UA+': 0, VO2: 0 },
+    plannedSecByZone: { Z1: 0, Z2: 0, Z3: 0, Z4: 0, Z5: 0, Z6: 0 },
+    actualSecByZone: { Z1: 1800, Z2: 0, Z3: 0, Z4: 1800, Z5: 0, Z6: 0 },
     counts: [],
   } as SessionSummary;
 
@@ -108,12 +108,22 @@ describe('coach report', () => {
       forma: { estado: string };
     };
     expect(data.zonas_pulso).toEqual([
-      { zona: 'L1', ppm: '120-126' },
-      { zona: 'VO2', ppm: '174+' },
+      { zona: 'Z1', ppm: '120-126' },
+      { zona: 'Z6', ppm: '174+' },
     ]);
     expect(data.sesiones).toHaveLength(1);
-    expect(data.sesiones[0]?.min_por_zona).toMatchObject({ L1: 30, UA: 30 });
+    expect(data.sesiones[0]?.min_por_zona).toMatchObject({ Z1: 30, Z4: 30 });
     expect(typeof data.forma.estado).toBe('string');
     expect(text).toMatch(/^# Informe de entrenamiento · 2026-11-26/);
+  });
+
+  describe('plan import with the old zone names', () => {
+    it('accepts L1…VO2 from an agent that still uses them', () => {
+      const r = parsePlan(
+        planText([day('2026-12-03', { titulo: 'Viejo', bloques: [{ min: 10, zona: 'UA+' }] })]),
+      );
+      expect(r.errors).toEqual([]);
+      expect(r.plan?.days[0]?.workout?.blocks[0]).toEqual(makeBlock(600, 'Z5', 'steady'));
+    });
   });
 });

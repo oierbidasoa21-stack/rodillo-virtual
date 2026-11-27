@@ -1,5 +1,28 @@
-export const ZONE_IDS = ['L1', 'L2', 'L3', 'UA', 'UA+', 'VO2'] as const;
+export const ZONE_IDS = ['Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'Z6'] as const;
 export type ZoneId = (typeof ZONE_IDS)[number];
+
+/**
+ * Names the zones had until phase 9, same position, weights and MET. Still
+ * accepted wherever old data comes in (backups, athlete file, coach plans, .zwo).
+ */
+export const LEGACY_ZONE_IDS: Readonly<Record<string, ZoneId>> = {
+  L1: 'Z1',
+  L2: 'Z2',
+  L3: 'Z3',
+  UA: 'Z4',
+  'UA+': 'Z5',
+  VO2: 'Z6',
+};
+
+/** Default label of each zone (Z4 is the threshold). */
+export const DEFAULT_ZONE_LABELS: Readonly<Record<ZoneId, string>> = {
+  Z1: 'Z1',
+  Z2: 'Z2',
+  Z3: 'Z3',
+  Z4: 'Z4 (umbral)',
+  Z5: 'Z5',
+  Z6: 'Z6',
+};
 
 /** Heart rate zone in beats counted over 10 seconds. `max: null` means no upper bound. */
 export interface HrZone {
@@ -20,18 +43,25 @@ export interface ZoneMeta {
 }
 
 export const ZONE_META: Readonly<Record<ZoneId, ZoneMeta>> = {
-  L1: { loadWeight: 1, met: 5.0, feel: 'Muy suave. Puedes hablar sin problema.' },
-  L2: { loadWeight: 2, met: 6.8, feel: 'Cómodo. Hablas con frases largas.' },
-  L3: { loadWeight: 3, met: 8.8, feel: 'Moderado. Frases cortas.' },
-  UA: { loadWeight: 4, met: 11.0, feel: 'Umbral. Pocas palabras, duro pero sostenible.' },
-  'UA+': { loadWeight: 5, met: 12.0, feel: 'Por encima del umbral. Hablar cuesta mucho.' },
-  VO2: { loadWeight: 6, met: 14.0, feel: 'Máximo. Sin hablar, esfuerzos cortos.' },
+  Z1: { loadWeight: 1, met: 5.0, feel: 'Muy suave. Puedes hablar sin problema.' },
+  Z2: { loadWeight: 2, met: 6.8, feel: 'Cómodo. Hablas con frases largas.' },
+  Z3: { loadWeight: 3, met: 8.8, feel: 'Moderado. Frases cortas.' },
+  Z4: { loadWeight: 4, met: 11.0, feel: 'Umbral. Pocas palabras, duro pero sostenible.' },
+  Z5: { loadWeight: 5, met: 12.0, feel: 'Por encima del umbral. Hablar cuesta mucho.' },
+  Z6: { loadWeight: 6, met: 14.0, feel: 'Máximo. Sin hablar, esfuerzos cortos.' },
 };
 
 export type ZoneStatus = 'below' | 'in' | 'above';
 
+/** Strict: only the current names (Z1…Z6). */
 export function isZoneId(value: unknown): value is ZoneId {
   return typeof value === 'string' && (ZONE_IDS as readonly string[]).includes(value);
+}
+
+/** A zone id from a current or legacy name (L1…VO2), or null. */
+export function toZoneId(value: unknown): ZoneId | null {
+  if (isZoneId(value)) return value;
+  return typeof value === 'string' ? (LEGACY_ZONE_IDS[value] ?? null) : null;
 }
 
 export function findZone(zones: readonly HrZone[], id: ZoneId): HrZone {

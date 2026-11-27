@@ -6,7 +6,7 @@ import {
   type Workout,
   type WorkoutItem,
 } from '../workout/types';
-import { isZoneId } from '../zones/zones';
+import { toZoneId } from '../zones/zones';
 
 /** Tag that identifies a plan written for this app (by the user's coaching agent). */
 export const PLAN_FORMAT = 'rodillo-virtual/plan@1';
@@ -85,8 +85,10 @@ function parseBlock(raw: unknown, where: string, errors: string[]): Block | null
   }
   let target: BlockTarget | null = null;
   if (raw.zona !== undefined) {
-    if (isZoneId(raw.zona)) target = { type: 'hr', zoneId: raw.zona };
-    else errors.push(`${where}: zona «${String(raw.zona)}» no existe (L1, L2, L3, UA, UA+, VO2).`);
+    // Also L1…VO2, in case the agent still uses the names from before phase 9.
+    const zoneId = toZoneId(raw.zona);
+    if (zoneId) target = { type: 'hr', zoneId };
+    else errors.push(`${where}: zona «${String(raw.zona)}» no existe (Z1, Z2, Z3, Z4, Z5, Z6).`);
   } else if (typeof raw.ftp === 'number' && raw.ftp > 0 && raw.ftp <= 300) {
     target = { type: 'power', pctFtp: raw.ftp };
   } else {

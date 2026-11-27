@@ -38,7 +38,7 @@ export default function TargetInput({ target, idPrefix, onChange }: Props) {
           onChange(
             e.target.value === 'power'
               ? { type: 'power', pctFtp: DEFAULT_PCT_FTP }
-              : { type: 'hr', zoneId: 'L2' },
+              : { type: 'hr', zoneId: 'Z2' },
           )
         }
       >

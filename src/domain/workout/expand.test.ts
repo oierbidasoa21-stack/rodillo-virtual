@@ -6,20 +6,20 @@ import { hrZoneOf, makeBlock, makeRepeat } from './types';
 describe('expandWorkout', () => {
   it('unrolls repeats in order and tags each step with its repetition', () => {
     const steps = expandWorkout([
-      makeBlock(300, 'L1', 'warm'),
-      makeRepeat(2, [makeBlock(60, 'UA', 'work'), makeBlock(30, 'L1', 'rec')]),
+      makeBlock(300, 'Z1', 'warm'),
+      makeRepeat(2, [makeBlock(60, 'Z4', 'work'), makeBlock(30, 'Z1', 'rec')]),
     ]);
     expect(
       steps.map((s) => `${hrZoneOf(s)}:${s.repeat ? `${s.repeat.index}/${s.repeat.times}` : '-'}`),
-    ).toEqual(['L1:-', 'UA:1/2', 'L1:1/2', 'UA:2/2', 'L1:2/2']);
+    ).toEqual(['Z1:-', 'Z4:1/2', 'Z1:1/2', 'Z4:2/2', 'Z1:2/2']);
   });
 
   it('drops zero-length blocks', () => {
-    expect(expandWorkout([makeBlock(0, 'L1'), makeBlock(60, 'L2')])).toHaveLength(1);
+    expect(expandWorkout([makeBlock(0, 'Z1'), makeBlock(60, 'Z2')])).toHaveLength(1);
   });
 
   it('does not share block objects with the source', () => {
-    const block = makeBlock(60, 'L2');
+    const block = makeBlock(60, 'Z2');
     const [step] = expandWorkout([block]);
     expect(step).not.toBe(block);
   });
@@ -55,7 +55,7 @@ describe('built-in library', () => {
 
   it('30/30 blocks are exactly 30 s', () => {
     const w = BUILTIN_WORKOUTS.find((x) => x.id === 'b-3030');
-    const vo2 = expandWorkout(w?.blocks ?? []).filter((s) => hrZoneOf(s) === 'VO2');
+    const vo2 = expandWorkout(w?.blocks ?? []).filter((s) => hrZoneOf(s) === 'Z6');
     expect(vo2).toHaveLength(20);
     expect(vo2.every((s) => s.durationSec === 30)).toBe(true);
   });

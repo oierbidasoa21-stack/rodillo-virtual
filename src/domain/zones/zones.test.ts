@@ -10,12 +10,12 @@ import {
 
 // Same values as config/athlete.example.json
 const ZONES: HrZone[] = [
-  { id: 'L1', label: 'L1', min: 20, max: 21 },
-  { id: 'L2', label: 'L2', min: 22, max: 23 },
-  { id: 'L3', label: 'L3', min: 24, max: 25 },
-  { id: 'UA', label: 'UA (umbral)', min: 26, max: 27 },
-  { id: 'UA+', label: 'UA+', min: 28, max: 28 },
-  { id: 'VO2', label: 'VO2', min: 29, max: null },
+  { id: 'Z1', label: 'Z1', min: 20, max: 21 },
+  { id: 'Z2', label: 'Z2', min: 22, max: 23 },
+  { id: 'Z3', label: 'Z3', min: 24, max: 25 },
+  { id: 'Z4', label: 'Z4 (umbral)', min: 26, max: 27 },
+  { id: 'Z5', label: 'Z5', min: 28, max: 28 },
+  { id: 'Z6', label: 'Z6', min: 29, max: null },
 ];
 
 describe('classifyPer10s', () => {
@@ -24,26 +24,26 @@ describe('classifyPer10s', () => {
   });
 
   it('finds the zone at both bounds', () => {
-    expect(classifyPer10s(20, ZONES)?.id).toBe('L1');
-    expect(classifyPer10s(21, ZONES)?.id).toBe('L1');
-    expect(classifyPer10s(22, ZONES)?.id).toBe('L2');
-    expect(classifyPer10s(28, ZONES)?.id).toBe('UA+');
+    expect(classifyPer10s(20, ZONES)?.id).toBe('Z1');
+    expect(classifyPer10s(21, ZONES)?.id).toBe('Z1');
+    expect(classifyPer10s(22, ZONES)?.id).toBe('Z2');
+    expect(classifyPer10s(28, ZONES)?.id).toBe('Z5');
   });
 
   it('puts anything from the last zone up in the open-ended zone', () => {
-    expect(classifyPer10s(29, ZONES)?.id).toBe('VO2');
-    expect(classifyPer10s(40, ZONES)?.id).toBe('VO2');
+    expect(classifyPer10s(29, ZONES)?.id).toBe('Z6');
+    expect(classifyPer10s(40, ZONES)?.id).toBe('Z6');
   });
 
   it('handles fractional values from a live bpm (150 bpm / 6 = 25)', () => {
-    expect(classifyPer10s(150 / 6, ZONES)?.id).toBe('L3');
-    // 129 bpm / 6 = 21.5, past L1's top (21) → next zone
-    expect(classifyPer10s(129 / 6, ZONES)?.id).toBe('L2');
+    expect(classifyPer10s(150 / 6, ZONES)?.id).toBe('Z3');
+    // 129 bpm / 6 = 21.5, past Z1's top (21) → next zone
+    expect(classifyPer10s(129 / 6, ZONES)?.id).toBe('Z2');
   });
 });
 
 describe('zoneStatus', () => {
-  const ua = findZone(ZONES, 'UA');
+  const ua = findZone(ZONES, 'Z4');
 
   it('compares against the target zone bounds', () => {
     expect(zoneStatus(25, ua)).toBe('below');
@@ -53,26 +53,26 @@ describe('zoneStatus', () => {
   });
 
   it('never reports above for an open-ended zone', () => {
-    expect(zoneStatus(45, findZone(ZONES, 'VO2'))).toBe('in');
+    expect(zoneStatus(45, findZone(ZONES, 'Z6'))).toBe('in');
   });
 });
 
 describe('setZoneBound', () => {
   it('moving a max moves the next min', () => {
-    const next = setZoneBound(ZONES, 'L2', 'max', 24);
-    expect(next.find((z) => z.id === 'L2')).toMatchObject({ min: 22, max: 24 });
-    expect(next.find((z) => z.id === 'L3')).toMatchObject({ min: 25, max: 25 });
+    const next = setZoneBound(ZONES, 'Z2', 'max', 24);
+    expect(next.find((z) => z.id === 'Z2')).toMatchObject({ min: 22, max: 24 });
+    expect(next.find((z) => z.id === 'Z3')).toMatchObject({ min: 25, max: 25 });
     expect(validateZones(next)).toEqual([]);
   });
 
   it('moving a min moves the previous max', () => {
-    const next = setZoneBound(ZONES, 'VO2', 'min', 30);
-    expect(next.find((z) => z.id === 'UA+')).toMatchObject({ min: 28, max: 29 });
+    const next = setZoneBound(ZONES, 'Z6', 'min', 30);
+    expect(next.find((z) => z.id === 'Z5')).toMatchObject({ min: 28, max: 29 });
     expect(validateZones(next)).toEqual([]);
   });
 
   it('can produce an invalid zone, which validation catches', () => {
-    const next = setZoneBound(ZONES, 'L2', 'max', 26); // L3 becomes 27–25
+    const next = setZoneBound(ZONES, 'Z2', 'max', 26); // Z3 becomes 27–25
     expect(validateZones(next)).not.toEqual([]);
   });
 });
@@ -83,17 +83,17 @@ describe('validateZones', () => {
   });
 
   it('rejects a gap between zones', () => {
-    const gap = ZONES.map((z) => (z.id === 'L2' ? { ...z, min: 23 } : z));
-    expect(validateZones(gap)).toEqual(['L2: tiene que empezar en 22, justo después de L1.']);
+    const gap = ZONES.map((z) => (z.id === 'Z2' ? { ...z, min: 23 } : z));
+    expect(validateZones(gap)).toEqual(['Z2: tiene que empezar en 22, justo después de Z1.']);
   });
 
   it('rejects max below min and an open end that is not last', () => {
     const bad = ZONES.map((z) =>
-      z.id === 'L3' ? { ...z, max: 23 } : z.id === 'UA' ? { ...z, max: null } : z,
+      z.id === 'Z3' ? { ...z, max: 23 } : z.id === 'Z4' ? { ...z, max: null } : z,
     );
     const errors = validateZones(bad);
-    expect(errors).toContain('L3: el final tiene que ser un entero mayor o igual que el inicio.');
-    expect(errors).toContain('UA: solo la última zona puede no tener final.');
+    expect(errors).toContain('Z3: el final tiene que ser un entero mayor o igual que el inicio.');
+    expect(errors).toContain('Z4: solo la última zona puede no tener final.');
   });
 
   it('rejects missing or reordered zones', () => {

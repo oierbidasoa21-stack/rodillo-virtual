@@ -66,12 +66,13 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 
 **`zones/`** · zonas de pulso y de potencia
 
-| Archivo            | Para qué sirve                                                                                     |
-| ------------------ | -------------------------------------------------------------------------------------------------- |
-| `zones.ts`         | Zonas L1–VO2 contadas en 10″: buscar una zona, clasificar un valor, dentro/encima/debajo, validar. |
-| `heartRate.ts`     | Pasar de la cuenta en 10″ a ppm y al revés.                                                        |
-| `powerZones.ts`    | Zonas de potencia a partir del FTP.                                                                |
-| `athleteConfig.ts` | Esquema y validación de `config/athlete.*.json` (peso, bici, zonas).                               |
+| Archivo            | Para qué sirve                                                                                                               |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `zones.ts`         | Zonas Z1–Z6 contadas en 10″: buscar una zona, clasificar un valor, dentro/encima/debajo, validar; nombres antiguos (L1…VO2). |
+| `legacy.ts`        | Renombra L1…VO2 a Z1…Z6 en cualquier dato guardado (migración de la base, copias, archivo de atleta).                        |
+| `heartRate.ts`     | Pasar de la cuenta en 10″ a ppm y al revés.                                                                                  |
+| `powerZones.ts`    | Zonas de potencia a partir del FTP.                                                                                          |
+| `athleteConfig.ts` | Esquema y validación de `config/athlete.*.json` (peso, bici, zonas).                                                         |
 
 **`workout/`** · sesiones estructuradas
 
@@ -175,13 +176,13 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 
 ### `src/storage/` — datos en el navegador (IndexedDB con Dexie)
 
-| Archivo           | Para qué sirve                                                                |
-| ----------------- | ----------------------------------------------------------------------------- |
-| `db.ts`           | Tablas y versiones de la base de datos, con sus migraciones (v5: planes).     |
-| `repositories.ts` | Leer y guardar sesiones, historial, grabaciones, rutas, planes y ajustes.     |
-| `settings.ts`     | Ajustes con sus valores por defecto (atleta de ejemplo, voz, pitidos, tema…). |
-| `backup.ts`       | Copia de seguridad: exportar e importar todo en un JSON (formato 4).          |
-| `persist.ts`      | Pide al navegador almacenamiento persistente, para que no borre los datos.    |
+| Archivo           | Para qué sirve                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------------ |
+| `db.ts`           | Tablas y versiones de la base de datos, con sus migraciones (v5: planes; v6: zonas Z1…Z6). |
+| `repositories.ts` | Leer y guardar sesiones, historial, grabaciones, rutas, planes y ajustes.                  |
+| `settings.ts`     | Ajustes con sus valores por defecto (atleta de ejemplo, voz, pitidos, tema…).              |
+| `backup.ts`       | Copia de seguridad: exportar e importar todo en un JSON (formato 4).                       |
+| `persist.ts`      | Pide al navegador almacenamiento persistente, para que no borre los datos.                 |
 
 ### `src/store/` — estado de la app (Zustand)
 

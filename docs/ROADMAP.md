@@ -133,7 +133,7 @@ Solo si compro uno.
 
 El número de la antigua Fase 9 (móvil, descartada) queda libre y se reutiliza. Tareas en `docs/contexto/pendientes/PENDIENTES.md`.
 
-- [ ] Zonas de pulso Z1…Z6 en lugar de L1…VO2, con migración de los datos guardados (T1)
+- [x] Zonas de pulso Z1…Z6 en lugar de L1…VO2, con migración de los datos guardados (T1)
 - [ ] Documentos de seguimiento al día (T2)
 - [ ] Curvas suaves en la vista 3D (T12)
 - [ ] README corto y `docs/MANUAL.md` con el uso de toda la app (T11)

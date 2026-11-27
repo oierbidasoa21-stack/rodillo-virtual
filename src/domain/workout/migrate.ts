@@ -1,4 +1,4 @@
-import { isZoneId } from '../zones/zones';
+import { toZoneId } from '../zones/zones';
 import { BLOCK_KINDS, type Block, type BlockKind, type Workout, type WorkoutItem } from './types';
 
 const isRecord = (v: unknown): v is Record<string, unknown> =>
@@ -16,14 +16,16 @@ function migrateBlock(raw: unknown): Block | null {
 
   const t = raw.target;
   if (isRecord(t)) {
-    if (t.type === 'hr' && isZoneId(t.zoneId))
-      return { ...base, target: { type: 'hr', zoneId: t.zoneId } };
+    // Zone names before phase 9 (L1…VO2) are still read, as Z1…Z6.
+    const zoneId = toZoneId(t.zoneId);
+    if (t.type === 'hr' && zoneId) return { ...base, target: { type: 'hr', zoneId } };
     if (t.type === 'power' && typeof t.pctFtp === 'number')
       return { ...base, target: { type: 'power', pctFtp: t.pctFtp } };
     if (t.type === 'watts' && typeof t.watts === 'number')
       return { ...base, target: { type: 'watts', watts: t.watts } };
   }
-  if (isZoneId(raw.zoneId)) return { ...base, target: { type: 'hr', zoneId: raw.zoneId } };
+  const zoneId = toZoneId(raw.zoneId);
+  if (zoneId) return { ...base, target: { type: 'hr', zoneId } };
   return null;
 }
 

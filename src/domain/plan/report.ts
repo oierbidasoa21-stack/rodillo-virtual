@@ -65,7 +65,7 @@ export function coachReport(args: {
     `# Informe de entrenamiento · ${localDate(nowMs)}`,
     '',
     'Entreno en rodillo por zonas de pulso y sensaciones (sin FTP medido). La carga de cada',
-    'sesión es minutos en zona × peso de la zona (L1 1, L2 2, L3 3, UA 4, UA+ 5, VO2 6); la',
+    'sesión es minutos en zona × peso de la zona (Z1 1, Z2 2, Z3 3, Z4 4, Z5 5, Z6 6); la',
     'condición es su media exponencial de 42 días, la fatiga la de 7 días y la frescura la',
     'diferencia.',
     '',

@@ -28,7 +28,7 @@ const summary = (id: string, dateMs: number): SessionSummary => ({
   kcalEstimated: 500,
   plannedSecByZone: emptySecByZone(),
   actualSecByZone: emptySecByZone(),
-  counts: [{ atSec: 60, valuePer10s: 25, targetZoneId: 'L3', status: 'in' }],
+  counts: [{ atSec: 60, valuePer10s: 25, targetZoneId: 'Z3', status: 'in' }],
 });
 
 describe('workouts', () => {

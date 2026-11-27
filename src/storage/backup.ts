@@ -15,6 +15,7 @@ import type { HrCount } from '../domain/workout/player';
 import { migrateWorkout } from '../domain/workout/migrate';
 import type { Workout } from '../domain/workout/types';
 import type { ParseResult } from '../domain/zones/athleteConfig';
+import { migrateLegacyZoneIds } from '../domain/zones/legacy';
 import { ZONE_IDS, isZoneId } from '../domain/zones/zones';
 import type { Storage } from './repositories';
 import { type AppSettings, normalizeSettings } from './settings';
@@ -303,15 +304,23 @@ export function parseBackup(input: unknown): ParseResult<ParsedBackup> {
     return { ok: false, errors: ['A la copia le faltan las sesiones o el historial.'] };
   }
 
-  const workouts = input.workouts.map(migrateWorkout).filter((w): w is Workout => w !== null);
-  const history = input.history.map(parseSession).filter((s): s is SessionSummary => s !== null);
+  // Copies made before phase 9 name the heart rate zones L1…VO2: read them as Z1…Z6.
+  // Routes and recordings carry no zones (and a route could well be called «UA»).
+  const legacy = migrateLegacyZoneIds({
+    workouts: input.workouts,
+    history: input.history,
+    settings: input.settings,
+    plans: input.plans,
+  });
+  const workouts = legacy.workouts.map(migrateWorkout).filter((w): w is Workout => w !== null);
+  const history = legacy.history.map(parseSession).filter((s): s is SessionSummary => s !== null);
   const rawRoutes: unknown[] = Array.isArray(input.routes) ? input.routes : [];
   const routes = rawRoutes.map(parseRoute).filter((r): r is Route => r !== null);
   const rawRecordings: unknown[] = Array.isArray(input.recordings) ? input.recordings : [];
   const recordings = rawRecordings
     .map(parseRecording)
     .filter((r): r is SessionRecording => r !== null);
-  const rawPlans: unknown[] = Array.isArray(input.plans) ? input.plans : [];
+  const rawPlans: unknown[] = Array.isArray(legacy.plans) ? legacy.plans : [];
   const plans = rawPlans.map(parsePlanRow).filter((p): p is TrainingPlan => p !== null);
   return {
     ok: true,
@@ -322,7 +331,7 @@ export function parseBackup(input: unknown): ParseResult<ParsedBackup> {
         exportedAtMs: isNum(input.exportedAtMs) ? input.exportedAtMs : 0,
         workouts,
         history,
-        settings: normalizeSettings(isRecord(input.settings) ? input.settings : undefined),
+        settings: normalizeSettings(isRecord(legacy.settings) ? legacy.settings : undefined),
         routes,
         recordings,
         plans,

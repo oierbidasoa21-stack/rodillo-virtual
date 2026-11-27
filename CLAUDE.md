@@ -21,7 +21,8 @@ Aplicación web de entrenamiento en rodillo para **uso personal**, inspirada en 
 
 - Los datos personales (peso, peso de la bici y zonas de pulso) **no se versionan**. Están en `config/athlete.local.json` (ignorado por git). Si no existe, usa `config/athlete.example.json`, que tiene el mismo esquema y valores de ejemplo.
   - Para conocer mis valores reales, lee `config/athlete.local.json`. No los copies a código, tests, documentación ni commits.
-  - Zonas: `L1`, `L2`, `L3`, `UA` (umbral), `UA+`, `VO2`, contadas en 10 segundos (ppm = valor × 6). `max: null` = sin límite superior.
+  - Zonas: `Z1`, `Z2`, `Z3`, `Z4` (umbral), `Z5`, `Z6`, contadas en 10 segundos (ppm = valor × 6). `max: null` = sin límite superior. Hasta la Fase 9 se llamaban `L1`, `L2`, `L3`, `UA`, `UA+`, `VO2` (misma posición): la app sigue aceptando esos nombres al importar.
+  - Las zonas de **potencia** también se llaman Z1…Z7 (Coggan) y no coinciden con las de pulso: donde salgan las dos, se dice «de pulso» o «de potencia».
 - Entreno **por pulso y sensaciones**. Aún no tengo FTP medido.
 
 - Bici: Van Rysel EDR AF, ruedas 700×32.
@@ -77,7 +78,7 @@ Reglas:
   con η = 0.975, ρ = 1.225, CdA = 0.32, Crr = 0.005, m = peso + bici. Usar bisección o Newton.
 - **Potencia en rodillo tonto**: `P = f(velocidad de rueda)` según la curva del modelo de rodillo (polinomio, normalmente `a·v + b·v³`). La circunferencia de rueda es configurable (por defecto 2155 mm para 700×32).
 - **NP**: media móvil de 30 s, elevar a la 4ª, media, raíz 4ª. **IF** = NP / FTP. **TSS** = (s · NP · IF) / (FTP · 3600) · 100.
-- **Carga por pulso**: minutos en zona × peso (L1 1, L2 2, L3 3, UA 4, UA+ 5, VO2 6).
+- **Carga por pulso**: minutos en zona × peso (Z1 1, Z2 2, Z3 3, Z4 4, Z5 5, Z6 6).
 - **kcal**: con potencia, kJ ≈ kcal. Sin potencia, MET por zona × peso × horas (±20 %).
 
 Cada fórmula vive en `domain/` con tests que incluyan al menos un caso calculado a mano.

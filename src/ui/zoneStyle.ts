@@ -7,5 +7,5 @@ export function zoneColor(id: ZoneId): string {
 
 /** Zones whose colour is light enough to need dark text on top. */
 export function needsDarkText(id: ZoneId): boolean {
-  return id === 'L3';
+  return id === 'Z3';
 }

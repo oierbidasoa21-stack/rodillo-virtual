@@ -11,10 +11,10 @@ import {
 } from './edit';
 import { type WorkoutItem, makeBlock, makeRepeat } from './types';
 
-const a = makeBlock(60, 'L1');
-const b = makeBlock(120, 'L2');
-const x = makeBlock(30, 'UA', 'work');
-const y = makeBlock(30, 'L1', 'rec');
+const a = makeBlock(60, 'Z1');
+const b = makeBlock(120, 'Z2');
+const x = makeBlock(30, 'Z4', 'work');
+const y = makeBlock(30, 'Z1', 'rec');
 const blocks: WorkoutItem[] = [a, makeRepeat(3, [x, y]), b];
 
 describe('editor operations', () => {
@@ -44,14 +44,14 @@ describe('editor operations', () => {
 
   it('updates a block without touching the source', () => {
     const next = updateBlock(blocks, [1, 0], {
-      target: { type: 'hr', zoneId: 'VO2' },
+      target: { type: 'hr', zoneId: 'Z6' },
       note: 'fuerte',
     });
     expect(next[1]?.type === 'repeat' && next[1].items[0]).toMatchObject({
-      target: { type: 'hr', zoneId: 'VO2' },
+      target: { type: 'hr', zoneId: 'Z6' },
       note: 'fuerte',
     });
-    expect(x.target).toEqual({ type: 'hr', zoneId: 'UA' });
+    expect(x.target).toEqual({ type: 'hr', zoneId: 'Z4' });
   });
 
   it('clamps repeat times to a positive integer', () => {

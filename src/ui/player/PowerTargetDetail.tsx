@@ -27,7 +27,7 @@ export default function PowerTargetDetail({
       </span>
       {zone && (
         <span className="rpe">
-          {zone.id} · {zone.name}
+          Potencia {zone.id} · {zone.name}
         </span>
       )}
     </>

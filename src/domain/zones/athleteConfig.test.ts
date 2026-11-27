@@ -46,7 +46,7 @@ describe('parseAthleteConfig', () => {
   it('falls back to the id when a label is missing', () => {
     const zones = example.hrZonesPer10s.map(({ id, min, max }) => ({ id, min, max }));
     const result = parseAthleteConfig({ ...example, hrZonesPer10s: zones });
-    expect(result.ok && result.value.hrZonesPer10s[3]?.label).toBe('UA');
+    expect(result.ok && result.value.hrZonesPer10s[3]?.label).toBe('Z4');
   });
 
   it('rejects non-objects', () => {
@@ -72,8 +72,31 @@ describe('parseAthleteConfig', () => {
 
     const gap = parseAthleteConfig({
       ...example,
-      hrZonesPer10s: example.hrZonesPer10s.map((z) => (z.id === 'L2' ? { ...z, min: 30 } : z)),
+      hrZonesPer10s: example.hrZonesPer10s.map((z) => (z.id === 'Z2' ? { ...z, min: 30 } : z)),
     });
     expect(gap.ok).toBe(false);
+  });
+
+  it('still reads an athlete file with the old zone names (L1…VO2)', () => {
+    const old = {
+      ...example,
+      hrZonesPer10s: [
+        { id: 'L1', label: 'L1', min: 20, max: 21 },
+        { id: 'L2', label: 'L2', min: 22, max: 23 },
+        { id: 'L3', label: 'L3', min: 24, max: 25 },
+        { id: 'UA', label: 'UA (umbral)', min: 26, max: 27 },
+        { id: 'UA+', label: 'UA+', min: 28, max: 28 },
+        { id: 'VO2', label: 'VO2', min: 29, max: null },
+      ],
+    };
+    const result = parseAthleteConfig(old);
+    expect(result.ok && result.value.hrZonesPer10s.map((z) => `${z.id} ${z.label}`)).toEqual([
+      'Z1 Z1',
+      'Z2 Z2',
+      'Z3 Z3',
+      'Z4 Z4 (umbral)',
+      'Z5 Z5',
+      'Z6 Z6',
+    ]);
   });
 });

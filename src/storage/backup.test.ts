@@ -34,7 +34,7 @@ const workout = {
   id: 'c-1',
   name: 'Mía',
   description: 'Con repetición',
-  blocks: [makeBlock(600, 'L1', 'warm'), makeRepeat(3, [makeBlock(600, 'UA', 'work')])],
+  blocks: [makeBlock(600, 'Z1', 'warm'), makeRepeat(3, [makeBlock(600, 'Z4', 'work')])],
 };
 
 const session: SessionSummary = {
@@ -44,11 +44,11 @@ const session: SessionSummary = {
   durationSec: 3600,
   load: 150,
   kcalEstimated: 700,
-  plannedSecByZone: { ...emptySecByZone(), L1: 600, UA: 1800 },
-  actualSecByZone: { ...emptySecByZone(), L1: 600, UA: 1750 },
-  counts: [{ atSec: 900, valuePer10s: 27, targetZoneId: 'UA', status: 'in' }],
+  plannedSecByZone: { ...emptySecByZone(), Z1: 600, Z4: 1800 },
+  actualSecByZone: { ...emptySecByZone(), Z1: 600, Z4: 1750 },
+  counts: [{ atSec: 900, valuePer10s: 27, targetZoneId: 'Z4', status: 'in' }],
   hrMeasured: {
-    secByZone: { ...emptySecByZone(), UA: 1500 },
+    secByZone: { ...emptySecByZone(), Z4: 1500 },
     belowSec: 30,
     coveredSec: 3500,
     avgBpm: 151,
@@ -170,6 +170,67 @@ describe('backup', () => {
     expect(parsed.ok && parsed.value.backup.routes).toEqual([]);
   });
 
+  it('reads a copy made before phase 9 (zones L1…VO2) as Z1…Z6', () => {
+    const zones = { L1: 60, L2: 0, L3: 0, UA: 120, 'UA+': 0, VO2: 0 };
+    const parsed = parseBackup({
+      app: BACKUP_APP,
+      format: 3,
+      workouts: [
+        {
+          id: 'w-old',
+          name: 'Vieja',
+          description: '',
+          blocks: [
+            {
+              type: 'block',
+              durationSec: 600,
+              target: { type: 'hr', zoneId: 'UA' },
+              kind: 'work',
+              note: '',
+            },
+          ],
+        },
+      ],
+      history: [{ ...session, id: 'h-old', plannedSecByZone: zones, actualSecByZone: zones }],
+      settings: {
+        athlete: {
+          weightKg: 70,
+          bikeWeightKg: 9,
+          hrZonesPer10s: [
+            { id: 'L1', label: 'L1', min: 20, max: 21 },
+            { id: 'L2', label: 'L2', min: 22, max: 23 },
+            { id: 'L3', label: 'L3', min: 24, max: 25 },
+            { id: 'UA', label: 'UA (umbral)', min: 26, max: 27 },
+            { id: 'UA+', label: 'UA+', min: 28, max: 28 },
+            { id: 'VO2', label: 'VO2', min: 29, max: null },
+          ],
+        },
+      },
+    });
+    if (!parsed.ok) throw new Error(parsed.errors.join(' '));
+    const { backup, skipped } = parsed.value;
+    expect(skipped).toMatchObject({ workouts: 0, history: 0 });
+    expect(backup.workouts[0]?.blocks).toEqual([makeBlock(600, 'Z4', 'work')]);
+    expect(backup.history[0]?.plannedSecByZone).toEqual({
+      Z1: 60,
+      Z2: 0,
+      Z3: 0,
+      Z4: 120,
+      Z5: 0,
+      Z6: 0,
+    });
+    // Not the example zones: the copy's own, renamed.
+    expect(backup.settings.athlete.hrZonesPer10s.map((z) => z.id)).toEqual([
+      'Z1',
+      'Z2',
+      'Z3',
+      'Z4',
+      'Z5',
+      'Z6',
+    ]);
+    expect(backup.settings.athlete.weightKg).toBe(70);
+  });
+
   it('keeps training plans and skips a broken one', () => {
     const plan = {
       id: 'p1',
@@ -184,7 +245,7 @@ describe('backup', () => {
             id: 'plan-2026-11-30',
             name: 'Rodaje',
             description: '',
-            blocks: [makeBlock(1800, 'L2')],
+            blocks: [makeBlock(1800, 'Z2')],
           },
         },
         { date: '2026-12-01', title: 'Descanso', notes: '', workout: null },
@@ -246,13 +307,13 @@ describe('backup', () => {
           id: 'v1',
           name: 'Antigua',
           description: '',
-          blocks: [{ type: 'block', durationSec: 300, zoneId: 'L2', kind: 'steady', note: '' }],
+          blocks: [{ type: 'block', durationSec: 300, zoneId: 'Z2', kind: 'steady', note: '' }],
         },
       ],
       history: [],
       settings: {},
     });
-    expect(parsed.ok && parsed.value.backup.workouts[0]?.blocks).toEqual([makeBlock(300, 'L2')]);
+    expect(parsed.ok && parsed.value.backup.workouts[0]?.blocks).toEqual([makeBlock(300, 'Z2')]);
   });
 
   it('skips unreadable entries and counts them instead of guessing', () => {
