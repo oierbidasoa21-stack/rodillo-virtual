@@ -59,6 +59,16 @@ Pedido por el usuario: las zonas pasan de `L1, L2, L3, UA, UA+, VO2` a `Z1, Z2, 
   - **Fase 13 — GitHub profesional** (T7) y **Fase 14 — Docker de producción y seguridad** (T4). Van juntas o seguidas, porque la CSP y CI se tocan en las dos.
   - **Fase 15 — Mejoras aceptadas** (punto 5 del estudio, sin el modo daltónico): copia cifrada, recordatorio de copia, límites al importar, panel de inicio, calidad gráfica del 3D, FIT, Strava y zonas desde un test.
   - **En espera o en estudio**, sin número: Fase 8 (rodillo inteligente o casero, T5 y T9), base de datos centralizada (T8), AWS (T6) y modo local con repo privado (T3, depende de T7).
+  - **Orden de ejecución propuesto (2026-11-27, pendiente de que el usuario lo confirme):** el usuario sugiere hacer 13–15 antes que 10–12. Claude está de acuerdo con matices:
+    1. **Fase 9** (zonas y seguimiento): lo más pequeño, y cambia el modelo de datos, así que mejor antes de añadir nada más.
+    2. **Fase 13** (GitHub profesional): fija la forma de trabajar (todo por PR, CI obligatorio, plantillas). Con dos agentes, cuanto antes mejor: todo lo que venga después ya pasa por ese filtro. Se puede hacer mientras el repo siga público, porque las reglas de rama son gratis en públicos.
+    3. **Fase 14** (Docker de producción y seguridad): poner la CSP estricta **antes** de la Fase 10 es seguridad desde el diseño. Luego la Fase 10 solo abre, de forma explícita, los servicios de teselas que necesita, en vez de tener que cerrar después lo que quedó abierto.
+    4. **Fase 15** partida en dos:
+       - **15a, antes de la 10**: lo pequeño (recordatorio de copia, límites al importar, copia cifrada, calidad gráfica del 3D, panel de inicio). Los límites al importar y la copia cifrada encajan con la Fase 14.
+       - **15b, después o en espera**: exportar FIT y zonas desde un test. **Strava sale de la Fase 15**: necesita un secreto (OAuth), y por tanto una Edge Function o un servidor, así que depende de T8.
+    5. **Fases 10 → 11 → 12** (paisaje real): lo más grande y con más riesgo (servicios externos, rendimiento, licencias). Mejor con la base ya limpia y segura.
+    6. **Fase 8** cuando haya rodillo: es independiente y puede entrar en cualquier momento.
+    - **Los números no se cambian**, aunque el orden sea otro: los issues y milestones de #31 ya usan 10–12. En `ROADMAP.md` basta con poner «Fase actual: 9» y una línea con el orden de ejecución. Recordar la regla 1 de `CLAUDE.md` (trabajar solo en la fase actual).
   - Cada fase con su milestone y un issue por casilla (regla 8 de `CLAUDE.md`). Añadir también la regla del reparto de trabajo de arriba a `CLAUDE.md` («Forma de trabajar» y «Git y GitHub»).
 - [ ] Esta lista «Fases por hacer» estaba desfasada (decía que faltaban la 6 y la 7): ya corregida abajo; repasarla tras T0.
 - [ ] `sesiones/`: la sesión del 2026-11-26 está metida al final de `2026-11-25.md`; separarla en `2026-11-26.md`.
