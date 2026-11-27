@@ -5,7 +5,9 @@ Marca `[x]` al completar cada tarea.
 
 Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. La app es solo para ordenador: no hay fase de móvil.
 
-**Fase actual: 10 (paisaje real, nivel 1).** La 8 sigue en espera hasta que compre un rodillo inteligente.
+**Fase actual: 9 (mantenimiento).**
+
+**Orden de ejecución:** 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → T13 → T19. Los números no cambian; la 8 entra cuando haya rodillo inteligente. Las tareas Tn y el porqué del orden están en `docs/contexto/pendientes/PENDIENTES.md` (T2).
 
 ---
 
@@ -126,6 +128,15 @@ Solo si compro uno.
 - [ ] FTMS (0x1826): lectura de potencia, cadencia y velocidad reales
 - [ ] Modo ERG: el workout fija la potencia del rodillo
 - [ ] Modo simulación: la pendiente de la ruta ajusta la resistencia
+
+## Fase 9 — Mantenimiento
+
+El número de la antigua Fase 9 (móvil, descartada) queda libre y se reutiliza. Tareas en `docs/contexto/pendientes/PENDIENTES.md`.
+
+- [ ] Zonas de pulso Z1…Z6 en lugar de L1…VO2, con migración de los datos guardados (T1)
+- [ ] Documentos de seguimiento al día (T2)
+- [ ] Curvas suaves en la vista 3D (T12)
+- [ ] README corto y `docs/MANUAL.md` con el uso de toda la app (T11)
 
 ## Fase 10 — Paisaje real · nivel 1 (relieve y satélite)
 
