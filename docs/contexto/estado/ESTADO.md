@@ -61,4 +61,4 @@ _2026-11-28: el agente de VS Code fusiona el PR #31 (plan de las fases 10–12) 
 
 _2026-11-28 (2): PR #33 (T1, zonas Z1…Z6) revisado por Claude en la nube y fusionado. **T12 (curvas suaves) hecha en el [PR #35](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/35), abierto para revisión.** Plan y estado de la Fase 9 en `fases/fase-9-mantenimiento.md`. 328 tests._
 
-_2026-11-28 (3): PR #35 (T12, curvas suaves) revisado dos veces y fusionado; Deploy en verde y demo comprobada en la web publicada. **T2 (seguimiento al día) en un PR abierto para revisión**: el `ROADMAP` ya recoge todas las fases y tareas apuntadas (13, 14, 15a, 15b, T14, T13, T19 y lo que está en espera). Queda T11 para cerrar la Fase 9._
+_2026-11-28 (3): PR #35 (T12, curvas suaves) revisado dos veces y fusionado; Deploy en verde y demo comprobada en la web publicada. **T2 (seguimiento al día) en el [PR #36](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/36), abierto para revisión**: el `ROADMAP` ya recoge todas las fases y tareas apuntadas (13, 14, 15a, 15b, T14, T13, T19 y lo que está en espera). Queda T11 para cerrar la Fase 9._

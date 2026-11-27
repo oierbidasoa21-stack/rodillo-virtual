@@ -64,7 +64,7 @@ Pedido por el usuario: las zonas pasan de `L1, L2, L3, UA, UA+, VO2` a `Z1, Z2, 
 
 ### T2 · Documentos de seguimiento al día
 
-**Estado (2026-11-28): hecha en un PR abierto para revisión** (ver `fases/fase-9-mantenimiento.md`): `ROADMAP` con las mejoras fuera de fase, las fases 13, 14, 15a y 15b, las tareas sueltas y lo que está en espera; reparto de trabajo en `CLAUDE.md`; sesión del 2026-11-26 separada; registro completo. Los milestones e issues de las fases nuevas los crea Claude en la nube (T10).
+**Estado (2026-11-28): hecha en el [PR #36](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/36), abierto para revisión** (ver `fases/fase-9-mantenimiento.md`): `ROADMAP` con las mejoras fuera de fase, las fases 13, 14, 15a y 15b, las tareas sueltas y lo que está en espera; reparto de trabajo en `CLAUDE.md`; sesión del 2026-11-26 separada; registro completo. Los milestones e issues de las fases nuevas los crea Claude en la nube (T10).
 
 - [ ] `docs/ROADMAP.md`: añadir una sección **«Mejoras fuera de fase (2026-11-26/27)»** con lo hecho tras la Fase 7, que hoy solo está en `estado/` y `decisiones/`:
   - realismo 3D en tres rondas: (1) sombras, texturas, cielo, marcas viales y balizas; (2) horizonte con montañas, vegetación, ciclista detallado y cámara; (3) público, quitamiedos, rodadas, arcén de grava y hora del día;

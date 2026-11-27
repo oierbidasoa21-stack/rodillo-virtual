@@ -159,7 +159,7 @@ Ramas: feat/world-realism, feat/world-spectators, feat/fitness, feat/coach-plan
 - `8be9924` · 2026-11-27 · docs: phase 9 plan, T12 done and in review
 - `856ae4b` · 2026-11-27 · fix(world): no stack overflow on long routes; close loops explicitly
 
-### T2 · Seguimiento al día · rama `docs/tracking-up-to-date`
+### T2 · Seguimiento al día · rama `docs/tracking-up-to-date`, [PR #36](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/36) (en revisión)
 
 - _(commits de esta tarea al fusionar su PR)_
 
