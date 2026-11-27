@@ -1,4 +1,5 @@
 import type { WorldPath } from './path';
+import { extent } from '../extent';
 import { type MeshData, ROAD_HALF_WIDTH_M } from './road';
 
 /** Deterministic pseudo-random number in [0, 1) for integer lattice coordinates. */
@@ -54,12 +55,12 @@ const FAR_MARGIN_M = 2000;
 
 /** Road heights spread over a coarse grid: cells on the road keep their mean, the rest are filled outwards and smoothed. */
 function farField(path: WorldPath): RoadIndex['far'] {
-  const xs = path.points.map((p) => p.x);
-  const zs = path.points.map((p) => p.z);
-  const minX = Math.min(...xs) - FAR_MARGIN_M;
-  const minZ = Math.min(...zs) - FAR_MARGIN_M;
-  const cols = Math.ceil((Math.max(...xs) + FAR_MARGIN_M - minX) / FAR_CELL_M) + 1;
-  const rows = Math.ceil((Math.max(...zs) + FAR_MARGIN_M - minZ) / FAR_CELL_M) + 1;
+  const ex = extent(path.points.map((p) => p.x));
+  const ez = extent(path.points.map((p) => p.z));
+  const minX = ex.min - FAR_MARGIN_M;
+  const minZ = ez.min - FAR_MARGIN_M;
+  const cols = Math.ceil((ex.max + FAR_MARGIN_M - minX) / FAR_CELL_M) + 1;
+  const rows = Math.ceil((ez.max + FAR_MARGIN_M - minZ) / FAR_CELL_M) + 1;
   const sum = new Float64Array(cols * rows);
   const count = new Float64Array(cols * rows);
   for (const p of path.points) {
@@ -231,13 +232,13 @@ export interface Bounds {
 }
 
 export function pathBounds(path: WorldPath, marginM: number): Bounds {
-  const xs = path.points.map((p) => p.x);
-  const zs = path.points.map((p) => p.z);
+  const ex = extent(path.points.map((p) => p.x));
+  const ez = extent(path.points.map((p) => p.z));
   return {
-    minX: Math.min(...xs) - marginM,
-    maxX: Math.max(...xs) + marginM,
-    minZ: Math.min(...zs) - marginM,
-    maxZ: Math.max(...zs) + marginM,
+    minX: ex.min - marginM,
+    maxX: ex.max + marginM,
+    minZ: ez.min - marginM,
+    maxZ: ez.max + marginM,
   };
 }
 

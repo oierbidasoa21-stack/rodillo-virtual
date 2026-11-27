@@ -1,3 +1,5 @@
+import { maxOf } from '../extent';
+
 /**
  * Power metrics over 1 Hz samples (one value in watts per second with a reading).
  * Formulas from CLAUDE.md.
@@ -22,7 +24,7 @@ export function averagePowerW(samples: readonly number[]): number | null {
 }
 
 export function maxPowerW(samples: readonly number[]): number | null {
-  return samples.length ? Math.max(...samples) : null;
+  return maxOf(samples);
 }
 
 /** NP: 30 s rolling mean, raised to the 4th, averaged, 4th root. Null under 30 s. */
@@ -51,7 +53,7 @@ export function kilojoules(samples: readonly number[]): number {
 /** Best mean power over any `windowSec` stretch, e.g. the best minute. */
 export function bestAverageW(samples: readonly number[], windowSec: number): number | null {
   const rolling = rollingMeans(samples, windowSec);
-  return rolling.length ? Math.max(...rolling) : null;
+  return maxOf(rolling);
 }
 
 /** Builds a 1 Hz power series from irregular clock ticks. */

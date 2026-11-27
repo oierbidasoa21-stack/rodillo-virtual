@@ -16,7 +16,8 @@ export interface MeshData {
 function rightAt(path: WorldPath, i: number): { x: number; z: number } {
   const pts = path.points;
   const n = pts.length;
-  // Direction over ±2 points (±20 m) so corners are not jagged.
+  // Direction over ±2 points: ±2 m on the smoothed path (one point per metre),
+  // which is the tangent of the curve.
   const get = (j: number) => {
     if (path.closed) return pts[((j % (n - 1)) + (n - 1)) % (n - 1)];
     return pts[Math.min(n - 1, Math.max(0, j))];

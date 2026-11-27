@@ -1,4 +1,5 @@
 import type { Route } from '../route/route';
+import { extent } from '../extent';
 
 /**
  * World coordinates in metres: x east, y up, z south (so -z is north, as in
@@ -38,7 +39,7 @@ export function projectRoute(route: Route): WorldPath {
   const pts = route.points;
   const lat0 = pts.reduce((s, p) => s + p.lat, 0) / Math.max(1, pts.length);
   const lon0 = pts.reduce((s, p) => s + p.lon, 0) / Math.max(1, pts.length);
-  const minEle = Math.min(...pts.map((p) => p.ele));
+  const minEle = extent(pts.map((p) => p.ele)).min;
   const k = EARTH_RADIUS_M * Math.cos(rad(lat0));
   const points = pts.map((p) => ({
     x: rad(p.lon - lon0) * k,
@@ -94,13 +95,32 @@ export function smoothPath(
 ): PathPoint[] {
   const n = pts.length;
   if (n < 3) return pts.slice();
-  // Neighbours past the ends: wrap on a closed path (whose last point repeats
-  // the first), mirror on an open one.
+  return closed ? smoothLoop(pts, stepM) : smoothOpen(pts, stepM);
+}
+
+/** Samples the curve from `p1` to `p2` (exclusive), with distances from `d1` to `d2`. */
+function sampleSegment(
+  out: PathPoint[],
+  p0: PathPoint,
+  p1: PathPoint,
+  p2: PathPoint,
+  p3: PathPoint,
+  d1: number,
+  d2: number,
+  stepM: number,
+): void {
+  const steps = Math.max(1, Math.round((d2 - d1) / stepM));
+  for (let k = 0; k < steps; k++) {
+    const u = k / steps;
+    const { x, z } = catmullRom(p0, p1, p2, p3, u);
+    out.push({ x, z, y: p1.y + (p2.y - p1.y) * u, d: d1 + (d2 - d1) * u });
+  }
+}
+
+/** Open route: past the ends the neighbour is mirrored, so the curve leaves straight. */
+function smoothOpen(pts: readonly PathPoint[], stepM: number): PathPoint[] {
+  const n = pts.length;
   const at = (i: number): PathPoint => {
-    if (closed) {
-      const m = n - 1;
-      return pts[((i % m) + m) % m] as PathPoint;
-    }
     if (i < 0) {
       const a = pts[0] as PathPoint;
       const b = pts[1] as PathPoint;
@@ -117,14 +137,39 @@ export function smoothPath(
   for (let i = 0; i < n - 1; i++) {
     const p1 = pts[i] as PathPoint;
     const p2 = pts[i + 1] as PathPoint;
-    const steps = Math.max(1, Math.round((p2.d - p1.d) / stepM));
-    for (let k = 0; k < steps; k++) {
-      const u = k / steps;
-      const { x, z } = catmullRom(at(i - 1), p1, p2, at(i + 2), u);
-      out.push({ x, z, y: p1.y + (p2.y - p1.y) * u, d: p1.d + (p2.d - p1.d) * u });
-    }
+    sampleSegment(out, at(i - 1), p1, p2, at(i + 2), p1.d, p2.d, stepM);
   }
   out.push({ ...(pts[n - 1] as PathPoint) });
+  return out;
+}
+
+/**
+ * Closed route («closed» means its ends are less than 30 m apart, not that the
+ * last point repeats the first): the loop is closed explicitly, with the
+ * closing stretch from the last point back to the first drawn with the same
+ * curve, so there is neither a gap nor a kink where it joins. The closing
+ * stretch gets distances past the route's length: the road is drawn there, but
+ * positions (which wrap at the route's length) jump it at each lap, as the 2D
+ * view and the recording do.
+ */
+function smoothLoop(pts: readonly PathPoint[], stepM: number): PathPoint[] {
+  const first = pts[0] as PathPoint;
+  const last = pts[pts.length - 1] as PathPoint;
+  const gap = Math.hypot(last.x - first.x, last.z - first.z);
+  const repeats = gap < 0.5;
+  // The loop's own points, without a last point that repeats the first.
+  const ring = repeats ? pts.slice(0, -1) : pts.slice();
+  const m = ring.length;
+  const at = (i: number) => ring[((i % m) + m) % m] as PathPoint;
+  const endD = repeats ? last.d : last.d + gap;
+  const out: PathPoint[] = [];
+  for (let i = 0; i < m; i++) {
+    const p1 = at(i);
+    const closing = i === m - 1;
+    const p2 = closing ? first : at(i + 1);
+    sampleSegment(out, at(i - 1), p1, p2, at(i + 2), p1.d, closing ? endD : p2.d, stepM);
+  }
+  out.push({ ...first, d: endD });
   return out;
 }
 

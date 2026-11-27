@@ -90,4 +90,34 @@ describe('smooth curves', () => {
       expect(Math.abs(Math.abs(x) - 1 / R)).toBeLessThan(0.004);
     }
   });
+
+  it('closes a loop whose ends are 20 m apart, with no kink where it joins', () => {
+    // A circle of radius 100 m that stops 20 m short of where it started:
+    // «closed» (ends under 30 m apart) but the last point does not repeat the first.
+    const r = 100;
+    const pts: PathPoint[] = [];
+    for (let s = 0; s <= 2 * Math.PI * r - 20; s += 10) {
+      const a = s / r;
+      pts.push({ x: r * Math.cos(a), y: 0, z: r * Math.sin(a), d: s });
+    }
+    const loop = smoothPath(pts, true);
+    const first = loop[0];
+    const last = loop.at(-1);
+    // The drawn road ends where it starts: no gap.
+    expect(
+      Math.hypot((last?.x ?? 0) - (first?.x ?? 0), (last?.z ?? 0) - (first?.z ?? 0)),
+    ).toBeLessThan(1e-6);
+    // Direction between consecutive samples turns smoothly all round, the
+    // junction included (about 1/R per metre, never a jump).
+    const dir = (i: number) => {
+      const a = loop[i] ?? loop[0];
+      const b = loop[i + 1] ?? loop[0];
+      return Math.atan2((b?.x ?? 0) - (a?.x ?? 0), -((b?.z ?? 0) - (a?.z ?? 0)));
+    };
+    for (let i = 0; i < loop.length - 2; i++) {
+      expect(Math.abs(wrap(dir(i + 1) - dir(i)))).toBeLessThan(0.03);
+    }
+    // And the junction itself, from the last segment into the first.
+    expect(Math.abs(wrap(dir(0) - dir(loop.length - 2)))).toBeLessThan(0.03);
+  });
 });
