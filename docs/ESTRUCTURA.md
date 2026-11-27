@@ -126,13 +126,13 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 
 **`world/`** · geometría del mundo 3D
 
-| Archivo       | Para qué sirve                                                                                            |
-| ------------- | --------------------------------------------------------------------------------------------------------- |
-| `path.ts`     | Proyecta la ruta a metros locales; pose del ciclista y posición de la cámara.                             |
-| `road.ts`     | Mallas de carretera, arcenes, líneas central y laterales, y balizas.                                      |
-| `terrain.ts`  | Suelo: ruido, colinas, altura junto a la carretera, rejilla del terreno, generador aleatorio con semilla. |
-| `scenery.ts`  | Árboles, matorrales y rocas a lo largo de la carretera, y anillo de montañas del horizonte.               |
-| `roadside.ts` | Público (más en subidas, curvas, salida y llegada) y quitamiedos en las curvas cerradas.                  |
+| Archivo       | Para qué sirve                                                                                                                           |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `path.ts`     | Proyecta la ruta a metros locales y la suaviza (spline cada metro); pose del ciclista (rumbo desde la tangente) y posición de la cámara. |
+| `road.ts`     | Mallas de carretera, arcenes, líneas central y laterales, y balizas.                                                                     |
+| `terrain.ts`  | Suelo: ruido, colinas, altura junto a la carretera, rejilla del terreno, generador aleatorio con semilla.                                |
+| `scenery.ts`  | Árboles, matorrales y rocas a lo largo de la carretera, y anillo de montañas del horizonte.                                              |
+| `roadside.ts` | Público (más en subidas, curvas, salida y llegada) y quitamiedos en las curvas cerradas.                                                 |
 
 **`plan/`** · puente con el agente entrenador
 

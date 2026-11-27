@@ -1,4 +1,5 @@
 import type { RecordSample } from './recording';
+import { maxOf } from '../domain/extent';
 
 export interface TcxInput {
   name: string;
@@ -62,7 +63,7 @@ export function buildTcx(input: TcxInput): string {
   if (hrs.length) {
     const avg = hrs.reduce((a, b) => a + b, 0) / hrs.length;
     lap.push(`<AverageHeartRateBpm><Value>${int(avg)}</Value></AverageHeartRateBpm>`);
-    lap.push(`<MaximumHeartRateBpm><Value>${int(Math.max(...hrs))}</Value></MaximumHeartRateBpm>`);
+    lap.push(`<MaximumHeartRateBpm><Value>${int(maxOf(hrs) ?? 0)}</Value></MaximumHeartRateBpm>`);
   }
   lap.push('<Intensity>Active</Intensity>', '<TriggerMethod>Manual</TriggerMethod>');
 

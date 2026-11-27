@@ -58,3 +58,5 @@ _2026-11-27 (2): el usuario pide **apuntar, no hacer**, una lista de tareas para
 _2026-11-27 (3): más tareas apuntadas: propuesta de roadmap (fases 9 y 13–15), GitHub profesional (T7), base de datos centralizada (T8, en estudio), rodillo casero (T9, en estudio). **Reparto:** Claude en la nube hace de intermediario y el agente de VS Code hace los cambios._
 
 _2026-11-28: el agente de VS Code fusiona el PR #31 (plan de las fases 10–12) y el #32 (roadmap: «Fase actual: 9» y orden de ejecución). **T1 (zonas Z1…Z6) hecha en el [PR #33](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/33)**, con CI en verde y **abierto para que lo revise Claude en la nube** (no se fusiona sin revisión). 322 tests. Siguiente tarea de la Fase 9 tras la revisión: T12 (curvas suaves) o T2._
+
+_2026-11-28 (2): PR #33 (T1, zonas Z1…Z6) revisado por Claude en la nube y fusionado. **T12 (curvas suaves) hecha en el [PR #35](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/35), abierto para revisión.** Plan y estado de la Fase 9 en `fases/fase-9-mantenimiento.md`. 328 tests._

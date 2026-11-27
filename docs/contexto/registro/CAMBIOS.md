@@ -143,9 +143,15 @@ Ramas: feat/world-realism, feat/world-spectators, feat/fitness, feat/coach-plan
 
 ## Fase 9 — Mantenimiento
 
-### T1 · Zonas Z1…Z6 · rama `feat/zones-z1-z6`, [PR #33](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/33) (en revisión)
+### T1 · Zonas Z1…Z6 · rama `feat/zones-z1-z6`, [PR #33](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/33) (fusionado el 2026-11-28)
 
 - `2af00bf` · 2026-11-27 · feat(zones): rename heart rate zones L1…VO2 to Z1…Z6, with migration
 - `fe6d3b2` · 2026-11-27 · feat(ui): say and show Z1…Z6, and tell heart rate zones from power zones
 - `cb0799c` · 2026-11-27 · docs: zones Z1…Z6 in CLAUDE.md, the structure guide, the agent guide and Dexie v6
 - `5e00464` · 2026-11-27 · style: format the docs touched by the zone rename
+
+### T12 · Curvas suaves · rama `fix/smooth-curves`, [PR #35](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/35) (en revisión)
+
+- `7583d2a` · 2026-11-27 · fix(world): smooth curves: spline path every metre, heading from the tangent, gentler camera
+- `8be9924` · 2026-11-27 · docs: phase 9 plan, T12 done and in review
+- `856ae4b` · 2026-11-27 · fix(world): no stack overflow on long routes; close loops explicitly

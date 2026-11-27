@@ -150,8 +150,11 @@ describe('terrain', () => {
   });
 
   it('keeps the ground just under the road all along it', () => {
+    // About 0.6 m under the road at every point of the (dense, smoothed) path.
     for (const p of path.points) {
-      expect(groundHeight(index, p.x, p.z)).toBeCloseTo(p.y - GROUND_BELOW_ROAD_M, 1);
+      const below = p.y - groundHeight(index, p.x, p.z);
+      expect(below).toBeGreaterThan(GROUND_BELOW_ROAD_M - 0.15);
+      expect(below).toBeLessThan(GROUND_BELOW_ROAD_M + 0.15);
     }
     expect(roadNear(index, 50, -500).distM).toBeCloseTo(50, 0);
   });
