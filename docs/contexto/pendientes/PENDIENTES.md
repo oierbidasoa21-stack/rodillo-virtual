@@ -59,13 +59,13 @@ Pedido por el usuario: las zonas pasan de `L1, L2, L3, UA, UA+, VO2` a `Z1, Z2, 
   - **Fase 13 — GitHub profesional** (T7) y **Fase 14 — Docker de producción y seguridad** (T4). Van juntas o seguidas, porque la CSP y CI se tocan en las dos.
   - **Fase 15 — Mejoras aceptadas** (punto 5 del estudio, sin el modo daltónico): copia cifrada, recordatorio de copia, límites al importar, panel de inicio, calidad gráfica del 3D, FIT, Strava y zonas desde un test.
   - **En espera o en estudio**, sin número: Fase 8 (rodillo inteligente o casero, T5 y T9), base de datos centralizada (T8), AWS (T6) y modo local con repo privado (T3, depende de T7).
-  - **Orden de ejecución propuesto (2026-11-27, pendiente de que el usuario lo confirme):** el usuario sugiere hacer 13–15 antes que 10–12. Claude está de acuerdo con matices:
+  - **Orden de ejecución (confirmado por el usuario el 2026-11-27):** el usuario sugiere hacer 13–15 antes que 10–12. Claude está de acuerdo con matices:
     1. **Fase 9** (zonas y seguimiento): lo más pequeño, y cambia el modelo de datos, así que mejor antes de añadir nada más.
     2. **Fase 13** (GitHub profesional): fija la forma de trabajar (todo por PR, CI obligatorio, plantillas). Con dos agentes, cuanto antes mejor: todo lo que venga después ya pasa por ese filtro. Se puede hacer mientras el repo siga público, porque las reglas de rama son gratis en públicos.
     3. **Fase 14** (Docker de producción y seguridad): poner la CSP estricta **antes** de la Fase 10 es seguridad desde el diseño. Luego la Fase 10 solo abre, de forma explícita, los servicios de teselas que necesita, en vez de tener que cerrar después lo que quedó abierto.
     4. **Fase 15** partida en dos:
        - **15a, antes de la 10**: lo pequeño (recordatorio de copia, límites al importar, copia cifrada, calidad gráfica del 3D, panel de inicio). Los límites al importar y la copia cifrada encajan con la Fase 14.
-       - **15b, después o en espera**: exportar FIT y zonas desde un test. **Strava sale de la Fase 15**: necesita un secreto (OAuth), y por tanto una Edge Function o un servidor, así que depende de T8.
+       - **15b, después o en espera**: exportar FIT y zonas desde un test. **Strava sale de la Fase 15**: necesita un secreto (OAuth). **Decidido: se hará con Supabase** (Edge Function y tokens en una tabla con RLS), dentro de T8.
     5. **Fases 10 → 11 → 12** (paisaje real): lo más grande y con más riesgo (servicios externos, rendimiento, licencias). Mejor con la base ya limpia y segura.
     6. **Fase 8** cuando haya rodillo: es independiente y puede entrar en cualquier momento.
     - **Los números no se cambian**, aunque el orden sea otro: los issues y milestones de #31 ya usan 10–12. En `ROADMAP.md` basta con poner «Fase actual: 9» y una línea con el orden de ejecución. Recordar la regla 1 de `CLAUDE.md` (trabajar solo en la fase actual).
@@ -162,6 +162,22 @@ Pedido por el usuario el 2026-11-27. Detalle y porqué en el punto 7 del estudio
 
 ### T8 · Base de datos centralizada (en estudio)
 
+**Decisión (2026-11-27):** el proveedor será **Supabase**, primero para Strava y después, si se centralizan los datos, para la base de datos (opción C). Antes de construir nada, hay que diseñarlo en una fase propia:
+
+- tablas y políticas RLS con tests;
+- login;
+- sincronización con Dexie sin perder el modo sin conexión;
+- región UE.
+
+Al empezarla, cambiar la regla «sin backend, sin cuentas» de `CLAUDE.md`.
+
+**Strava con Supabase** (punto 8.2 del estudio):
+
+- Edge Function `strava-oauth`, que cambia el código por tokens con el _client secret_, guardado como secreto de Supabase y nunca en el repo ni en la web;
+- tabla `strava_tokens` con RLS (solo su dueño);
+- refresco del token en la función;
+- subida del TCX o FIT desde la app con el token.
+
 Aclaración del 2026-11-27: con **Supabase** (opción C) **no hay que programar un backend propio**. La app habla directamente con Supabase, la seguridad va en políticas RLS por tabla y solo Strava necesitaría una Edge Function. Sí hay que diseñar las tablas, las políticas RLS y el login. Detalle en el punto 8.1 del estudio.
 
 Pregunta del usuario el 2026-11-27. Opciones en el punto 8 del estudio:
@@ -182,6 +198,7 @@ El usuario quiere saber si le sale más barato montar uno con piezas y el softwa
 **El usuario todavía no tiene rodillo** (2026-11-27). Con eso, la comparación de coste total del punto 6 del estudio da que el casero apenas ahorra frente a un **FTMS de segunda mano (150–250 €, orientativo)** y da mucho menos.
 
 - **Recomendación:** comprar un FTMS de segunda mano.
+- **Decisión del usuario (2026-11-27):** si el casero se complica y sale más rentable comprar, se compra. Con los números del estudio es así, así que **la vía elegida es comprar un rodillo FTMS** (mejor de segunda mano). El casero queda descartado salvo que el usuario quiera retomarlo como proyecto.
 - **Casero:** solo como proyecto opcional. Si sale adelante, el firmware va en `firmware/` o en otro repo, y la app no cambia (Fase 8).
 - **Si compra un rodillo magnético tonto:** la app hoy solo trae curvas de fluido, así que habría que meter una curva personalizada.
 - Cuando compre, actualizar «Atleta y equipo» en `CLAUDE.md`.

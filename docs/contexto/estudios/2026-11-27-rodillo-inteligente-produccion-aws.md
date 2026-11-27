@@ -196,3 +196,21 @@ La idea: comprar piezas baratas, ponerlas en el rodillo tonto y que la app lo co
 - cambia la regla «sin backend, sin cuentas» de `CLAUDE.md`.
 
 **Resumen:** con Supabase no se programa un backend, pero sí se diseña y se asegura la base de datos (tablas, RLS y login). Es la forma más barata y rápida de tener la opción C.
+
+### 8.2 ¿Supabase es la mejor opción para Strava?
+
+Para subir a Strava hace falta guardar un **secreto** (el _client secret_ de la app de Strava) y los **tokens** de cada usuario (el de acceso caduca a las pocas horas y se renueva con otro). Opciones:
+
+| Opción                       | Secreto             | Dónde guardar los tokens       | Comentario                                                                        |
+| ---------------------------- | ------------------- | ------------------------------ | --------------------------------------------------------------------------------- |
+| **Supabase** (Edge Function) | Secreto de Supabase | Tabla con RLS en la misma base | Todo en un sitio, y sirve después para centralizar los datos (T8).                |
+| Cloudflare Workers           | Secreto del Worker  | KV o D1 aparte                 | Muy ligero y barato, pero es otro proveedor más y no sirve para la base de datos. |
+| AWS Lambda                   | Secrets Manager     | DynamoDB                       | Más piezas y más configuración para lo mismo.                                     |
+
+**Conclusión: Supabase.** Para solo Strava, Cloudflare sería un poco más ligero, pero como también se quiere centralizar los datos, un solo proveedor para login, base de datos y funciones es más simple y más fácil de asegurar.
+
+A tener en cuenta:
+
+- **Las apps nuevas de la API de Strava suelen empezar limitadas a un solo atleta** hasta que Strava las revisa. Para uso personal basta; para un producto habría que pedir la ampliación y cumplir sus normas de marca. Comprobar las condiciones actuales.
+- **El plan gratuito pausa los proyectos inactivos**: si pasa mucho tiempo sin usarse, habrá que reactivarlo.
+- **El login de Supabase hace falta** para saber de quién es cada token: una cuenta con enlace mágico al correo.
