@@ -154,3 +154,4 @@ Ramas: feat/world-realism, feat/world-spectators, feat/fitness, feat/coach-plan
 
 - `7583d2a` · 2026-11-27 · fix(world): smooth curves: spline path every metre, heading from the tangent, gentler camera
 - `8be9924` · 2026-11-27 · docs: phase 9 plan, T12 done and in review
+- `856ae4b` · 2026-11-27 · fix(world): no stack overflow on long routes; close loops explicitly
