@@ -178,6 +178,12 @@ Al empezarla, cambiar la regla «sin backend, sin cuentas» de `CLAUDE.md`.
 - refresco del token en la función;
 - subida del TCX o FIT desde la app con el token.
 
+Si se comparte el proyecto (punto 8.3 del estudio):
+
+- exportar a mano tiene que seguir funcionando para todos;
+- las claves van por configuración y la integración se desactiva si faltan;
+- antes de dejar conectarse a otras personas: pedir a Strava la ampliación de atletas y tener política de privacidad y consentimiento (RGPD).
+
 Aclaración del 2026-11-27: con **Supabase** (opción C) **no hay que programar un backend propio**. La app habla directamente con Supabase, la seguridad va en políticas RLS por tabla y solo Strava necesitaría una Edge Function. Sí hay que diseñar las tablas, las políticas RLS y el login. Detalle en el punto 8.1 del estudio.
 
 Pregunta del usuario el 2026-11-27. Opciones en el punto 8 del estudio:

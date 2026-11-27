@@ -214,3 +214,15 @@ A tener en cuenta:
 - **Las apps nuevas de la API de Strava suelen empezar limitadas a un solo atleta** hasta que Strava las revisa. Para uso personal basta; para un producto habría que pedir la ampliación y cumplir sus normas de marca. Comprobar las condiciones actuales.
 - **El plan gratuito pausa los proyectos inactivos**: si pasa mucho tiempo sin usarse, habrá que reactivarlo.
 - **El login de Supabase hace falta** para saber de quién es cada token: una cuenta con enlace mágico al correo.
+
+### 8.3 Si el proyecto se comparte, ¿los demás podrán subir a Strava?
+
+- **Exportar el archivo y subirlo a mano: sí, siempre y para cualquiera.** El TCX funciona hoy (FIT llegará en la Fase 15b). No necesita Supabase ni cuentas, así que tiene que mantenerse como opción base.
+- **Subida automática con la integración de Strava:**
+  - **Con tu Supabase y tu app de Strava:** al principio solo podrás conectarte tú, porque las apps nuevas de Strava suelen estar limitadas a un atleta. Para más personas hay que pedir a Strava la ampliación, lo que implica revisión, cumplir sus normas de marca y tener política de privacidad. Además, sus datos y sus tokens estarían en tu base: pasarías a ser **responsable de datos de salud de terceros** (RGPD: consentimiento, política de privacidad, contrato con Supabase).
+  - **Cada uno con lo suyo** (comparte el repo o la imagen Docker): cada persona crea su app de Strava y su proyecto de Supabase y mete sus claves por configuración. Es más trabajo para ellos, pero tú no guardas datos de nadie.
+- **Garmin Connect** es más difícil: su API es para empresas aprobadas. Para Garmin, mejor exportar y subir el archivo.
+- **Consecuencia para el diseño (T8):**
+  - las claves de Strava y Supabase van por configuración, nunca en el código;
+  - la app funciona entera sin ellas (con exportar a mano);
+  - la integración queda desactivada si no hay claves.
