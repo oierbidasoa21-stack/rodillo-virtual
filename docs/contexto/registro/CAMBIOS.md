@@ -169,6 +169,8 @@ Ramas: feat/world-realism, feat/world-spectators, feat/fitness, feat/coach-plan
 - `650611b` · 2026-11-27 · docs(manual): user manual for the whole app
 - `33f3718` · 2026-11-27 · docs(readme): short front page that links to the manual
 - `1cc33bd` · 2026-11-27 · docs(claude): cloud change agent in the work split; keep the manual up to date
+- `907315e` · 2026-11-27 · docs(contexto): T11 in review in PR #67
+- _(y el commit con las decisiones del 2026-11-28: Datos en Supabase en el orden, repo público, licencia y rodillo FTMS)_
 
 ## Documentación de contexto (`docs/contexto/`) desde `3250f48`
 

@@ -6,7 +6,7 @@ _Última actualización: 2026-11-28._
 
 ## En una frase
 
-Las **fases 0 a 7 están hechas y publicadas** en https://oierbidasoa21-stack.github.io/rodillo-virtual/, más las mejoras de después (realismo 3D, forma y fatiga, fantasma, voz, plan del entrenador, Docker y pantalla completa). **Fase actual: 9 (mantenimiento).** Orden de ejecución: 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → T13 → T19; la 8 queda en espera hasta que haya rodillo. Las fases 3 a 7 están comprobadas con **sensores simulados**; falta probarlas con hardware real.
+Las **fases 0 a 7 están hechas y publicadas** en https://oierbidasoa21-stack.github.io/rodillo-virtual/, más las mejoras de después (realismo 3D, forma y fatiga, fantasma, voz, plan del entrenador, Docker y pantalla completa). **Fase actual: 9 (mantenimiento).** Orden de ejecución: 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → Datos en Supabase → T13 → T19; la 8 queda en espera hasta que llegue el rodillo FTMS que el usuario va a comprar. El repo se queda público (T3 descartada) y la licencia es «todos los derechos reservados» (decisiones del 2026-11-28). Las fases 3 a 7 están comprobadas con **sensores simulados**; falta probarlas con hardware real.
 
 ## Fases
 

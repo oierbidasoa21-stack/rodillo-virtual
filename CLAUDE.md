@@ -26,7 +26,7 @@ Aplicación web de entrenamiento en rodillo para **uso personal**, inspirada en 
 - Entreno **por pulso y sensaciones**. Aún no tengo FTP medido.
 
 - Bici: Van Rysel EDR AF, ruedas 700×32.
-- Equipo previsto: **rodillo "tonto"** + banda de pulso BLE + sensor de velocidad BLE en la rueda trasera. Puede que más adelante haya rodillo inteligente (FTMS). El diseño soporta ambos.
+- Equipo previsto: **rodillo "tonto"** + banda de pulso BLE + sensor de velocidad BLE en la rueda trasera. El usuario comprará un rodillo inteligente con FTMS (decidido el 2026-11-28): la Fase 8 empieza cuando lo tenga. El diseño soporta ambos.
 - Regla: **la app nunca inventa datos**. Si un sensor no está conectado, la métrica que depende de él no se muestra. Las métricas estimadas (potencia en rodillo tonto, kcal) se marcan siempre como estimadas.
 
 ## Stack
@@ -117,6 +117,7 @@ Cada fórmula vive en `domain/` con tests que incluyan al menos un caso calculad
 - Claude en la nube sube a `main` en pocos commits. Si un merge se rechaza porque `main` cambió mientras tanto, trae `main` a la rama con un merge normal (sin `rebase` forzado) y vuelve a intentarlo.
 - Nunca subas datos personales: exportaciones de entrenamientos y archivos `.tcx`/`.fit`/`.gpx` propios van en `data/`, que está en `.gitignore`.
 - Sin secretos en el repo (no hacen falta: no hay backend).
+- El repo es **público** y se queda así (decidido el 2026-11-28; el modo local con repo privado, T3, queda descartado). Licencia: **todos los derechos reservados**, sin licencia libre.
 
 ## Comandos
 
