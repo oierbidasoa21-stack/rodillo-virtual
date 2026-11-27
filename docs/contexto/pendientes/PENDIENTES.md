@@ -310,6 +310,8 @@ Pedido el 2026-11-27: que el agente de VS Code actualice la documentación para 
 
 ### T12 · Curvas suaves en la vista 3D (fallo, Fase 9)
 
+**Estado (2026-11-28): hecha en un PR abierto para revisión** (ver `fases/fase-9-mantenimiento.md`): spline cada metro, rumbo desde la tangente, cámara amortiguada y test del arco de radio conocido.
+
 **El usuario lo confirma (2026-11-28): curvas antes que el realismo.**
 
 El usuario lo notó el 2026-11-27: en las curvas el ciclista gira «a tirones». **No depende de los niveles de realismo**: es un fallo de la geometría, y se arregla antes.
