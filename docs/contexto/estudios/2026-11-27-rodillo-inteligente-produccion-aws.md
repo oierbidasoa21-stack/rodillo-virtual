@@ -1,10 +1,19 @@
 # Preguntas del 2026-11-27: rodillo inteligente, producción, datos y AWS
 
+> **Estado actual (2026-11-28), lo que manda si algo de abajo choca:**
+>
+> - Strava va **sin API ni Supabase**: descarga del archivo al guardar y subida a mano (opción b, Fase 15a). Lo de OAuth, Edge Functions y la subida automática solo valdría si algún día se paga la suscripción.
+> - Rodillo: se comprará un **FTMS de segunda mano**; el casero queda descartado.
+> - Supabase solo si se centralizan los datos (T8, en estudio).
+> - Las ideas de seguridad van al final de todo (T19); la CSP sigue en la Fase 14.
+
 Respuestas a lo que preguntó el usuario el 2026-11-27. Solo es estudio: **nada de esto está hecho**. Las tareas que salen de aquí están en [`../pendientes/PENDIENTES.md`](../pendientes/PENDIENTES.md) y las hará el agente de cambios del usuario.
 
 ## 1. ¿Se puede hacer el software para el rodillo inteligente?
 
 **Sí.** Es la Fase 8 (issues #10, #11 y #12) y el diseño ya está preparado para ella.
+
+**Qué es un rodillo inteligente:** uno que **ajusta la resistencia solo**, mandado por la app. En **modo simulación** endurece en las subidas y suaviza en las bajadas según la pendiente de la ruta; en **modo ERG** mantiene los vatios del bloque aunque cambies de cadencia. Además mide la potencia de verdad.
 
 - **Cómo se conecta:** por Web Bluetooth, con el estándar **FTMS** (Fitness Machine Service, `0x1826`). La mayoría de rodillos inteligentes actuales lo traen (hay que comprobarlo en la ficha de cada modelo).
   - Lectura: característica _Indoor Bike Data_ (`0x2AD2`): potencia, cadencia y velocidad **medidas**, ya no estimadas.
@@ -92,7 +101,7 @@ GitHub Actions → OIDC (sin claves guardadas) → sube dist/ a S3 e invalida la
 **Mejor**
 
 - Exportar **FIT** además de TCX (Garmin lo prefiere).
-- Subida directa a Strava (necesita OAuth y por tanto un pequeño backend; se puede dejar para la versión con AWS).
+- ~~Subida directa a Strava~~: la API es de pago; se hará la opción (b), ver 8.4.
 - Zonas de pulso calculadas a partir de un test (umbral en 30′) en vez de meterlas a mano.
 
 **Decisión del usuario sobre estas ideas (2026-11-27, segunda parte):** le parecen bien todas **menos el modo daltónico**, que no le interesa por ahora.

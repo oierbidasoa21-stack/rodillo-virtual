@@ -64,10 +64,18 @@ Pedido por el usuario: las zonas pasan de `L1, L2, L3, UA, UA+, VO2` a `Z1, Z2, 
     2. **Fase 13** (GitHub profesional): fija la forma de trabajar (todo por PR, CI obligatorio, plantillas). Con dos agentes, cuanto antes mejor: todo lo que venga después ya pasa por ese filtro. Se puede hacer mientras el repo siga público, porque las reglas de rama son gratis en públicos.
     3. **Fase 14** (Docker de producción y seguridad): poner la CSP estricta **antes** de la Fase 10 es seguridad desde el diseño. Luego la Fase 10 solo abre, de forma explícita, los servicios de teselas que necesita, en vez de tener que cerrar después lo que quedó abierto.
     4. **Fase 15** partida en dos:
-       - **15a, antes de la 10**: lo pequeño (recordatorio de copia, límites al importar, copia cifrada, calidad gráfica del 3D, panel de inicio) y **Strava opción (b)**: descargar el archivo al guardar y botón «Abrir Strava para subir» (ver T8). Los límites al importar y la copia cifrada encajan con la Fase 14.
-       - **15b, después o en espera**: exportar FIT (botón «Descargar FIT» junto al TCX, con el FIT SDK oficial de Garmin, mismos datos; el usuario lo quiere para compartir con su entrenador) y zonas desde un test. ~~Strava sale de la Fase 15 y va con Supabase~~. **Cambio (2026-11-27):** la API de Strava es de pago, y el usuario elige la opción (b) sin API, que vuelve a la Fase 15a.
+       - **15a, antes de la 10**: calidad gráfica del 3D, panel de inicio, **Strava opción (b)** (T8), **meta o arco de llegada** (T16), **pulso máximo de la sesión** (T17) y **reconexión de Bluetooth sin preguntar** (T18). ~~Recordatorio de copia, límites al importar y copia cifrada~~: van al final (T19), por decisión del 2026-11-28.
+       - **15b, después o en espera**: exportar FIT (botón «Descargar FIT» junto al TCX, con el FIT SDK oficial de Garmin, mismos datos; el usuario lo quiere para compartir con su entrenador) y zonas desde un test, con **sugerencias de zonas** y sensaciones al terminar (T20). ~~Strava sale de la Fase 15 y va con Supabase~~. **Cambio (2026-11-27):** la API de Strava es de pago, y el usuario elige la opción (b) sin API, que vuelve a la Fase 15a.
     5. **Fases 10 → 11 → 12** (paisaje real): lo más grande y con más riesgo (servicios externos, rendimiento, licencias). Mejor con la base ya limpia y segura.
     6. **Fase 8** cuando haya rodillo: es independiente y puede entrar en cualquier momento.
+    7. **Añadidos del 2026-11-28:**
+       - la **Fase 9** suma T12 (curvas suaves) y T11 (README y manual);
+       - **crear ruta en un mapa** (T14) va justo después de la 10;
+       - el **ciclista realista** (T13) va después de la 12;
+       - la **seguridad complementaria** (T19) es lo último de todo;
+       - T16, T17 y T18 van a la 15a, y T20 a la 15b.
+
+       Orden completo: 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → T13 → T19 (la 8 cuando haya rodillo).
     - **Los números no se cambian**, aunque el orden sea otro: los issues y milestones de #31 ya usan 10–12. En `ROADMAP.md` basta con poner «Fase actual: 9» y una línea con el orden de ejecución. Recordar la regla 1 de `CLAUDE.md` (trabajar solo en la fase actual).
   - Cada fase con su milestone y un issue por casilla (regla 8 de `CLAUDE.md`). Añadir también la regla del reparto de trabajo de arriba a `CLAUDE.md` («Forma de trabajar» y «Git y GitHub»).
 - [ ] Esta lista «Fases por hacer» estaba desfasada (decía que faltaban la 6 y la 7): ya corregida abajo; repasarla tras T0.
@@ -276,6 +284,105 @@ Pedido el 2026-11-27: que el agente de VS Code actualice la documentación para 
 - no hay datos personales en capturas ni en ejemplos;
 - la regla de `CLAUDE.md` está añadida.
 
+### T12 · Curvas suaves en la vista 3D (fallo, Fase 9)
+
+El usuario lo notó el 2026-11-27: en las curvas el ciclista gira «a tirones». **No depende de los niveles de realismo**: es un fallo de la geometría, y se arregla antes.
+
+- **Causa probable** (`src/domain/world/path.ts`):
+  - la ruta se remuestrea cada 10 m y `pointAt` interpola en línea recta entre puntos, así que el camino es una poligonal con esquinas;
+  - `poseAt` saca el rumbo con una ventana de ±5 m, por lo que el rumbo cambia de golpe en cada vértice;
+  - la carretera, los quitamiedos y las balizas usan la misma poligonal.
+- **Arreglo propuesto:**
+  - suavizar el trazado en planta (spline Catmull-Rom centrípeta, o un suavizado previo de lat/lon del GPX) y remuestrear denso (~1 m) para el mundo 3D;
+  - rumbo desde la tangente de la curva;
+  - un poco de amortiguación en la cámara y en la inclinación del ciclista.
+- Test en `domain/world` con un caso a mano: en un arco de radio conocido, el cambio de rumbo entre muestras seguidas es pequeño y constante.
+- Comprobación visual con la demo 3D en una ruta con curvas.
+
+### T13 · Ciclista realista
+
+Pregunta del 2026-11-27: **los niveles 1–3 mejoran el paisaje, no el ciclista**; seguiría siendo el «muñequito» actual.
+
+- Para un ciclista realista: modelo 3D detallado (glTF) con esqueleto, animación de pedaleo ligada a la cadencia y bici con detalle.
+- El modelo tiene que ser propio o con licencia libre (CC0 o CC-BY) y no puede parecerse a los de Zwift.
+- Al terminar, el público también puede usar modelos mejores.
+- **Cuándo:** después de la Fase 12, o antes si el usuario lo prioriza; es independiente del paisaje. Hay que cuidar el rendimiento (calidad gráfica de la 15a).
+
+### T14 · Crear una ruta eligiendo puntos en un mapa
+
+Pedido el 2026-11-27 («con lo del GPX sería bomba»):
+
+- El usuario marca inicio, fin y puntos de paso en un mapa, y la app calcula el recorrido por carreteras, le pone altitud y lo guarda como una ruta más, igual que un GPX importado.
+- **Cómo:**
+  - mapa con teselas de OpenStreetMap, con atribución;
+  - rutas por un servicio gratuito de cálculo para bici: BRouter (sin clave) u OpenRouteService (clave gratuita). Google Maps sirve, pero es de pago y con clave;
+  - la altitud, desde las teselas de relieve de la Fase 10, que ya se decodifican allí.
+- **Cuándo:** justo después de la Fase 10, porque reutiliza su lógica de teselas y relieve.
+- Privacidad: avisar de que el servicio de rutas recibe los puntos elegidos.
+
+### T15 · Clave de Google para el nivel 3 (cuando se hagan los niveles 1 y 2)
+
+El usuario quiere ayuda para darse de alta. **No es Google Earth, sino Google Maps Platform** (Photorealistic 3D Tiles, con la Map Tiles API). Pasos para hacerlos juntos al llegar a la Fase 12:
+
+1. Entrar en Google Cloud Console con su cuenta de Google y crear un proyecto.
+2. Crear una cuenta de facturación. Google pide tarjeta incluso para el uso gratuito.
+3. Activar la **Map Tiles API**.
+4. Crear una **clave de API restringida**: solo esa API y solo las direcciones de la app (`localhost` y la web publicada).
+5. Poner un **presupuesto con alertas** y cuotas diarias bajas, para que nunca haya un cargo inesperado.
+6. Pegar la clave en Ajustes de la app. Se guarda solo en su navegador y nunca va al repo.
+
+Comprobar en ese momento el precio y las condiciones (atribución, caché).
+
+### T16 · Arco o cámara de llegada («FINISH»)
+
+Pedido el 2026-11-27:
+
+- un arco de meta 3D propio al final de la ruta (o al final de cada vuelta);
+- al cruzarlo, una cámara lenta lateral o frontal unos segundos con el texto de llegada, y después el resumen.
+- **Condición del usuario:** que se mantenga con los niveles 2 y 3. Es un objeto propio colocado sobre la carretera del GPX, así que funciona con cualquier terreno; con las 3D Tiles de Google hay que comprobar que se ve bien sobre ellas.
+- Se hace en la 15a y se revisa en la 11 y la 12.
+
+### T17 · Pulso máximo de la sesión y avisos
+
+Pedido el 2026-11-27:
+
+- **Lo que ya existe:** el editor deja planificar por bloques de zona (por ejemplo 30′ Z2 + 20′ Z4 + 10′ Z2) y el player avisa por voz si el pulso sale de la zona del bloque (tras 60 s de bloque, avisa a los 25 s fuera y no repite antes de 90 s). Hay que contárselo bien al usuario en el manual (T11).
+- **Nuevo:**
+  - **pulso máximo** opcional por sesión, en ppm o como «no pasar de Z_n», y opcional también por bloque;
+  - si se supera, aviso inmediato (pitido y voz) que se repite mientras siga por encima, sin las esperas de los avisos de zona;
+  - el resumen muestra el tiempo por encima del máximo;
+  - se guarda con la sesión y en la copia de seguridad (cambio de modelo, así que migración de Dexie si hace falta).
+
+### T18 · Reconexión de Bluetooth sin preguntar
+
+Sobre la limitación «Chrome pide elegir el sensor una vez por sesión»:
+
+- **No hace falta hardware.** Chrome tiene una función experimental, la opción `chrome://flags/#enable-web-bluetooth-new-permissions-backend`, que permite recordar los sensores ya emparejados (`navigator.bluetooth.getDevices()` y `watchAdvertisements()`). La activa el usuario una vez en Chrome.
+- La app la usaría si está disponible y, si no, pediría el sensor como ahora.
+- Explicar en el manual cómo activarla. Es experimental: puede cambiar con las versiones de Chrome.
+
+### T19 · Seguridad complementaria (al final de todo)
+
+Decisión del usuario (2026-11-28): las ideas de seguridad del punto 5 del estudio se hacen **después de terminar con todo**, como algo complementario y pensado para empresa:
+
+- copia de seguridad cifrada;
+- recordatorio de copia;
+- límites de tamaño al importar;
+- y lo que salga de la revisión de seguridad.
+
+La CSP y las cabeceras siguen en la Fase 14. **[POR ACLARAR]** El usuario pide «context bombs»: preguntarle si se refiere a la CSP (_Content Security Policy_) o a trampas que avisan de un acceso indebido (_canary tokens_).
+
+### T20 · Sugerencias de zonas («X podría ser tu Z2»)
+
+Pedido el 2026-11-27: que la app avise si las zonas configuradas no encajan con lo que pasa en los entrenos, por ejemplo si el Z2 configurado está entre 130 y 140 pero los datos dicen otra cosa.
+
+- **Nunca cambia las zonas sola:** muestra una sugerencia con el porqué y el usuario la acepta o no (regla «no inventar datos»).
+- **De dónde sale:**
+  - (1) un test guiado de umbral de 30′: el pulso medio de los últimos 20′ da el umbral, y las zonas salen como % de ese umbral. Es lo de «zonas desde un test» de la 15b;
+  - (2) el historial: mejor pulso sostenido en 20–30′ en sesiones duras y pulso máximo visto;
+  - (3) sensaciones (escala de esfuerzo 1–10) que se piden al terminar cada sesión, porque el usuario entrena por pulso y sensaciones. Si en bloques de Z2 marca esfuerzo alto de forma repetida, es una pista.
+- Va en la 15b.
+
 ### T10 · Pasar las tareas a issues de GitHub (después)
 
 Pedido el 2026-11-27: **apuntado para hacerlo más adelante, no ahora.** Cuando el usuario lo diga:
@@ -295,18 +402,18 @@ Ver el detalle en [`fases/`](../fases/) y en `docs/ROADMAP.md`. Cada tarea es un
 
 ## Pruebas con hardware real (milestone propio)
 
-- [ ] Fase 2: instalar la PWA en Chrome para Windows, usarla sin conexión y ver el aviso de actualización.
+- [ ] Fase 2: instalar la PWA en Chrome para Windows, usarla sin conexión y ver el aviso de actualización. **2026-11-27:** el usuario la ha instalado y le sale el botón «Actualizar». Falta confirmar el uso sin conexión.
 - [ ] Fase 3: banda de pulso y sensor de velocidad/cadencia reales (pulso, velocidad y cadencia en directo, reconexión).
 - [ ] Fase 4: rodillo real (elegir su modelo o meter su curva) y ramp test de verdad.
 - [ ] Fase 5: una ruta completa con sensores reales.
 
 ## Limitaciones conocidas
 
-- Chrome pide elegir el sensor Bluetooth una vez por sesión de la app (reconectar sin pedirlo requiere un flag experimental).
-- El player con ruta cabe justo en 1280×900; en pantallas más bajas necesita algo de scroll.
+- Chrome pide elegir el sensor Bluetooth una vez por sesión de la app. Reconectar sin preguntar requiere activar una opción experimental de Chrome: ver T18.
+- ~~El player con ruta cabe justo en 1280×900~~: el usuario confirma (2026-11-27) que en su pantalla se ve bien sin scroll. Quitada.
 - El IF y el TSS se calculan con el FTP del momento; cambiar el FTP no recalcula sesiones antiguas.
 - Tras un ramp test con simulados se puede guardar un FTP simulado (avisa de que no es real).
-- Una sesión retomada no guarda el hueco en que la app estuvo cerrada: el TCX lleva el tiempo en movimiento seguido.
+- Una sesión retomada no guarda el hueco en que la app estuvo cerrada: el TCX lleva el tiempo en movimiento seguido. Ejemplo: si la app se cierra en el minuto 20 y vuelves a los 5 minutos, el archivo no muestra esa pausa de 5 minutos y la hora de fin sale 5 minutos antes de la real. No afecta a la distancia, al pulso ni a la carga.
 - La vista 3D está en «Rodar» y en la demo; la sesión sobre ruta sigue con la franja 2D.
 - Los fps de la vista 3D solo se han medido en headless; falta verlo en el portátil del usuario.
 - El TCX aún no se ha subido de verdad a Strava ni a Garmin Connect (se genera siguiendo el orden del esquema TCX v2 y los tests comprueban ese orden, pero no se ha validado contra el XSD).

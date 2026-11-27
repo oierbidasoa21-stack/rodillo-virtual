@@ -136,3 +136,11 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Usuario · Strava: subida automática al guardar** la sesión (cola y reintento si falla, desactivable). ~~Sin Strava de pago~~. **Corrección:** la API de Strava ahora es solo para suscriptores (comprobado por el usuario). Pendiente: (a) pagar y subida automática, o (b) descargar el FIT al guardar y subirlo a mano con un botón que abre Strava.
 - **Usuario · Strava, opción (b):** sin API (de pago) y sin Supabase. Al guardar, la app descarga el FIT (TCX mientras tanto) y ofrece un botón que abre la página de subida manual de Strava. Va a la Fase 15a. Pasar por iGPSPORT se descarta: no hay API pública y no ahorra pasos.
 - **Usuario · Documentación de uso:** README corto como portada y un `docs/MANUAL.md` nuevo con cómo funciona toda la app (T11). Va en la Fase 9, y el manual se actualiza en cada fase que cambie algo visible.
+
+## 2026-11-28 — Más pedidos del usuario
+
+- **Usuario · Nuevas tareas apuntadas** (T12–T20): curvas suaves (fallo, Fase 9), ciclista realista, crear ruta en un mapa (después de la 10), clave de Google para el nivel 3 (en la 12), arco de llegada, pulso máximo, reconexión de Bluetooth, sugerencias de zonas y sensaciones.
+- **Usuario · Seguridad complementaria al final de todo** (T19). La CSP sigue en la Fase 14.
+- **Técnica · Los niveles de paisaje real no mejoran el ciclista.** El ciclista realista es una tarea aparte (T13).
+- **Usuario · Prueba de hardware:** PWA instalada y botón de actualizar visto; el player cabe sin scroll en su pantalla.
+- **Estado · PR #31 fusionado** (lo hizo el agente de VS Code).
