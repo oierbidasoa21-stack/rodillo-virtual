@@ -159,9 +159,12 @@ Ramas: feat/world-realism, feat/world-spectators, feat/fitness, feat/coach-plan
 - `8be9924` · 2026-11-27 · docs: phase 9 plan, T12 done and in review
 - `856ae4b` · 2026-11-27 · fix(world): no stack overflow on long routes; close loops explicitly
 
-### T2 · Seguimiento al día · rama `docs/tracking-up-to-date`, [PR #36](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/36) (en revisión)
+### T2 · Seguimiento al día · rama `docs/tracking-up-to-date`, [PR #36](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/36) (fusionado el 2026-11-28)
 
-- _(commits de esta tarea al fusionar su PR)_
+- `e36e041` · 2026-11-27 · docs(roadmap): out-of-phase improvements, phases 13, 14, 15a and 15b, loose tasks and what is on hold
+- `a687113` · 2026-11-27 · docs(claude): work split between the cloud and the VS Code agent; one PR per task, reviewed
+- `7a3fe41` · 2026-11-27 · docs(contexto): split the 2026-11-26 session, complete the change log, T2 in review
+- `7302908` · 2026-11-27 · docs(contexto): PR #36 for T2
 
 ### T11 · README y manual · rama `docs/t11-manual`, [PR #67](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/67) (en revisión)
 
@@ -170,7 +173,8 @@ Ramas: feat/world-realism, feat/world-spectators, feat/fitness, feat/coach-plan
 - `33f3718` · 2026-11-27 · docs(readme): short front page that links to the manual
 - `1cc33bd` · 2026-11-27 · docs(claude): cloud change agent in the work split; keep the manual up to date
 - `907315e` · 2026-11-27 · docs(contexto): T11 in review in PR #67
-- _(y el commit con las decisiones del 2026-11-28: Datos en Supabase en el orden, repo público, licencia y rodillo FTMS)_
+- `fd308cb` · 2026-11-27 · docs(roadmap): Supabase phase after 15b, public repo, all rights reserved, FTMS trainer to buy
+- _(y el commit que cierra la Fase 9 en el `ROADMAP` y en `estado/`)_
 
 ## Documentación de contexto (`docs/contexto/`) desde `3250f48`
 

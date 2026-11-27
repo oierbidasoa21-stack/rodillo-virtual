@@ -5,7 +5,7 @@ Marca `[x]` al completar cada tarea.
 
 Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. La app es solo para ordenador: no hay fase de móvil.
 
-**Fase actual: 9 (mantenimiento).**
+**Fase actual: 13 (GitHub profesional).** La Fase 9 está cerrada (2026-11-28).
 
 **Orden de ejecución:** 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → Datos en Supabase → T13 → T19. Los números no cambian; la 8 entra cuando llegue el rodillo inteligente. Las tareas Tn y el porqué del orden están en `docs/contexto/pendientes/PENDIENTES.md` (T2).
 
@@ -143,12 +143,12 @@ Hechas tras la Fase 7, a petición del usuario, antes de reordenar el roadmap. D
 - [x] Imagen Docker y `docs/ESTRUCTURA.md`
 - [x] Pantalla completa (botón y tecla F)
 
-## Fase 9 — Mantenimiento
+## Fase 9 — Mantenimiento ✅ cerrada (2026-11-28)
 
 El número de la antigua Fase 9 (móvil, descartada) queda libre y se reutiliza. Tareas en `docs/contexto/pendientes/PENDIENTES.md`.
 
 - [x] Zonas de pulso Z1…Z6 en lugar de L1…VO2, con migración de los datos guardados (T1)
-- [ ] Documentos de seguimiento al día (T2)
+- [x] Documentos de seguimiento al día (T2)
 - [x] Curvas suaves en la vista 3D (T12)
 - [x] README corto y `docs/MANUAL.md` con el uso de toda la app (T11)
 
@@ -176,7 +176,7 @@ Solo si creo una clave de Google Maps Platform.
 
 ## Fase 13 — GitHub profesional
 
-Tarea T7 de `docs/contexto/pendientes/PENDIENTES.md`. El repo se queda **público** (decidido el 2026-11-28), así que las reglas de rama son gratis.
+Issues #38–#45 (etiqueta `fase-13`). Tarea T7 de `docs/contexto/pendientes/PENDIENTES.md`. El repo se queda **público** (decidido el 2026-11-28), así que las reglas de rama son gratis.
 
 - [ ] Presentación: descripción, temas, web e imagen para compartir; `README` con insignias, capturas y arranque rápido
 - [ ] Archivos estándar: `LICENSE` con «todos los derechos reservados» (sin licencia libre, decidido el 2026-11-28), `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md` y `CHANGELOG.md`
@@ -189,7 +189,7 @@ Tarea T7 de `docs/contexto/pendientes/PENDIENTES.md`. El repo se queda **públic
 
 ## Fase 14 — Docker de producción y seguridad
 
-Tarea T4. La CSP se pone aquí, antes de la Fase 10, que solo abrirá los servicios de teselas que necesite.
+Issues #46–#53 (etiqueta `fase-14`). Tarea T4. La CSP se pone aquí, antes de la Fase 10, que solo abrirá los servicios de teselas que necesite.
 
 - [ ] nginx sin root y con sistema de archivos de solo lectura; `cap_drop` y `no-new-privileges`
 - [ ] Cabeceras de seguridad con CSP, repetidas en cada `location`
@@ -202,6 +202,8 @@ Tarea T4. La CSP se pone aquí, antes de la Fase 10, que solo abrirá los servic
 
 ## Fase 15a — Mejoras aceptadas (antes del paisaje real)
 
+Issues #54–#60 (etiqueta `fase-15a`).
+
 - [ ] Selector de calidad gráfica del 3D
 - [ ] Panel de inicio
 - [ ] Strava sin API: descargar el archivo al guardar y botón «Abrir Strava para subir» (T8, opción b)
@@ -212,18 +214,22 @@ Tarea T4. La CSP se pone aquí, antes de la Fase 10, que solo abrirá los servic
 
 ## Fase 15b — Mejoras aceptadas (después del paisaje real)
 
+Issues #61–#62 (etiqueta `fase-15b`).
+
 - [ ] Exportar FIT junto al TCX (para el entrenador)
 - [ ] Zonas desde un test guiado y sugerencias de zonas con sensaciones al terminar (T20)
 
 ## Datos en Supabase
 
-Tarea T8. Fase propia, después de la 15b y antes de T13 y T19 (decidido el 2026-11-28). Se diseña antes de construir nada; al empezarla cambia la regla «sin backend, sin cuentas» de `CLAUDE.md`.
+Issue #63 (etiqueta `datos-supabase`). Tarea T8. Fase propia, después de la 15b y antes de T13 y T19 (decidido el 2026-11-28). Se diseña antes de construir nada; al empezarla cambia la regla «sin backend, sin cuentas» de `CLAUDE.md`.
 
 - [ ] Tablas y políticas RLS con tests, en región UE
 - [ ] Login con enlace mágico
 - [ ] Sincronización con Dexie sin perder el modo sin conexión
 
 ## Tareas sueltas en el orden de ejecución
+
+Issues #64–#66 (etiqueta `tareas-sueltas`).
 
 - [ ] T14 · Crear una ruta eligiendo puntos en un mapa (justo después de la Fase 10)
 - [ ] T13 · Ciclista realista: modelo 3D propio o con licencia libre (después de los datos en Supabase)

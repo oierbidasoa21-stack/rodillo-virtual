@@ -2,12 +2,12 @@
 
 Primera fase del orden de ejecución acordado el 2026-11-27 (9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → T13 → T19). Reutiliza el número de la antigua Fase 9 (móvil, descartada). Las tareas y su diseño están en `pendientes/PENDIENTES.md`.
 
-| Tarea | Qué                                         | Estado                                                                                             |
-| ----- | ------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| T1    | Zonas de pulso Z1…Z6 con migración Dexie v6 | ✅ PR #33, revisado y fusionado                                                                    |
-| T12   | Curvas suaves en la vista 3D                | ✅ PR #35, revisado y fusionado                                                                    |
-| T2    | Documentos de seguimiento al día            | 🔍 PR #36, abierto para revisión                                                                   |
-| T11   | README corto y `docs/MANUAL.md`             | 🔍 [PR #67](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/67), abierto para revisión |
+| Tarea | Qué                                         | Estado                                                                                            |
+| ----- | ------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| T1    | Zonas de pulso Z1…Z6 con migración Dexie v6 | ✅ PR #33, revisado y fusionado                                                                   |
+| T12   | Curvas suaves en la vista 3D                | ✅ PR #35, revisado y fusionado                                                                   |
+| T2    | Documentos de seguimiento al día            | ✅ PR #36, revisado y fusionado                                                                   |
+| T11   | README corto y `docs/MANUAL.md`             | ✅ [PR #67](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/67), revisado (issue #37) |
 
 ## Forma de trabajar
 
@@ -34,3 +34,5 @@ Una rama y un PR por tarea, con lint, tests y build en verde. Los PR de código 
 - **Capturas:** `pruebas/scripts/t11-capturas-manual.mjs`, a 1280×900, con sensores simulados, el atleta de ejemplo y un historial inventado sembrado solo en el navegador de prueba (para que se vea la forma). El reloj de la página se adelanta con `page.clock`; la vista 3D se abre solo para su captura, porque adelantar el reloj con el 3D abierto pinta miles de fotogramas y el navegador headless se cae. Los PNG se reducen a 256 colores (656 KB en total).
 - **`CLAUDE.md`:** la regla 9 recoge que el agente de cambios es ahora una sesión en la nube lanzada por Claude en la nube, que se comunican por mensajes entre sesiones y que el usuario solo revisa; la regla 10 pide actualizar el manual en cada tarea que cambie algo visible.
 - **Comprobado:** lint, 330 tests y build en verde; capturas revisadas una a una (sin datos personales).
+
+**Fase cerrada el 2026-11-28** con el PR #67 (T11, issue #37). No hay milestone que cerrar: desde la nube no se crean, y lo hará el workflow del issue #43 (Fase 13).
