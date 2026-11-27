@@ -158,3 +158,8 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Proceso · El PR de T1 no se fusiona sin revisión** de Claude en la nube (pedido del usuario). Los PR solo de documentación (#31, #32) sí los fusiona el agente con CI en verde.
 - **Organización · Reparto ajustado:** el agente de VS Code actualiza `estado/`, `registro/`, `fases/` y `sesiones/` al cerrar sus tareas (regla 7 de `CLAUDE.md`); Claude en la nube escribe tareas, decisiones, estudios, la página de seguimiento y las revisiones. Claude en la nube agrupa sus commits y trae `main` antes de subir. Motivo: el merge del PR #32 se rechazó dos veces por commits simultáneos.
 - **Usuario · Orden completo** puesto en el roadmap por el agente (PR #32): 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → T13 → T19. Es el correcto.
+
+## 2026-11-28 — Agentes en la nube en lugar del de VS Code
+
+- **Usuario · No quiere hacer de intermediario: solo revisar.** Desde T11, los cambios los hace un **agente en la nube** que lanza y coordina Claude en la nube (session_014GP28MJLJsnAVBtMEof8Ed), por mensajes entre sesiones y por el repo. El agente de VS Code deja de recibir tareas. El usuario sigue el avance en la página de seguimiento y prueba en la web publicada.
+- **Organización · PR de solo documentación:** con CI en verde los puede fusionar el coordinador tras revisarlos (regla nueva de `CLAUDE.md`, PR #36). Los de código también los fusiona el coordinador tras su revisión.
