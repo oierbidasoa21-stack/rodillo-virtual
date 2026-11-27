@@ -68,6 +68,14 @@ Pedido por el usuario: las zonas pasan de `L1, L2, L3, UA, UA+, VO2` a `Z1, Z2, 
        - **15b, después o en espera**: exportar FIT (botón «Descargar FIT» junto al TCX, con el FIT SDK oficial de Garmin, mismos datos; el usuario lo quiere para compartir con su entrenador) y zonas desde un test, con **sugerencias de zonas** y sensaciones al terminar (T20). ~~Strava sale de la Fase 15 y va con Supabase~~. **Cambio (2026-11-27):** la API de Strava es de pago, y el usuario elige la opción (b) sin API, que vuelve a la Fase 15a.
     5. **Fases 10 → 11 → 12** (paisaje real): lo más grande y con más riesgo (servicios externos, rendimiento, licencias). Mejor con la base ya limpia y segura.
     6. **Fase 8** cuando haya rodillo: es independiente y puede entrar en cualquier momento.
+    7. **Añadidos del 2026-11-28:**
+       - la **Fase 9** suma T12 (curvas suaves) y T11 (README y manual);
+       - **crear ruta en un mapa** (T14) va justo después de la 10;
+       - el **ciclista realista** (T13) va después de la 12;
+       - la **seguridad complementaria** (T19) es lo último de todo;
+       - T16, T17 y T18 van a la 15a, y T20 a la 15b.
+
+       Orden completo: 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → T13 → T19 (la 8 cuando haya rodillo).
     - **Los números no se cambian**, aunque el orden sea otro: los issues y milestones de #31 ya usan 10–12. En `ROADMAP.md` basta con poner «Fase actual: 9» y una línea con el orden de ejecución. Recordar la regla 1 de `CLAUDE.md` (trabajar solo en la fase actual).
   - Cada fase con su milestone y un issue por casilla (regla 8 de `CLAUDE.md`). Añadir también la regla del reparto de trabajo de arriba a `CLAUDE.md` («Forma de trabajar» y «Git y GitHub»).
 - [ ] Esta lista «Fases por hacer» estaba desfasada (decía que faltaban la 6 y la 7): ya corregida abajo; repasarla tras T0.
