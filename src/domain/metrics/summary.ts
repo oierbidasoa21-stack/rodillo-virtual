@@ -103,6 +103,11 @@ export interface SessionSummary {
   power?: PowerSummary;
   /** Present when the session was ridden on a route. */
   ride?: RideSummary;
+  /**
+   * Present when some block had a heart rate ceiling and there was a reading
+   * under it: seconds under a ceiling and seconds above it.
+   */
+  hrCap?: { cappedSec: number; aboveSec: number };
 }
 
 /** How a session went on a route. */
@@ -182,6 +187,8 @@ export function buildSessionSummary(args: {
   ftpW?: number | null;
   /** The route, when the workout was ridden on one. */
   ride?: RideSummary;
+  /** Time with a reading under a heart rate ceiling, and above it. */
+  hrCap?: { cappedSec: number; aboveSec: number };
 }): SessionSummary {
   const { player, weightKg } = args;
   const power = summarisePower(
@@ -199,6 +206,7 @@ export function buildSessionSummary(args: {
     actualSecByZone: actual,
     counts: player.counts,
     ...(args.ride ? { ride: args.ride } : {}),
+    ...(args.hrCap && args.hrCap.cappedSec > 0 ? { hrCap: args.hrCap } : {}),
   };
 
   const measured = fromHeartRate(args.hr, weightKg, args.hrSimulated ?? false);

@@ -76,6 +76,12 @@ export default function Summary({
               <div className="v num">{hr.maxBpm}</div>
               <div className="l">Pulso máximo (ppm)</div>
             </div>
+            {summary.hrCap && (
+              <div className={summary.hrCap.aboveSec > 0 ? 'stat warnstat' : 'stat'}>
+                <div className="v num">{formatClock(Math.round(summary.hrCap.aboveSec))}</div>
+                <div className="l">Por encima del máximo</div>
+              </div>
+            )}
           </>
         )}
         {counts.length > 0 && (

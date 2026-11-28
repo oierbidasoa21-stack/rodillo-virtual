@@ -1,6 +1,7 @@
 import { joinDuration, splitDuration } from '../../domain/workout/edit';
 import { BLOCK_KINDS, BLOCK_KIND_LABELS, type Block } from '../../domain/workout/types';
 import NumberInput from '../NumberInput';
+import HrCapInput from './HrCapInput';
 import ItemControls from './ItemControls';
 import TargetInput from './TargetInput';
 
@@ -63,6 +64,13 @@ export default function BlockRow({ block, idPrefix, onChange, onMove, onRemove }
           placeholder="Nota (opcional)"
           value={block.note}
           onChange={(e) => onChange({ note: e.target.value })}
+        />
+        <HrCapInput
+          id={`${idPrefix}-cap`}
+          aria-label="Pulso máximo del bloque"
+          noneLabel="Máx.: el de la sesión"
+          value={block.maxHr}
+          onChange={(maxHr) => onChange({ maxHr })}
         />
       </span>
       <ItemControls onMove={onMove} onRemove={onRemove} />

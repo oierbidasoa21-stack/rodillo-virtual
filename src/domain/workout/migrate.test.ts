@@ -67,3 +67,38 @@ describe('migrateWorkout', () => {
     expect(migrateWorkout({ id: 1, blocks: [] })).toBeNull();
   });
 });
+
+describe('heart rate ceilings (phase 15a)', () => {
+  it('keeps the session and block ceilings, and a workout without them stays as it was', () => {
+    const w = migrateWorkout({
+      id: 'w',
+      name: 'Umbral',
+      description: '',
+      maxHr: { type: 'bpm', bpm: 165 },
+      blocks: [
+        {
+          type: 'block',
+          durationSec: 600,
+          target: { type: 'hr', zoneId: 'Z4' },
+          kind: 'work',
+          note: '',
+          maxHr: { type: 'zone', zoneId: 'UA+' },
+        },
+        {
+          type: 'block',
+          durationSec: 300,
+          target: { type: 'hr', zoneId: 'Z1' },
+          kind: 'rec',
+          note: '',
+          maxHr: { type: 'bpm', bpm: 5 },
+        },
+      ],
+    });
+    expect(w?.maxHr).toEqual({ type: 'bpm', bpm: 165 });
+    expect(w?.blocks[0]).toMatchObject({ maxHr: { type: 'zone', zoneId: 'Z5' } });
+    // An impossible value is dropped, not kept.
+    expect(w?.blocks[1]).not.toHaveProperty('maxHr');
+    const old = migrateWorkout({ id: 'o', name: 'Fondo', description: '', blocks: [] });
+    expect(old).not.toHaveProperty('maxHr');
+  });
+});
