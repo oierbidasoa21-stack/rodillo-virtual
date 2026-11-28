@@ -212,13 +212,13 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 
 ### `src/storage/` — datos en el navegador (IndexedDB con Dexie)
 
-| Archivo           | Para qué sirve                                                                             |
-| ----------------- | ------------------------------------------------------------------------------------------ |
-| `db.ts`           | Tablas y versiones de la base de datos, con sus migraciones (v5: planes; v6: zonas Z1…Z6). |
-| `repositories.ts` | Leer y guardar sesiones, historial, grabaciones, rutas, planes y ajustes.                  |
-| `settings.ts`     | Ajustes con sus valores por defecto (atleta de ejemplo, voz, pitidos, tema…).              |
-| `backup.ts`       | Copia de seguridad: exportar e importar todo en un JSON (formato 4).                       |
-| `persist.ts`      | Pide al navegador almacenamiento persistente, para que no borre los datos.                 |
+| Archivo           | Para qué sirve                                                                                                         |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `db.ts`           | Tablas y versiones de la base de datos, con sus migraciones (v5: planes; v6: zonas Z1…Z6; v7: rutas con paisaje real). |
+| `repositories.ts` | Leer y guardar sesiones, historial, grabaciones, rutas, planes y ajustes.                                              |
+| `settings.ts`     | Ajustes con sus valores por defecto (atleta de ejemplo, voz, pitidos, tema…).                                          |
+| `backup.ts`       | Copia de seguridad: exportar e importar todo en un JSON (formato 4).                                                   |
+| `persist.ts`      | Pide al navegador almacenamiento persistente, para que no borre los datos.                                             |
 
 ### `src/store/` — estado de la app (Zustand)
 
@@ -270,7 +270,7 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 | `editor/`   | Editor de sesiones: `EditorSheet`, `BlockRow`, `RepeatGroup`, `ItemControls`, `TargetInput`.                                                                                                                                                                              |
 | `player/`   | Reproductor de sesiones: `Player`, métricas en vivo, contador de pulso de 10″, alertas de sensores y resumen final.                                                                                                                                                       |
 | `ramp/`     | Test de rampa: tarjeta para empezarlo y resultado con el FTP estimado.                                                                                                                                                                                                    |
-| `routes/`   | Pestaña Rutas: `RoutesView`, `RouteCard` (cada ruta, importar GPX) y `DemoCard` (demo 3D).                                                                                                                                                                                |
+| `routes/`   | Pestaña Rutas: `RoutesView`, `RouteCard` (cada ruta, importar GPX) , `LandscapeControl` (descargar, completar y borrar el paisaje real de una ruta GPX, con su aviso) y `DemoCard` (demo 3D).                                                                             |
 | `ride/`     | Rodar una ruta: `RideView`, HUD, perfil, minimapa, franja 2D, etiqueta del fantasma, modo y resumen.                                                                                                                                                                      |
 | `world/`    | Vista 3D (Three.js): escena, terreno, horizonte, carretera, árboles, matorrales, público, quitamiedos, cielo, sol, ciclista y, con paisaje real descargado, terreno y horizonte reales con la foto de satélite encima (sin árboles ni rocas inventados). Se carga aparte. |
 | `history/`  | Pestaña Historial: lista, panel de forma, gráficas de condición y fatiga y de carga semanal, y detalle de cada sesión.                                                                                                                                                    |

@@ -2,7 +2,7 @@
 
 Cómo se usa Rodillo Virtual, de principio a fin. Está escrito para alguien que abre la app por primera vez.
 
-Las capturas están hechas con **sensores simulados** y el atleta de ejemplo (`config/athlete.example.json`): los números no son de nadie. Se rehacen con el script [`docs/contexto/pruebas/scripts/t11-capturas-manual.mjs`](contexto/pruebas/scripts/t11-capturas-manual.mjs).
+Las capturas están hechas con **sensores simulados** y el atleta de ejemplo (`config/athlete.example.json`): los números no son de nadie. Se rehacen con el script [`docs/contexto/pruebas/scripts/t11-capturas-manual.mjs`](contexto/pruebas/scripts/t11-capturas-manual.mjs), salvo las del paisaje real (16 a 18), que necesitan conexión y salen de [`fase10-paisaje.mjs`](contexto/pruebas/scripts/fase10-paisaje.mjs) con una ruta inventada.
 
 **Índice**
 
@@ -11,7 +11,7 @@ Las capturas están hechas con **sensores simulados** y el atleta de ejemplo (`c
 3. [Rodillo y potencia](#3-rodillo-y-potencia)
 4. [Biblioteca y editor de sesiones](#4-biblioteca-y-editor-de-sesiones)
 5. [El player](#5-el-player)
-6. [Rutas y vista 3D](#6-rutas-y-vista-3d)
+6. [Rutas y vista 3D](#6-rutas-y-vista-3d) (con el [paisaje real](#paisaje-real))
 7. [Al terminar: el resumen](#7-al-terminar-el-resumen)
 8. [Historial y forma](#8-historial-y-forma)
 9. [Plan del entrenador](#9-plan-del-entrenador)
@@ -300,7 +300,34 @@ Al repetir una ruta, rueda contigo tu **salida más rápida en ella** (sale de s
 
 **Rutas → Demo 3D**: elige una ruta y pulsa **Ver demo 3D** para ver el mundo sin ningún sensor. El ciclista avanza solo a 200 W **simulados**. Va marcada como DEMO y no se graba nada.
 
-El paisaje con mapas reales todavía no existe: está planificado en las fases 10–12 del [`ROADMAP`](ROADMAP.md).
+### Paisaje real
+
+En las rutas **GPX importadas** puedes ver en 3D el paisaje de verdad: el **relieve real** y la **foto de satélite** de la zona. Las rutas de ejemplo son inventadas y no lo tienen.
+
+1. En **Rutas → Mis rutas**, la tarjeta de la ruta dice cuánto ocupa (unos pocos MB en una subida corta). Pulsa **Descargar paisaje real**.
+
+   ![Tarjeta de una ruta GPX con el paisaje real por descargar](manual/16-paisaje-ruta.png)
+
+2. Sale un aviso antes de descargar nada: las imágenes se piden a **dos servicios externos**, AWS Terrain Tiles (relieve) y EOX (foto de satélite Sentinel-2 cloudless). **Sabrán qué zona pides, pero nunca tu GPX.** Pulsa **Descargar** o **Cancelar**.
+
+   ![Aviso antes de descargar el paisaje real](manual/17-paisaje-aviso.png)
+
+3. Se ve el progreso y se puede **Cancelar**. Al terminar, la tarjeta dice la fecha. Si alguna tesela no se pudo bajar, lo dice, y **Completar** baja solo las que faltan.
+4. Al **Rodar** o en la **Demo 3D** de esa ruta, el mundo usa el paisaje real sin que hagas nada más: la carretera sigue al GPX, el terreno de alrededor es el de verdad (hasta unos 4 km, y el horizonte hasta unos 25 km) y encima va la foto de satélite.
+
+![Vista 3D con el paisaje real](manual/18-paisaje-3d.png)
+
+Lo que conviene saber:
+
+- **No se inventa nada.** Con paisaje real no hay árboles, rocas ni montañas inventados: lo que ves es la foto. Donde falta una tesela, ese trozo usa el suelo de siempre (sin relieve) o un color neutro (sin foto).
+- **Sin conexión.** Lo descargado se guarda en este navegador y sirve sin conexión.
+- **Calidad del 3D** (Ajustes): también decide el detalle del terreno real, el tamaño de la foto y hasta dónde se ve (unos 9 km en baja, 16 en media y 27 en alta).
+- **Borrar paisaje** quita lo descargado de esa ruta. Al borrar la ruta también se borra su paisaje. Las teselas que comparte con otra ruta que también tiene paisaje se quedan.
+- **Atribución.** Mientras se ve el paisaje real, abajo a la derecha sale de dónde vienen los datos, como piden sus licencias:
+  - Relieve: AWS Terrain Tiles (Mapzen), con datos de SRTM, NED, ETOPO1 y otras fuentes públicas.
+  - Imagen: Sentinel-2 cloudless 2024 de EOX IT Services GmbH (s2maps.eu), con datos modificados de Copernicus Sentinel (2024). Licencia **CC BY-NC-SA 4.0: solo uso no comercial**. Para uso personal vale; para cualquier uso comercial habría que cambiar de fuente.
+
+Los siguientes niveles del paisaje (edificios, bosques y agua de OpenStreetMap, y Google 3D con clave propia) están planificados en las fases 11 y 12 del [`ROADMAP`](ROADMAP.md).
 
 ---
 
@@ -378,7 +405,7 @@ El detalle está en [`docs/agente-entrenador.md`](agente-entrenador.md). El info
 
 ## 10. Datos y copia de seguridad
 
-**Todo se guarda en el navegador** de ese ordenador (IndexedDB): sesiones, historial con grabaciones, rutas importadas y ajustes. No hay servidor ni cuentas. Cada navegador y cada dirección (la web publicada, `localhost:5173`, `localhost:8080`) tiene **su propia base**: lo que guardas en una no aparece en otra.
+**Todo se guarda en el navegador** de ese ordenador (IndexedDB): sesiones, historial con grabaciones, rutas importadas y ajustes. El paisaje real descargado va aparte, en la caché del navegador. No hay servidor ni cuentas. Cada navegador y cada dirección (la web publicada, `localhost:5173`, `localhost:8080`) tiene **su propia base**: lo que guardas en una no aparece en otra.
 
 La app pide al navegador **almacenamiento persistente** para que no borre tus datos si le falta espacio. En **Ajustes → Datos en este dispositivo** ves si lo ha concedido; con la app instalada suele concederlo.
 
@@ -387,11 +414,11 @@ La app pide al navegador **almacenamiento persistente** para que no borre tus da
 - **Exportar copia** guarda todo en un archivo JSON.
 - **Importar copia** enseña qué contiene el archivo y, si confirmas, **reemplaza** todo lo guardado en ese navegador.
 
-Sirve para pasar tus datos a otro ordenador o recuperarlos. La copia lleva datos personales (peso, zonas y entrenamientos): guárdala en un sitio tuyo, nunca en el repositorio.
+Sirve para pasar tus datos a otro ordenador o recuperarlos. **El paisaje real no va en la copia** (son imágenes que se pueden volver a bajar): en el otro ordenador, vuelve a pulsar **Descargar paisaje real** en cada ruta. La copia lleva datos personales (peso, zonas y entrenamientos): guárdala en un sitio tuyo, nunca en el repositorio.
 
 ### Qué se pierde si borras los datos de Chrome
 
-Si borras los datos del sitio («Borrar datos de navegación» con «Cookies y otros datos de sitios», o desinstalas la app y marcas borrar datos), **se pierde todo**: sesiones propias, historial, rutas y ajustes. Haz una copia antes.
+Si borras los datos del sitio («Borrar datos de navegación» con «Cookies y otros datos de sitios», o desinstalas la app y marcas borrar datos), **se pierde todo**: sesiones propias, historial, rutas, ajustes y el paisaje real descargado. Haz una copia antes.
 
 ---
 
