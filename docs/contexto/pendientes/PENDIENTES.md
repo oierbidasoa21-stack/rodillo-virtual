@@ -127,6 +127,8 @@ El usuario quiere poder hacer el repo **privado sin GitHub Pro**. GitHub Pages n
 
 ### T4 · Docker de producción y seguridad
 
+**Estado (2026-11-28): hecha en la Fase 14** (PR #86 y #88–#93; ver `fases/fase-14-docker-produccion.md` y `docs/despliegue/`). Lo de producto comercial de abajo sigue como nota, sin hacer.
+
 Ver la tabla del punto 2 del estudio:
 
 - [ ] nginx sin root y con solo lectura;

@@ -5,7 +5,7 @@ Marca `[x]` al completar cada tarea.
 
 Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. La app es solo para ordenador: no hay fase de móvil.
 
-**Fase actual: 14 (Docker de producción y seguridad).** Las fases 9 y 13 están cerradas (2026-11-28); de la 13 quedan los ajustes de GitHub que hace el usuario después de la Fase 12 (issue #82).
+**Fase actual: 15a (mejoras aceptadas, antes del paisaje real).** Las fases 9, 13 y 14 están cerradas (2026-11-28); de la 13 quedan los ajustes de GitHub que hace el usuario después de la Fase 12 (issue #82).
 
 **Orden de ejecución:** 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → Datos en Supabase → T13 → T19. Los números no cambian; la 8 entra cuando llegue el rodillo inteligente. Las tareas Tn y el porqué del orden están en `docs/contexto/pendientes/PENDIENTES.md` (T2).
 
@@ -187,18 +187,18 @@ Issues #38–#45 (etiqueta `fase-13`). Tarea T7 de `docs/contexto/pendientes/PEN
 - [x] Seguridad del repo: CodeQL y OpenSSF Scorecard (#71). Escaneo de secretos con bloqueo, alertas de Dependabot e informe privado: el usuario (#82)
 - [ ] Opcional, no pedido: organización gratuita con el nombre de la «empresa» y transferir el repo
 
-## Fase 14 — Docker de producción y seguridad
+## Fase 14 — Docker de producción y seguridad ✅ cerrada (2026-11-28)
 
 Issues #46–#53 (etiqueta `fase-14`). Tarea T4. La CSP se pone aquí, antes de la Fase 10, que solo abrirá los servicios de teselas que necesite.
 
-- [ ] nginx sin root y con sistema de archivos de solo lectura; `cap_drop` y `no-new-privileges`
-- [ ] Cabeceras de seguridad con CSP, repetidas en cada `location`
-- [ ] Imágenes fijadas por digest
-- [ ] Trivy, `npm audit` y CodeQL en CI; Dependabot
-- [ ] SBOM y firma de la imagen
-- [ ] Perfil `prod` con Caddy y HTTPS
-- [ ] Release a GHCR
-- [ ] `docs/despliegue/` y `SECURITY.md`
+- [x] nginx sin root y con sistema de archivos de solo lectura; `cap_drop` y `no-new-privileges`
+- [x] Cabeceras de seguridad con CSP, repetidas en cada `location`; en GitHub Pages, en una `<meta>`
+- [x] Imágenes fijadas por digest y acciones por hash de commit
+- [x] Trivy, `npm audit` y CodeQL en CI; Dependabot
+- [x] SBOM y firma de la imagen
+- [x] Perfil `prod` con Caddy y HTTPS
+- [x] Release a GHCR (empieza a publicar cuando el usuario active el permiso de Actions, #82)
+- [x] `docs/despliegue/` y `SECURITY.md`
 
 ## Fase 15a — Mejoras aceptadas (antes del paisaje real)
 

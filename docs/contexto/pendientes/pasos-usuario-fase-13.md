@@ -100,6 +100,16 @@ Cuando se fusione el PR del issue #43, el workflow **Milestones** se ejecuta sol
 1. Pestaña **Issues → Milestones**: tiene que haber uno por fase (9, 13, 14, 15a, 15b, Datos en Supabase y Tareas sueltas, además de los que ya había).
 2. Si falta algo, pestaña **Actions → Milestones → Run workflow → Run workflow**.
 
+## 8. Paquete de la imagen en GHCR (Fase 14)
+
+Cuando se publique la primera versión (después del apartado 4), la imagen Docker aparece en tu perfil, en **Packages → rodillo-virtual**. GitHub puede crearla como privada:
+
+1. Abre el paquete → **Package settings** (abajo a la derecha).
+2. En **Danger Zone → Change visibility**, elige **Public** y confirma escribiendo el nombre.
+3. En **Manage Actions access**, comprueba que el repo `rodillo-virtual` tiene el rol **Write** (lo necesita para publicar las siguientes versiones).
+
+Para comprobar que una imagen es la que publicó el repo (firma), mira «Versiones e imagen en GHCR» en `docs/despliegue/README.md`.
+
 ---
 
 Cuando termines, díselo al coordinador para que cierre el issue #82.

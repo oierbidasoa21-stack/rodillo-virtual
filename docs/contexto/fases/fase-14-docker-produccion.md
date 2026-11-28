@@ -31,6 +31,32 @@ Un PR por issue, en este orden, cada uno con `Closes #n`. El agente avisa al coo
 - La app sigue funcionando con la CSP: PWA y service worker, sin conexión, Web Bluetooth (sensores simulados en headless), la demo 3D con Three.js y la importación de archivos.
 - Contexto (`estado/`, `registro/`, `sesiones/`, este archivo y la línea de T4 en `PENDIENTES.md`) en un **PR de cierre de fase**, como en la Fase 13.
 
-## Hecho
+## Hecho (cerrada el 2026-11-28)
 
-_(se completa en el PR de cierre de la fase)_
+| Issue     | PR  | Resultado                                                                                                                                |
+| --------- | --- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| #46       | #86 | nginx-unprivileged 1.29 (uid 101, puerto 8080), solo lectura con `/tmp` en `tmpfs`, `cap_drop: [ALL]`, `no-new-privileges` y límites     |
+| #47       | #88 | CSP solo `'self'` y cabeceras en `docker/security-headers.conf`, incluido en cada `location`; la misma CSP en `<meta>` para GitHub Pages |
+| #48       | #89 | Imágenes base por digest y todas las acciones por hash de commit, con la versión como comentario                                         |
+| #49       | #90 | `npm audit` (producción bloquea desde alto) y Trivy (SARIF a Code scanning y puerta con críticos que tienen arreglo); `apk upgrade`      |
+| #52 + #50 | #91 | Job `Publish image` en el workflow de release-please: GHCR con `x.y.z`, `x.y` y `latest`, SBOM, procedencia y firma cosign sin clave     |
+| #51       | #92 | Perfil `prod` con Caddy fijado y endurecido, Let's Encrypt y HSTS; el 8080 del perfil normal solo en `127.0.0.1`                         |
+| #53       | #93 | `docs/despliegue/README.md` y `SECURITY.md` completo                                                                                     |
+
+**Comprobado:**
+
+- **En local con Docker:** contenedor sin root y de solo lectura, healthcheck `healthy`, cabeceras en todas las rutas y Caddy con HTTPS 200 y la redirección 308 desde HTTP.
+- **Script `pruebas/scripts/fase14-csp.mjs`:** 0 violaciones de CSP y 0 errores con `vite preview`, con Docker y contra **GitHub Pages** (tras desplegar #78 y #88), incluida la demo 3D sin conexión.
+- **PWA en Pages tras vite-plugin-pwa 2.0:** sin errores de instalación ni de manifiesto (CDP `Page.getInstallabilityErrors`) y service worker activado.
+- **Trivy en local:** pasa de 1 crítica y más de 30 altas con arreglo a 0 con `apk upgrade`.
+
+**Dependabot (cerrados por el coordinador):**
+
+- #77 (TypeScript 7): `npm ci` falla porque typescript-eslint exige `<6.1`. `dependabot.yml` ignora las mayores de TypeScript (#85).
+- #73 (github-script 9): lo sustituye #85, que sube los dos workflows.
+- #72 (Node 26): Node 24 se queda (LTS).
+- #74 (nginx 1.29): incluido en #86.
+
+**Pendiente del usuario (#82):** hacer público el paquete de GHCR tras la primera versión y activar el informe privado de vulnerabilidades. Las versiones (y por tanto la imagen en GHCR) empiezan cuando permita a Actions abrir PR.
+
+**Lección:** los PR encadenados chocan con la fusión _squash_. Desde ahora, un PR que depende de otro espera a que el anterior esté en `main` y parte de ahí.

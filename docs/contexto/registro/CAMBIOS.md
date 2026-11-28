@@ -190,6 +190,25 @@ Desde aquí cada PR se fusiona con _squash_: en `main` queda un commit por PR, c
 - `ea9dcf0` · 2026-11-27 · chore(deps): Bump the produccion group with 4 updates (#75, Dependabot)
 - _(y el PR de cierre de la fase, con este registro)_
 
+## Fase 14 — Docker de producción y seguridad
+
+Con _squash_ (un commit por PR):
+
+- `84a98e5` · 2026-11-28 · feat(docker): plan de la Fase 14 y nginx sin root con solo lectura ([#86](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/86), closes #46)
+- `97e8383` · 2026-11-28 · feat(security): CSP estricta y cabeceras de seguridad en Docker y GitHub Pages ([#88](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/88), closes #47)
+- `07cca57` · 2026-11-28 · build(deps): imágenes Docker por digest y acciones por hash de commit ([#89](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/89), closes #48)
+
+Con merge normal (la cadena #90–#93 dependía de los anteriores; se fusionó así para no rehacer cada rama tras cada _squash_):
+
+- `0605900` · ci(security): npm audit and a Trivy scan of the image in CI · `827acc3` · build(docker): apply Alpine security fixes and drop curl from the image ([#90](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/90), closes #49)
+- `d9f4503` · ci(release): publish the image to GHCR on each release, with SBOM, provenance and a cosign signature ([#91](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/91), closes #52 y #50)
+- `0aa46e2` · feat(docker): prod profile with Caddy in front for HTTPS and HSTS · `061adfb` · build(docker): keep .env out of the image build context ([#92](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/92), closes #51)
+- `adfcea7` · docs(despliegue): how the app is deployed, updated and rolled back; SECURITY.md completed ([#93](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/93), closes #53)
+
+Antes de la fase, actualizaciones de Dependabot: `57248f0` github-script v9 y TypeScript 7 en espera ([#85](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/85)), `183fd89` grupo de desarrollo (#76) y `e4c57e1` vite-plugin-pwa 2.0 (#78).
+
+- _(y el PR de cierre de la fase, con este registro)_
+
 ## Documentación de contexto (`docs/contexto/`) desde `3250f48`
 
 Commits de Claude en la nube (tareas, decisiones, estudios y página de seguimiento) y del agente de VS Code (estado y registro), que no estaban en ninguna fase:

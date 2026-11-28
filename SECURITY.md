@@ -7,7 +7,9 @@
 1. Pestaña **Security** del repositorio → **Report a vulnerability**.
 2. Explica el fallo, cómo reproducirlo y qué impacto tiene.
 
-Solo lo ven el titular y tú. Recibirás respuesta en unos 7 días. Cuando haya arreglo, se publica con el aviso y, si quieres, con tu nombre.
+Solo lo ven el titular y tú. Recibirás respuesta en unos 7 días.
+
+Si el botón todavía no aparece (el titular lo activará pronto, issue #82), abre un issue que diga solo «Quiero avisar de un fallo de seguridad», **sin detalles**, y el titular te dará una forma privada de contarlo. Cuando haya arreglo, se publica con el aviso y, si quieres, con tu nombre.
 
 ## Versiones con soporte
 
