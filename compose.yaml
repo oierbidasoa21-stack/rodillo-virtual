@@ -1,10 +1,13 @@
-# docker compose up -d   →   http://localhost:8080
+# docker compose up -d                  →  http://localhost:8080 (this computer only)
+# docker compose --profile prod up -d   →  https://$DOMAIN, with Caddy and Let's Encrypt
 services:
   rodillo-virtual:
     build: .
     image: rodillo-virtual
+    # Bound to this computer: from other devices, use the prod profile (HTTPS),
+    # which Web Bluetooth and the PWA need outside localhost.
     ports:
-      - '8080:8080'
+      - '127.0.0.1:8080:8080'
     restart: unless-stopped
     # Hardening: nothing in the container can write outside /tmp, gain
     # privileges or use Linux capabilities. nginx-unprivileged needs none.
@@ -20,3 +23,37 @@ services:
           cpus: '0.50'
           memory: 128M
           pids: 64
+
+  caddy:
+    profiles: [prod]
+    image: caddy:2-alpine@sha256:003a97808e781aa9f7e75cc2f43d34d461099031faf5e20faefb9f61126836f0
+    depends_on: [rodillo-virtual]
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      # Certificates and their keys: kept between restarts.
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 128M
+          pids: 64
+
+volumes:
+  caddy-data:
+  caddy-config:

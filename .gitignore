@@ -15,3 +15,6 @@ config/*.local.json
 
 # Test screenshots written to the repo root by the browser scripts
 /*.png
+
+# Local settings for docker compose (domain, email)
+.env
