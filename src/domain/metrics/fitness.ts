@@ -140,3 +140,34 @@ export function freshnessLevel(freshness: number): FreshnessLevel {
   if (freshness >= -60) return 'loaded';
   return 'overloaded';
 }
+
+/** One day of the current week. */
+export interface WeekDay {
+  /** Local midnight of the day. */
+  dayMs: number;
+  load: number;
+  durationSec: number;
+  sessions: number;
+}
+
+/**
+ * The seven days (Monday to Sunday) of the week `nowMs` falls in, with what
+ * was ridden each day. Sessions with simulated sensors do not count.
+ */
+export function weekDays(sessions: readonly FitnessInput[], nowMs: number): WeekDay[] {
+  const out: WeekDay[] = [];
+  let day = weekStart(nowMs);
+  for (let i = 0; i < 7; i++) {
+    out.push({ dayMs: day, load: 0, durationSec: 0, sessions: 0 });
+    day = nextDay(day);
+  }
+  for (const s of sessions) {
+    if (!countsForFitness(s)) continue;
+    const d = out.find((x) => x.dayMs === dayStart(s.dateMs));
+    if (!d) continue;
+    d.load += s.load;
+    d.durationSec += s.durationSec ?? 0;
+    d.sessions += 1;
+  }
+  return out;
+}

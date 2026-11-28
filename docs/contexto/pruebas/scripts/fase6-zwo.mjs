@@ -10,6 +10,8 @@ const RAMP = `<workout_file><name>Rampa de prueba</name><workout>
 
 export default async function run(page) {
   await page.setViewportSize({ width: 1280, height: 900 });
+  // Desde la Fase 15a la app se abre en Inicio.
+  await page.getByRole('tab', { name: 'Sesiones' }).click();
   const card = page.locator('article.card', { hasText: 'Umbral' }).first();
   const builtinName = await card.locator('h3').innerText();
   const [download] = await Promise.all([

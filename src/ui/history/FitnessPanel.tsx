@@ -1,20 +1,9 @@
 import { useMemo } from 'react';
-import {
-  type FreshnessLevel,
-  fitnessCurve,
-  freshnessLevel,
-  weeklyTotals,
-} from '../../domain/metrics/fitness';
+import { fitnessCurve, freshnessLevel, weeklyTotals } from '../../domain/metrics/fitness';
 import type { SessionSummary } from '../../domain/metrics/summary';
 import FitnessChart from './FitnessChart';
+import { LEVEL_TEXT } from './fitnessText';
 import WeeklyLoadChart from './WeeklyLoadChart';
-
-const LEVEL_TEXT: Record<FreshnessLevel, string> = {
-  fresh: 'Fresco: buen momento para una sesión dura o una prueba.',
-  balanced: 'Equilibrado: entrenando sin acumular fatiga de más.',
-  loaded: 'Cargado: estás construyendo condición; cuida el descanso.',
-  overloaded: 'Muy cargado: conviene un día suave o de descanso.',
-};
 
 /** Condition, fatigue and freshness from the history, with the curve and weekly load. */
 export default function FitnessPanel({

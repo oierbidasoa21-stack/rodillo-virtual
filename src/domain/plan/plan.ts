@@ -206,3 +206,15 @@ export function dayDone(
     sessions.some((s) => localDate(s.dateMs) === day.date && s.workoutName === day.workout?.name)
   );
 }
+
+/**
+ * The next plan day to ride: the first one from `today` (YYYY-MM-DD) on that
+ * has a workout and is not done yet. Undefined when nothing is left.
+ */
+export function nextPlanDay(
+  days: readonly PlanDay[],
+  sessions: readonly { dateMs: number; workoutName: string }[],
+  today: string,
+): PlanDay | undefined {
+  return days.find((d) => d.date >= today && d.workout !== null && !dayDone(d, sessions));
+}
