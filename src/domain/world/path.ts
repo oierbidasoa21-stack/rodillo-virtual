@@ -1,5 +1,6 @@
 import type { Route } from '../route/route';
 import { extent } from '../extent';
+import { frameOf, toLocal } from '../geo/localFrame';
 
 /**
  * World coordinates in metres: x east, y up, z south (so -z is north, as in
@@ -24,9 +25,6 @@ export interface WorldPath {
   closed: boolean;
 }
 
-const EARTH_RADIUS_M = 6_371_000;
-const rad = (deg: number) => (deg * Math.PI) / 180;
-
 /** Spacing of the smoothed path the 3D world is built from (the route itself is every 10 m). */
 export const SMOOTH_STEP_M = 1;
 
@@ -37,14 +35,12 @@ export const SMOOTH_STEP_M = 1;
  */
 export function projectRoute(route: Route): WorldPath {
   const pts = route.points;
-  const lat0 = pts.reduce((s, p) => s + p.lat, 0) / Math.max(1, pts.length);
-  const lon0 = pts.reduce((s, p) => s + p.lon, 0) / Math.max(1, pts.length);
+  // Same frame as the real terrain (domain/geo), so road and ground line up.
+  const frame = frameOf(pts);
   const minEle = extent(pts.map((p) => p.ele)).min;
-  const k = EARTH_RADIUS_M * Math.cos(rad(lat0));
   const points = pts.map((p) => ({
-    x: rad(p.lon - lon0) * k,
+    ...toLocal(frame, p.lon, p.lat),
     y: p.ele - minEle,
-    z: -rad(p.lat - lat0) * EARTH_RADIUS_M,
     d: p.distanceM,
   }));
   const first = points[0];
