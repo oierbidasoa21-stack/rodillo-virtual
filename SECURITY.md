@@ -17,13 +17,13 @@ Solo la última versión publicada en GitHub Pages (rama `main`). No hay version
 
 ## Qué tiene en cuenta el proyecto
 
-- **No hay servidor ni cuentas**: los datos se guardan solo en el navegador del usuario (IndexedDB). La app no envía nada a ningún sitio.
+- **No hay servidor ni cuentas**: los datos se guardan solo en el navegador del usuario (IndexedDB). La app no envía ningún dato tuyo a ningún sitio. Lo único que pide fuera son las **teselas del paisaje real** (relieve y foto de satélite), y solo cuando las descargas para una ruta: esos servidores ven qué zona pides, pero nunca el GPX.
 - **Sin secretos en el repo**: no hacen falta.
 - **Datos personales fuera del repo**: `config/athlete.local.json` y `data/` están en `.gitignore`.
 - **Sensores**: Web Bluetooth solo funciona con HTTPS o en `localhost`, y Chrome pide permiso para cada sensor.
 - **Archivos que importa el usuario** (GPX, `.zwo`, copia de seguridad, plan del entrenador): se validan antes de guardarlos y, si algo no encaja, no se importa nada.
 - **Dependencias**: Dependabot avisa de las que tienen fallos conocidos y las actualiza. En cada PR, CodeQL revisa el código y `npm audit` falla si una dependencia de producción tiene un fallo alto o crítico.
-- **Cabeceras y CSP**: la app solo carga código, estilos y datos de su propio origen (sin `unsafe-inline` ni `unsafe-eval`). En Docker van como cabeceras HTTP y en GitHub Pages, en una `<meta>`. Permissions-Policy solo deja Bluetooth, mantener la pantalla encendida y pantalla completa.
+- **Cabeceras y CSP**: la app solo carga código, estilos e imágenes de su propio origen (sin `unsafe-inline` ni `unsafe-eval`). Para datos (`connect-src`) admite además los dos servidores de teselas del paisaje real, y ninguno más. En Docker van como cabeceras HTTP y en GitHub Pages, en una `<meta>`. Permissions-Policy solo deja Bluetooth, mantener la pantalla encendida y pantalla completa.
 - **Imagen Docker**: nginx sin root, sistema de archivos de solo lectura, sin capacidades de Linux, imágenes base fijadas por digest y parches de Alpine aplicados al construir. Trivy la escanea en cada PR.
 - **Versiones publicadas**: cada imagen en GHCR lleva su SBOM y su procedencia, y va firmada con cosign. Cómo comprobar la firma: [`docs/despliegue/`](docs/despliegue/README.md#versiones-e-imagen-en-ghcr).
 
