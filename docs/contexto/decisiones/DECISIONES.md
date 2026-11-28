@@ -195,3 +195,4 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Técnica · La imagen se publica desde el workflow de release-please**: una release creada con `GITHUB_TOKEN` no lanza workflows `on: release`. Firma cosign sin clave (identidad OIDC del workflow) y SBOM y procedencia de BuildKit.
 - **Técnica · El 8080 del perfil normal solo en `127.0.0.1`**: el usuario usa la app en su ordenador, y desde otros equipos hace falta HTTPS (perfil `prod`) de todos modos.
 - **Proceso · Nada de PR encadenados**: con _squash_, cada fusión desfasa al siguiente. La cadena #90–#93 se fusionó con merge normal, como excepción, porque aún no está activo el _ruleset_ que obliga a _squash_.
+- **Usuario · Arco de meta y cámara de llegada descartados** (T16, #57 cerrado). La Fase 15a queda en 6 tareas.
