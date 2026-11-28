@@ -4,5 +4,19 @@ services:
     build: .
     image: rodillo-virtual
     ports:
-      - '8080:80'
+      - '8080:8080'
     restart: unless-stopped
+    # Hardening: nothing in the container can write outside /tmp, gain
+    # privileges or use Linux capabilities. nginx-unprivileged needs none.
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 128M
+          pids: 64
