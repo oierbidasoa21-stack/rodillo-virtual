@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import type { HrMeasured } from './summary';
-import { countsForFitness, fitnessCurve, freshnessLevel, weekStart, weeklyTotals } from './fitness';
+import {
+  countsForFitness,
+  fitnessCurve,
+  freshnessLevel,
+  weekDays,
+  weekStart,
+  weeklyTotals,
+} from './fitness';
 
 const at = (y: number, m: number, d: number, h = 18) => new Date(y, m - 1, d, h).getTime();
 const sim = { simulated: true } as HrMeasured;
@@ -84,5 +91,27 @@ describe('weeks', () => {
     expect(freshnessLevel(0)).toBe('balanced');
     expect(freshnessLevel(-40)).toBe('loaded');
     expect(freshnessLevel(-80)).toBe('overloaded');
+  });
+});
+
+describe('current week', () => {
+  it('lists Monday to Sunday with what was ridden each day', () => {
+    // Thursday 26 Nov 2026: week of Mon 23 to Sun 29.
+    const days = weekDays(
+      [
+        { dateMs: at(2026, 11, 23, 8), load: 40, durationSec: 1800 },
+        { dateMs: at(2026, 11, 23, 19), load: 20, durationSec: 900 },
+        { dateMs: at(2026, 11, 25), load: 90, durationSec: 3600 },
+        { dateMs: at(2026, 11, 26), load: 500, durationSec: 60, hrMeasured: sim },
+        { dateMs: at(2026, 11, 22), load: 70, durationSec: 4000 },
+      ],
+      at(2026, 11, 26),
+    );
+    expect(days).toHaveLength(7);
+    expect(days[0]?.dayMs).toBe(new Date(2026, 10, 23).getTime());
+    expect(days[6]?.dayMs).toBe(new Date(2026, 10, 29).getTime());
+    // Monday: 40 + 20 load, 30 + 15 min, two sessions. Sunday 22 is last week.
+    expect(days.map((d) => d.load)).toEqual([60, 0, 90, 0, 0, 0, 0]);
+    expect(days[0]).toMatchObject({ durationSec: 2700, sessions: 2 });
   });
 });
