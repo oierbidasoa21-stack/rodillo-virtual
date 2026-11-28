@@ -95,7 +95,13 @@ La app lee por Bluetooth:
 2. Chrome abre una lista: elige tu sensor. **No lo emparejes antes** en la configuración Bluetooth de Windows.
 3. Cuando conecta, la tarjeta pasa a **Conectado** y enseña lo que marca.
 
-Chrome pide elegir el sensor **una vez cada vez que abres la app**. Es una limitación del navegador.
+Chrome pide elegir el sensor **una vez cada vez que abres la app**. Para evitarlo hay una opción experimental de Chrome:
+
+1. Escribe `chrome://flags/#enable-web-bluetooth-new-permissions-backend` en la barra de direcciones.
+2. Pon la opción en **Enabled** y pulsa **Relaunch** para reiniciar Chrome.
+3. Conecta tus sensores una vez, como siempre.
+
+Desde entonces la app **recuerda** los sensores y, al abrirla, los conecta sola si están encendidos y cerca (espera hasta 30 segundos a que aparezcan). Si no los encuentra, lo dice y pulsas **Conectar** como antes. Si desconectas un sensor a mano, la app lo olvida. Al ser experimental, puede cambiar con las versiones de Chrome.
 
 ### Si se cae un sensor
 
@@ -412,7 +418,7 @@ Usa valores típicos de un ciclista en carretera (CdA 0,32, Crr 0,005, 97,5 % de
 
 **El sensor se desconecta durante la sesión.** La app avisa y reintenta sola. Si pasa a menudo: acerca el ordenador a la bici, cambia la pila del sensor y aleja otros aparatos inalámbricos.
 
-**Tengo que elegir el sensor cada vez que abro la app.** Es normal: Chrome lo pide una vez por sesión. La reconexión sin preguntar está apuntada para la Fase 15.
+**Tengo que elegir el sensor cada vez que abro la app.** Es lo normal en Chrome. Con la opción experimental del [apartado 2](#emparejar) la app los recuerda y los conecta sola.
 
 **No sale la potencia.** Elige tu rodillo en Ajustes → Rodillo y potencia y conecta el sensor de velocidad. Sin las dos cosas, la app no la muestra.
 
