@@ -702,3 +702,80 @@ a.btn {
   display: inline-flex;
   align-items: center;
 }
+
+/* Home panel */
+.home {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+.home-next {
+  grid-column: 1 / -1;
+}
+.home-next-what {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.home-next-what b {
+  font-family: var(--f-display);
+  font-size: 26px;
+  line-height: 1.1;
+}
+.home-next .btn.primary,
+.home-next .row1 > .btn:not(.ghost) {
+  padding: 12px 22px;
+  font-size: 17px;
+}
+.home-rest {
+  font-weight: 600;
+}
+.week-days {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+.week-days li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.week-bar {
+  width: 100%;
+  height: 64px;
+  display: flex;
+  align-items: flex-end;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.week-bar i {
+  width: 100%;
+  background: var(--accent);
+}
+.week-days li.future .week-bar {
+  border-style: dashed;
+}
+.week-letter {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.week-days li.today .week-letter {
+  color: var(--accent);
+}
+@media (max-width: 860px) {
+  .home {
+    grid-template-columns: 1fr;
+  }
+}
+.home .fitness-tiles b {
+  font-size: 26px;
+  white-space: nowrap;
+}

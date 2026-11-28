@@ -72,7 +72,8 @@ export default async function run(page) {
   await page.reload();
   await page.clock.runFor(1_500);
 
-  // 1 · Sesiones
+  // 1 · Sesiones (la app se abre en Inicio, que se captura al final, con historial)
+  await tab(page, 'Sesiones').click();
   await shot(page, '01-sesiones');
 
   // 2 · Ajustes: datos, zonas y rodillo (con el ejemplo y un rodillo de la lista)
@@ -148,6 +149,12 @@ export default async function run(page) {
   const box = await page.locator('.session-chart .hit').first().boundingBox();
   await page.mouse.move(box.x + box.width * 0.6, box.y + box.height / 2);
   await shot(page, '14-graficas');
+
+  // 8 · Inicio, con el historial de ejemplo
+  await page.getByRole('button', { name: 'Volver al historial' }).first().click();
+  await tab(page, 'Inicio').click();
+  await page.clock.runFor(500);
+  await shot(page, '15-inicio');
 
   return { seeded };
 }

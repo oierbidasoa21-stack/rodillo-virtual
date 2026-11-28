@@ -6,7 +6,7 @@ Las capturas están hechas con **sensores simulados** y el atleta de ejemplo (`c
 
 **Índice**
 
-1. [Primeros pasos](#1-primeros-pasos)
+1. [Primeros pasos](#1-primeros-pasos) (con el [Inicio](#inicio))
 2. [Sensores](#2-sensores)
 3. [Rodillo y potencia](#3-rodillo-y-potencia)
 4. [Biblioteca y editor de sesiones](#4-biblioteca-y-editor-de-sesiones)
@@ -29,7 +29,19 @@ Una regla que se repite en todo el manual: **la app nunca se inventa datos**. Si
 
 Abre https://oierbidasoa21-stack.github.io/rodillo-virtual/ en **Chrome, en el ordenador**. Es la única forma probada: los sensores Bluetooth solo funcionan en Chrome (o Edge) de escritorio.
 
-Arriba están las cinco pestañas: **Sesiones**, **Rutas**, **Historial**, **Sensores** y **Ajustes**. Debajo, la franja de colores con tus seis zonas de pulso, siempre a la vista. Arriba a la derecha, unas «píldoras» dicen qué sensores hay conectados y qué marcan.
+Arriba están las seis pestañas: **Inicio**, **Sesiones**, **Rutas**, **Historial**, **Sensores** y **Ajustes**. Debajo, la franja de colores con tus seis zonas de pulso, siempre a la vista. Arriba a la derecha, unas «píldoras» dicen qué sensores hay conectados y qué marcan.
+
+### Inicio
+
+La app se abre en **Inicio**, un panel con lo que necesitas antes de subirte a la bici:
+
+- **Próxima sesión del plan**: la primera sesión que te queda del plan del entrenador ([apartado 9](#9-plan-del-entrenador)), de hoy en adelante, con su perfil y el botón **Empezar**. Si hoy toca descanso, lo dice. Sin plan, te dice dónde importarlo.
+- **Esta semana**: una barra por día, de lunes a domingo, con la carga de cada uno (pasa el ratón por encima para ver sesiones, tiempo y carga), y las sesiones, el tiempo y la carga de la semana al lado de los de la semana pasada.
+- **Forma y fatiga**: condición, fatiga y frescura de hoy, con lo que significan ([apartado 8](#forma)). **Ver la curva** lleva al historial.
+
+Como en el historial, las sesiones con sensores simulados no cuentan.
+
+![Inicio](manual/15-inicio.png)
 
 ![Pestaña Sesiones](manual/01-sesiones.png)
 
@@ -352,7 +364,7 @@ Si usas un agente de IA como entrenador, la app se entiende con él copiando y p
 1. **Una vez:** **Instrucciones para el agente** descarga un archivo con el formato del plan. Dáselo a tu agente.
 2. **Cada semana:** **Copiar informe** copia tus zonas, tu forma y las sesiones de las últimas 4 semanas. Pégaselo al agente y pídele el plan.
 3. **Importar plan:** pega su respuesta tal cual. Si algo no encaja, la app dice qué y no importa nada.
-4. El plan aparece en Sesiones día a día. **Empezar** abre la sesión del día y, al guardarla, queda como **✓ Hecha**.
+4. El plan aparece en Sesiones día a día, y la próxima sesión que te queda, también en **Inicio**. **Empezar** abre la sesión del día y, al guardarla, queda como **✓ Hecha**.
 
 El detalle está en [`docs/agente-entrenador.md`](agente-entrenador.md). El informe lleva tus datos: solo sale de la app cuando tú lo copias.
 

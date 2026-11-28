@@ -5,6 +5,7 @@ import { loadAll } from '../store/loadAll';
 import { useUiStore } from '../store/uiStore';
 import EditorSheet from './editor/EditorSheet';
 import HistoryView from './history/HistoryView';
+import HomeView from './home/HomeView';
 import { useTheme } from './hooks/useTheme';
 import Player from './player/Player';
 import RideView from './ride/RideView';
@@ -67,6 +68,7 @@ export default function App() {
             <Tabs />
             <ZoneStrip />
             <main>
+              {tab === 'home' && <HomeView />}
               {tab === 'library' && <LibraryView />}
               {tab === 'routes' && <RoutesView />}
               {tab === 'history' && <HistoryView />}
