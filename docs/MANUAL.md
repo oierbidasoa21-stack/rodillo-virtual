@@ -57,7 +57,7 @@ Cada dirección (la web publicada, `localhost:8080` o tu dominio) guarda **sus p
 
 En **Ajustes → Tus datos** pon tu **peso**, el **peso de la bici** y la **circunferencia de rueda** (2155 mm para 700×32, 2105 mm para 700×25). El peso sirve para las kcal y la velocidad virtual en las rutas; la rueda, para pasar vueltas de rueda a velocidad.
 
-En el mismo sitio eliges si quieres **avisos por voz**, **pitidos**, el **tema** (claro, oscuro o como el sistema) y la **calidad del 3D** ([apartado 6](#vista-3d)).
+En el mismo sitio eliges si quieres **avisos por voz**, **pitidos**, el **tema** (claro, oscuro o como el sistema), si se **descarga el archivo al guardar** ([apartado 7](#llevarte-el-archivo)) y la **calidad del 3D** ([apartado 6](#vista-3d)).
 
 ![Ajustes: tus datos](manual/02-ajustes-datos.png)
 
@@ -298,7 +298,18 @@ Los cálculos se explican en el [apartado 11](#11-cálculos-explicados).
 
 ### Llevarte el archivo
 
-Desde el detalle de la sesión en **Historial**, **Exportar TCX** descarga la salida en formato TCX para subirla a Strava, Garmin Connect o intervals.icu a mano. Todavía no hay subida automática a Strava ni exportación FIT: están planificadas en la Fase 15 del [`ROADMAP`](ROADMAP.md).
+**Al guardar una sesión**, la app descarga sola su archivo (TCX) y el resumen muestra una tarjeta para **subirla a Strava**:
+
+1. Pulsa **Abrir Strava para subir**: se abre en otra pestaña la página de subida de Strava (con tu sesión de Strava iniciada).
+2. Elige el archivo recién descargado (está en tu carpeta de Descargas, con un nombre como `rodillo-2026-11-28-1830-fondo-z2.tcx`) y confirma en Strava.
+
+Son unos 20 segundos y no hace falta conectar la app con Strava: no se guarda ninguna contraseña ni clave. Si cierras la tarjeta, en el detalle de la sesión del **Historial** tienes **Exportar TCX** y **Abrir Strava para subir**. El mismo archivo sirve para Garmin Connect o intervals.icu.
+
+- **Ajustes → Descargar el archivo al guardar** (activado de serie) lo desactiva si prefieres descargarlo solo cuando quieras.
+- Las sesiones con **sensores simulados** no se descargan ni se ofrecen a Strava: no son datos tuyos.
+- El archivo marca la potencia como **estimada** en sus notas. En las rutas de ejemplo, que son inventadas, va **sin posición GPS**; en tus GPX importados, con ella.
+
+La exportación FIT para el entrenador está planificada en la Fase 15b del [`ROADMAP`](ROADMAP.md).
 
 ---
 
@@ -318,7 +329,7 @@ Debajo están la curva de condición y fatiga de 90 días (pasa el ratón para v
 
 ### Detalle de una sesión
 
-Pulsa una fila para abrir su detalle: el mismo resumen del final, **Exportar TCX**, **Borrar sesión** y una **gráfica por cada dato grabado** (pulso sobre los colores de tus zonas, potencia, velocidad, cadencia y, en ruta, altitud). Pasa el ratón por encima para ver los valores de cada segundo. Las sesiones de antes de la grabación solo tienen resumen.
+Pulsa una fila para abrir su detalle: el mismo resumen del final, **Exportar TCX**, **Abrir Strava para subir**, **Borrar sesión** y una **gráfica por cada dato grabado** (pulso sobre los colores de tus zonas, potencia, velocidad, cadencia y, en ruta, altitud). Pasa el ratón por encima para ver los valores de cada segundo. Las sesiones de antes de la grabación solo tienen resumen.
 
 ![Detalle de una sesión](manual/13-detalle.png)
 
