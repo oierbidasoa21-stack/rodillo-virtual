@@ -27,9 +27,50 @@ jobs:
       - run: npm run test
       - run: npm run build
 
-  docker:
-    name: Docker image builds
+  audit:
+    name: npm audit
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      # What ships in the app: fail on a high or critical known vulnerability.
+      - name: Production dependencies
+        run: npm audit --omit=dev --audit-level=high
+      # Build and test tools never reach the browser: report them, don't block.
+      - name: Development dependencies (report only)
+        run: npm audit || true
+
+  docker:
+    name: Docker image builds
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: docker build -t rodillo-virtual .
+      # Every known vulnerability in the image goes to Security → Code scanning.
+      - name: Trivy scan (report)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: rodillo-virtual
+          format: sarif
+          output: trivy-results.sarif
+          severity: CRITICAL,HIGH,MEDIUM
+      - uses: github/codeql-action/upload-sarif@915412ff23e8b7659517e607487dbeae018f2934 # v4.39.5
+        if: always()
+        with:
+          sarif_file: trivy-results.sarif
+          category: trivy
+      # Gate: a critical vulnerability that already has a fix fails the build.
+      - name: Trivy gate (critical with a fix)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: rodillo-virtual
+          format: table
+          severity: CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+          skip-setup-trivy: true
