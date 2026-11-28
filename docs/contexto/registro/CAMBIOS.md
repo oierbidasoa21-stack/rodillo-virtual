@@ -220,7 +220,8 @@ Con _squash_ (un commit por PR):
 - `32c6360` · 2026-11-28 · feat(player): transición entre bloques y cuenta atrás grande en los últimos 5 s ([#102](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/102), refs #60)
 - `4d88799` · 2026-11-28 · docs(contexto): drop the finish arch (T16) and update the tracking page ([#103](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/103))
 - `bb2f6b2` · 2026-11-28 · feat(home): add home panel with week, form and next plan session ([#105](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/105), closes #55)
-- _(#104, anillo de zonas y fantasma, closes #60, y #99, pulso máximo, closes #58: se añaden al fusionarse)_
+- `962ba80` · 2026-11-28 · feat(metrics): add zone donut and make the ghost easier to spot ([#104](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/104), closes #60)
+- `c2457af` · 2026-11-28 · feat(workout): pulso máximo de la sesión y del bloque, con aviso inmediato ([#99](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/99), closes #58)
 
 Fuera de la fase, en los mismos días: `137e41c` página de seguimiento con la Fase 14 cerrada ([#97](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/97)), `e0d2ea1` nginx-unprivileged 1.31 ([#94](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/94), Dependabot) y `b68af17` grupo de acciones ([#87](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/87), Dependabot).
 
