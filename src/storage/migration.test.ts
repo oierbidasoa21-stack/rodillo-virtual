@@ -40,7 +40,7 @@ describe('Dexie migrations', () => {
     expect((await db.workouts.get('c-1'))?.blocks).toEqual(expected);
     // Other tables untouched
     expect(await db.history.count()).toBe(1);
-    expect(db.verno).toBe(6);
+    expect(db.verno).toBe(7);
     expect(await db.routes.count()).toBe(0);
     db.close();
   });
@@ -57,7 +57,7 @@ describe('Dexie migrations', () => {
     v2.close();
 
     const db = new RodilloDb(name);
-    expect(db.verno).toBe(6);
+    expect(db.verno).toBe(7);
     expect(await createStorage(db).listWorkouts()).toEqual([
       { id: 'c-2', name: 'Ya migrada', description: '', blocks: [makeBlock(300, 'Z2')] },
     ]);
@@ -82,7 +82,7 @@ describe('Dexie migrations', () => {
     v3.close();
 
     const db = new RodilloDb(name);
-    expect(db.verno).toBe(6);
+    expect(db.verno).toBe(7);
     expect(await db.routes.count()).toBe(1);
     expect(await db.recordings.count()).toBe(0);
     expect(await db.inProgress.count()).toBe(0);
@@ -105,7 +105,7 @@ describe('Dexie migrations', () => {
 
     const db = new RodilloDb(name);
     const storage = createStorage(db);
-    expect(db.verno).toBe(6);
+    expect(db.verno).toBe(7);
     expect(await db.history.count()).toBe(1);
     expect(await db.recordings.count()).toBe(1);
     expect(await storage.listPlans()).toEqual([]);
@@ -162,7 +162,7 @@ describe('Dexie migrations', () => {
     v5.close();
 
     const db = new RodilloDb(name);
-    expect(db.verno).toBe(6);
+    expect(db.verno).toBe(7);
     expect((await db.workouts.get('c-5'))?.blocks).toEqual([makeBlock(600, 'Z4', 'work')]);
     const h = await db.history.get('h-5');
     expect(h?.plannedSecByZone).toEqual({ Z1: 1, Z2: 2, Z3: 3, Z4: 4, Z5: 5, Z6: 6 });
@@ -179,6 +179,41 @@ describe('Dexie migrations', () => {
     ]);
     // Routes carry no zones: a route called «UA» keeps its name.
     expect((await db.routes.get('r-5'))?.name).toBe('UA');
+    db.close();
+  });
+
+  it('v6 → v7 adds the landscapes table and keeps routes and history', async () => {
+    const v6 = new Dexie(name);
+    v6.version(6).stores({
+      workouts: 'id',
+      history: 'id, dateMs',
+      settings: 'key',
+      routes: 'id',
+      recordings: 'sessionId',
+      inProgress: 'key',
+      plans: 'id',
+    });
+    await v6.table('routes').put({ id: 'gpx-6', name: 'Puerto', source: 'gpx', points: [] });
+    await v6.table('history').put({ id: 'h-6', dateMs: 6, workoutName: 'X' });
+    v6.close();
+
+    const db = new RodilloDb(name);
+    expect(db.verno).toBe(7);
+    expect((await db.routes.get('gpx-6'))?.name).toBe('Puerto');
+    expect((await db.history.get('h-6'))?.workoutName).toBe('X');
+    // Nothing downloaded yet: the table starts empty.
+    expect(await db.landscapes.count()).toBe(0);
+    await createStorage(db).saveLandscape({
+      routeId: 'gpx-6',
+      downloadedAtMs: 7,
+      tiles: 90,
+      failed: 2,
+      bytes: 3_000_000,
+    });
+    expect((await createStorage(db).listLandscapes())[0]).toMatchObject({
+      routeId: 'gpx-6',
+      failed: 2,
+    });
     db.close();
   });
 });

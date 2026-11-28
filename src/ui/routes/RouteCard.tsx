@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Route } from '../../domain/route/route';
 import type { Workout } from '../../domain/workout/types';
 import ConfirmButton from '../ConfirmButton';
+import LandscapeControl from './LandscapeControl';
 import ElevationProfile from '../ride/ElevationProfile';
 import { RIDE_MODE_LABEL, type RideReadiness } from '../ride/rideMode';
 import { formatKm } from '../ride/rideFormat';
@@ -45,6 +46,8 @@ export default function RouteCard({
         {pct.format(route.maxGrade * 100)} %
       </p>
       <ElevationProfile route={route} height={60} />
+      {/* Invented example routes have no real place to fetch a landscape for. */}
+      {route.source === 'gpx' && <LandscapeControl route={route} />}
       {missing.length > 0 && (
         <p className="msg error" role="alert">
           {missing.join(' ')}

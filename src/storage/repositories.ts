@@ -4,7 +4,7 @@ import { migrateWorkout } from '../domain/workout/migrate';
 import type { Workout } from '../domain/workout/types';
 import type { SessionRecording, SessionSnapshot } from '../recording/session';
 import type { TrainingPlan } from '../domain/plan/plan';
-import { IN_PROGRESS_KEY, RodilloDb, SETTINGS_KEY } from './db';
+import { IN_PROGRESS_KEY, RodilloDb, type RouteLandscape, SETTINGS_KEY } from './db';
 import { type AppSettings, normalizeSettings } from './settings';
 
 /** Data access for the app. Takes the database so tests can use a throwaway one. */
@@ -60,6 +60,12 @@ export function createStorage(db: RodilloDb) {
       await db.routes.put(route);
     },
     deleteRoute: (id: string): Promise<void> => db.routes.delete(id),
+
+    listLandscapes: (): Promise<RouteLandscape[]> => db.landscapes.toArray(),
+    saveLandscape: async (row: RouteLandscape): Promise<void> => {
+      await db.landscapes.put(row);
+    },
+    deleteLandscape: (routeId: string): Promise<void> => db.landscapes.delete(routeId),
 
     listPlans: (): Promise<TrainingPlan[]> => db.plans.toArray(),
     savePlan: async (plan: TrainingPlan): Promise<void> => {

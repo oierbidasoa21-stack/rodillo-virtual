@@ -46,18 +46,20 @@ Fase 6:
 - **`AppSettings`**: `athlete` (peso, bici, rueda, zonas, FTP), voz, pitidos, tema, `simulateSensors`, `trainer` (modelo o curva personalizada), `graphicsQuality` (calidad del 3D) y `downloadOnSave` (descargar el archivo al guardar). Los ids de los sensores recordados van aparte, en `localStorage` (`rodillo-virtual:remembered-sensors`), porque son una comodidad.
 - **`SessionRecording`**: `{ sessionId, startMs, samples }`; cada muestra `{ t, hr, powerW, speedKmh, cadenceRpm, distanceM, altitudeM, lat, lon }` con `null` donde no hubo lectura.
 - **`SessionSnapshot`** (sesión en curso): sesión o salida, estado del player o de la ruta y el grabador entero, para retomarla.
+- **`RouteLandscape`** (Fase 10): `{ routeId, downloadedAtMs, tiles, failed, bytes }`. Las teselas no van en IndexedDB sino en Cache Storage (`rodillo-virtual-tiles`), y no entran en la copia de seguridad.
 - **`Route`** (importadas): puntos cada 10 m `{ distanceM, lat, lon, ele }` con la altitud ya suavizada, distancia, desnivel y pendiente máxima.
 
 ## Versiones de la base de datos (Dexie, nombre `rodillo-virtual`)
 
-| Versión Dexie | IndexedDB | Fase | Cambio                                                                                                |
-| ------------- | --------- | ---- | ----------------------------------------------------------------------------------------------------- |
-| 1             | 10        | 1    | Tablas `workouts`, `history` (índice `dateMs`), `settings`                                            |
-| 2             | 20        | 4    | Migración: los bloques pasan de `zoneId` a `target`                                                   |
-| 3             | 30        | 5    | Tabla `routes`                                                                                        |
-| 4             | 40        | 6    | Tablas `recordings` (por sesión) e `inProgress` (una fila)                                            |
-| 5             | 50        | —    | Tabla `plans` (plan del agente entrenador)                                                            |
-| 6             | 60        | 9    | Migración: zonas de pulso L1…VO2 → Z1…Z6 en `workouts`, `history`, `settings`, `inProgress` y `plans` |
+| Versión Dexie | IndexedDB | Fase | Cambio                                                                                                 |
+| ------------- | --------- | ---- | ------------------------------------------------------------------------------------------------------ |
+| 1             | 10        | 1    | Tablas `workouts`, `history` (índice `dateMs`), `settings`                                             |
+| 2             | 20        | 4    | Migración: los bloques pasan de `zoneId` a `target`                                                    |
+| 3             | 30        | 5    | Tabla `routes`                                                                                         |
+| 4             | 40        | 6    | Tablas `recordings` (por sesión) e `inProgress` (una fila)                                             |
+| 5             | 50        | —    | Tabla `plans` (plan del agente entrenador)                                                             |
+| 6             | 60        | 9    | Migración: zonas de pulso L1…VO2 → Z1…Z6 en `workouts`, `history`, `settings`, `inProgress` y `plans`  |
+| 7             | 70        | 10   | Tabla `landscapes` (qué rutas GPX tienen el paisaje real descargado; las teselas van en Cache Storage) |
 
 Cada cambio de versión tiene un test que parte de una base de la versión anterior.
 

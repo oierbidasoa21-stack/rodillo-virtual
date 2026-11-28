@@ -306,3 +306,19 @@
 .elevation-gap.behind {
   stroke: #c0392b;
 }
+/* Credit for the real landscape tiles, required by their licences. */
+.world-attribution {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  margin: 0;
+  max-width: 70%;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  text-align: right;
+}

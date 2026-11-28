@@ -21,6 +21,7 @@ import WorldTrees from './WorldTrees';
 import { LIGHTING } from './sun';
 import type { TimeOfDay } from './timeOfDay';
 import { useRealHeights } from './useRealHeights';
+import { TILE_ATTRIBUTION_SHORT } from '../../tiles/sources';
 
 interface Props {
   route: Route;
@@ -89,56 +90,60 @@ export default function World3D({
   }, [ghostD, ghostV, running]);
 
   return (
-    <Canvas
-      // Shadows, antialiasing and the camera are set when the canvas is created:
-      // a new level means a new canvas.
-      key={`${quality}-${real ? 'real' : 'usual'}`}
-      className="world-canvas"
-      dpr={[1, preset.maxDpr]}
-      shadows={preset.shadows}
-      gl={{
-        antialias: preset.antialias,
-        powerPreference: 'high-performance',
-        // Tens of km of real horizon and a road a metre away: a linear depth
-        // buffer would make far slopes flicker through each other.
-        logarithmicDepthBuffer: !!real,
-      }}
-      camera={{ fov: 58, near: 0.5, far: farM }}
-      aria-label={`Vista 3D de ${route.name}`}
-    >
-      <color attach="background" args={[light.horizon]} />
-      <fog attach="fog" args={[light.horizon, real ? 600 : 250, fogEndM]} />
-      <hemisphereLight args={light.hemi} />
-      <WorldSun light={light} shadowMapPx={preset.shadowMapPx} />
-      <WorldSky light={light} />
-      {real ? (
-        <>
-          <WorldRealTerrain
-            route={route}
-            path={path}
-            index={index}
-            rh={real}
-            maxVertices={preset.realTerrainVertices}
-            imageryMaxPx={preset.imageryMaxPx}
-            onGrid={setNearGrid}
-          />
-          {nearGrid && <WorldRealHorizon route={route} path={path} rh={real} near={nearGrid} />}
-        </>
-      ) : (
-        <>
-          <WorldTerrain path={path} index={index} />
-          <WorldHorizon path={path} />
-        </>
-      )}
-      <WorldRoad path={path} />
-      <WorldPosts path={path} />
-      <WorldGuardrails path={path} />
-      <WorldSpectators path={path} index={index} motion={motion} density={preset.crowdDensity} />
-      {/* With real landscape nothing is made up: no invented trees, bushes or rocks. */}
-      {!real && <WorldTrees path={path} index={index} density={preset.propDensity} />}
-      {!real && <WorldScenery path={path} index={index} density={preset.propDensity} />}
-      <WorldRider path={path} motion={motion} />
-      {ghost && <WorldRider path={path} motion={ghostMotion} ghost label={ghost.label} />}
-    </Canvas>
+    <>
+      <Canvas
+        // Shadows, antialiasing and the camera are set when the canvas is created:
+        // a new level means a new canvas.
+        key={`${quality}-${real ? 'real' : 'usual'}`}
+        className="world-canvas"
+        dpr={[1, preset.maxDpr]}
+        shadows={preset.shadows}
+        gl={{
+          antialias: preset.antialias,
+          powerPreference: 'high-performance',
+          // Tens of km of real horizon and a road a metre away: a linear depth
+          // buffer would make far slopes flicker through each other.
+          logarithmicDepthBuffer: !!real,
+        }}
+        camera={{ fov: 58, near: 0.5, far: farM }}
+        aria-label={`Vista 3D de ${route.name}`}
+      >
+        <color attach="background" args={[light.horizon]} />
+        <fog attach="fog" args={[light.horizon, real ? 600 : 250, fogEndM]} />
+        <hemisphereLight args={light.hemi} />
+        <WorldSun light={light} shadowMapPx={preset.shadowMapPx} />
+        <WorldSky light={light} />
+        {real ? (
+          <>
+            <WorldRealTerrain
+              route={route}
+              path={path}
+              index={index}
+              rh={real}
+              maxVertices={preset.realTerrainVertices}
+              imageryMaxPx={preset.imageryMaxPx}
+              onGrid={setNearGrid}
+            />
+            {nearGrid && <WorldRealHorizon route={route} path={path} rh={real} near={nearGrid} />}
+          </>
+        ) : (
+          <>
+            <WorldTerrain path={path} index={index} />
+            <WorldHorizon path={path} />
+          </>
+        )}
+        <WorldRoad path={path} />
+        <WorldPosts path={path} />
+        <WorldGuardrails path={path} />
+        <WorldSpectators path={path} index={index} motion={motion} density={preset.crowdDensity} />
+        {/* With real landscape nothing is made up: no invented trees, bushes or rocks. */}
+        {!real && <WorldTrees path={path} index={index} density={preset.propDensity} />}
+        {!real && <WorldScenery path={path} index={index} density={preset.propDensity} />}
+        <WorldRider path={path} motion={motion} />
+        {ghost && <WorldRider path={path} motion={ghostMotion} ghost label={ghost.label} />}
+      </Canvas>
+      {/* The tile licences require visible credit while their data is on screen. */}
+      {real && <p className="world-attribution">{TILE_ATTRIBUTION_SHORT}</p>}
+    </>
   );
 }

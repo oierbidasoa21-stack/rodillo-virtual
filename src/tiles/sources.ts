@@ -27,3 +27,7 @@ export const TILE_ATTRIBUTION = [
   'Imagen: Sentinel-2 cloudless 2024 de EOX IT Services GmbH (s2maps.eu), con datos modificados de Copernicus Sentinel (2024). Licencia CC BY-NC-SA 4.0: uso no comercial.',
   'Relieve: AWS Terrain Tiles (Mapzen), con datos de SRTM, NED, ETOPO1 y otras fuentes públicas.',
 ];
+
+/** One line for the 3D view while real landscape is shown (the full lines are in the manual). */
+export const TILE_ATTRIBUTION_SHORT =
+  'Relieve: AWS Terrain Tiles · Imagen: Sentinel-2 cloudless 2024 de EOX (s2maps.eu), datos de Copernicus Sentinel · CC BY-NC-SA 4.0, uso no comercial';
