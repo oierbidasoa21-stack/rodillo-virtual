@@ -6,6 +6,7 @@ import { type RideMode, type RideState, advanceRide, startRide } from '../../dom
 import type { Route } from '../../domain/route/route';
 import { curveFor, speedForPowerKmh } from '../../domain/trainer/curves';
 import { expandWorkout } from '../../domain/workout/expand';
+import { bigCountdownDigit } from '../../domain/workout/countdown';
 import { type RampResult, ftpFromRamp, rampStepsCompleted } from '../../domain/workout/ramp';
 import { targetWatts } from '../../domain/workout/targets';
 import {
@@ -242,6 +243,7 @@ export default function Player({
   // Heart rate zone of the block; null for power blocks.
   const zone = hrZoneId ? findZone(zones, hrZoneId) : null;
   const p = progress(player);
+  const countdown = bigCountdownDigit(p.remainingInStepSec, running);
   const share = (p.doneSec / p.totalSec) * 100;
   const playLabel = running ? 'Pausa' : player.status === 'ready' ? 'Empezar' : 'Reanudar';
 
@@ -270,6 +272,8 @@ export default function Player({
         </WorkoutProfile>
 
         <div
+          // A new block mounts a new card, which plays its entrance animation.
+          key={player.index}
           className={zone && needsDarkText(zone.id) ? 'zonecard zt-dark' : 'zonecard'}
           style={{ background: targetColor(step.target, ftpW) }}
         >
@@ -292,12 +296,19 @@ export default function Player({
           {step.note && <span className="bnote">{step.note}</span>}
         </div>
 
-        <div
-          className={running && p.remainingInStepSec <= 10 ? 'clock num warn' : 'clock num'}
-          role="timer"
-        >
-          {formatClock(Math.ceil(p.remainingInStepSec))}
-        </div>
+        {countdown !== null ? (
+          // Last 5 s: one big digit, and a new digit restarts its pulse.
+          <div key={countdown} className="clock num warn bigdigit" role="timer">
+            {countdown}
+          </div>
+        ) : (
+          <div
+            className={running && p.remainingInStepSec <= 10 ? 'clock num warn' : 'clock num'}
+            role="timer"
+          >
+            {formatClock(Math.ceil(p.remainingInStepSec))}
+          </div>
+        )}
 
         <LiveMetrics zone={zone} targetW={targetWatts(step.target, ftpW)} />
 

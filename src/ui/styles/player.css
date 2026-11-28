@@ -299,3 +299,34 @@
   font-size: 0.45em;
   color: var(--muted);
 }
+
+/* A new block slides its card in, so the change is seen from the bike. */
+.zonecard {
+  animation: block-in 0.5s ease-out;
+}
+@keyframes block-in {
+  from {
+    opacity: 0.2;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+/* Last five seconds of a block: the clock becomes one big pulsing digit. */
+.clock.bigdigit {
+  font-size: clamp(130px, 40vw, 260px);
+  /* Same box height as the normal clock, so nothing below it jumps. */
+  line-height: 0.555;
+  overflow: visible;
+  animation: countdown-tick 1s ease-out;
+}
+@keyframes countdown-tick {
+  from {
+    transform: scale(1.18);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zonecard,
+  .clock.bigdigit {
+    animation: none;
+  }
+}
