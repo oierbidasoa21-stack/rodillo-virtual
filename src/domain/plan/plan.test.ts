@@ -5,7 +5,7 @@ import { makeBlock, makeRepeat } from '../workout/types';
 import { validateWorkout } from '../workout/validate';
 import type { HrZone } from '../zones/zones';
 import { AGENT_INSTRUCTIONS } from './instructions';
-import { PLAN_FORMAT, dayDone, extractJson, localDate, parsePlan } from './plan';
+import { PLAN_FORMAT, dayDone, extractJson, localDate, nextPlanDay, parsePlan } from './plan';
 import { coachReport } from './report';
 
 const day = (fecha: string, extra: object) => ({ fecha, ...extra });
@@ -74,6 +74,26 @@ describe('plan import', () => {
     expect(dayDone(d, [{ dateMs: at, workoutName: 'A' }])).toBe(true);
     expect(dayDone(d, [{ dateMs: at, workoutName: 'B' }])).toBe(false);
     expect(dayDone(d, [{ dateMs: at + 86_400_000, workoutName: 'A' }])).toBe(false);
+  });
+
+  it('finds the next day to ride: from today on, with a workout, not done', () => {
+    const r = parsePlan(
+      planText([
+        day('2026-11-30', { titulo: 'Pasado', bloques: [{ min: 5, zona: 'Z1' }] }),
+        day('2026-12-01', { titulo: 'Hoy', bloques: [{ min: 5, zona: 'Z2' }] }),
+        day('2026-12-02', { descanso: true }),
+        day('2026-12-03', { titulo: 'Jueves', bloques: [{ min: 5, zona: 'Z4' }] }),
+      ]),
+    );
+    const days = r.plan?.days ?? [];
+    const today = new Date(2026, 11, 1, 19).getTime();
+    // The undone day before today is skipped: it is not "next".
+    expect(nextPlanDay(days, [], '2026-12-01')?.title).toBe('Hoy');
+    // Done today: the rest day is skipped too.
+    expect(nextPlanDay(days, [{ dateMs: today, workoutName: 'Hoy' }], '2026-12-01')?.title).toBe(
+      'Jueves',
+    );
+    expect(nextPlanDay(days, [], '2026-12-04')).toBeUndefined();
   });
 });
 

@@ -5,7 +5,7 @@ import type { Workout } from '../domain/workout/types';
 import type { SessionSnapshot } from '../recording/session';
 import type { StoragePersistence } from '../storage/persist';
 
-export type Tab = 'library' | 'routes' | 'history' | 'sensors' | 'settings';
+export type Tab = 'home' | 'library' | 'routes' | 'history' | 'sensors' | 'settings';
 
 interface UiStore {
   tab: Tab;
@@ -46,7 +46,7 @@ interface UiStore {
 
 /** Transient UI state. Not persisted. */
 export const useUiStore = create<UiStore>()((set) => ({
-  tab: 'library',
+  tab: 'home',
   setTab: (tab) => set({ tab }),
   editing: null,
   openEditor: (draft) => set({ editing: structuredClone(draft) }),
