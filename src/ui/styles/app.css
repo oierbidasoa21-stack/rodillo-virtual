@@ -825,3 +825,28 @@ a.btn {
   font-size: 26px;
   white-space: nowrap;
 }
+
+/* Real landscape of a GPX route (phase 10) */
+.landscape {
+  display: grid;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.landscape-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.landscape progress {
+  width: 100%;
+  height: 10px;
+}
+.landscape-ask ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 14px;
+}
