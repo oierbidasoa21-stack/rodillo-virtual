@@ -698,3 +698,11 @@ tr.clickable:hover td {
 .stat.warnstat .v {
   color: #b3261e;
 }
+.strava-card {
+  margin-top: 12px;
+}
+a.btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}

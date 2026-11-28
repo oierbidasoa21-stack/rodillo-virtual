@@ -9,6 +9,8 @@ export interface TcxInput {
   /** Power comes from a trainer curve, not a power meter: said in the notes. */
   powerEstimated: boolean;
   simulated: boolean;
+  /** False for the made-up example routes: their coordinates are not real places. */
+  includePosition?: boolean;
 }
 
 const escapeXml = (s: string) =>
@@ -28,9 +30,9 @@ function lastNumber(samples: readonly RecordSample[], key: 'distanceM'): number 
   return null;
 }
 
-function trackpoint(s: RecordSample, startMs: number): string {
+function trackpoint(s: RecordSample, startMs: number, withPosition: boolean): string {
   const parts = [`<Time>${iso(startMs + s.t * 1000)}</Time>`];
-  if (s.lat !== null && s.lon !== null) {
+  if (withPosition && s.lat !== null && s.lon !== null) {
     parts.push(
       `<Position><LatitudeDegrees>${s.lat.toFixed(7)}</LatitudeDegrees><LongitudeDegrees>${s.lon.toFixed(7)}</LongitudeDegrees></Position>`,
     );
@@ -77,7 +79,7 @@ export function buildTcx(input: TcxInput): string {
     '<Activities><Activity Sport="Biking">',
     `<Id>${iso(startMs)}</Id>`,
     `<Lap StartTime="${iso(startMs)}">${lap.join('')}<Track>`,
-    ...samples.map((s) => trackpoint(s, startMs)),
+    ...samples.map((s) => trackpoint(s, startMs, input.includePosition ?? true)),
     '</Track></Lap>',
     `<Notes>${escapeXml(notes.join(' '))}</Notes>`,
     '</Activity></Activities>',

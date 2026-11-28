@@ -11,7 +11,11 @@ export const BLE_MESSAGES = {
   cancelled: 'No se eligió ningún sensor.',
   failed:
     'No se pudo conectar. Comprueba que el sensor está encendido, cerca y sin conectar a otro dispositivo.',
+  notSeen: 'No se ha encontrado el sensor de la última vez. Pulsa Conectar para elegirlo.',
 } as const;
+
+/** How long to listen for a remembered sensor before giving up. */
+export const REMEMBERED_WAIT_MS = 30_000;
 
 export interface BleDeps {
   bluetooth: Bluetooth | undefined;
@@ -37,6 +41,8 @@ export abstract class BleSensor<K extends SensorKind> extends SensorBase<K> {
   protected resetDecoding(): void {}
 
   private device: BluetoothDevice | null = null;
+  /** Chrome's id of the device, stable for this site while its permission lasts. */
+  private _deviceId: string | null = null;
   private char: BluetoothRemoteGATTCharacteristic | null = null;
   private manual = false;
   private attempt = 0;
@@ -61,10 +67,7 @@ export abstract class BleSensor<K extends SensorKind> extends SensorBase<K> {
         return this.setStatus('error', BLE_MESSAGES.unavailable);
       }
       const device = await bt.requestDevice({ filters: [{ services: [this.service] }] });
-      this.forgetDevice();
-      this.device = device;
-      this._deviceName = device.name ?? 'Sensor';
-      device.addEventListener('gattserverdisconnected', this.onGattDisconnected);
+      this.adopt(device);
       await this.openGatt();
     } catch (error) {
       const cancelled = error instanceof DOMException && error.name === 'NotFoundError';
@@ -73,6 +76,76 @@ export abstract class BleSensor<K extends SensorKind> extends SensorBase<K> {
         cancelled ? BLE_MESSAGES.cancelled : BLE_MESSAGES.failed,
       );
     }
+  }
+
+  get deviceId(): string | null {
+    return this._deviceId;
+  }
+
+  /**
+   * Reconnects to a sensor chosen on an earlier visit without opening Chrome's
+   * chooser. Needs `navigator.bluetooth.getDevices()` (Chrome's flag
+   * «Use the new permissions backend for Web Bluetooth»); without it, returns
+   * false and the user presses Conectar as before. With `watchAdvertisements()`
+   * it waits up to 30 s for the sensor to be in range; otherwise it tries once.
+   */
+  async reconnectRemembered(deviceId: string): Promise<boolean> {
+    const bt = this.deps.bluetooth;
+    if (!bt?.getDevices) return false;
+    if (this.status === 'connected' || this.status === 'connecting') return true;
+    let device: BluetoothDevice | undefined;
+    try {
+      device = (await bt.getDevices()).find((d) => d.id === deviceId);
+    } catch {
+      return false;
+    }
+    if (!device) return false;
+    this.manual = false;
+    this.setStatus('connecting');
+    this.adopt(device);
+    try {
+      // Typed as always there, but only exists with Chrome's experimental flag.
+      if (typeof device.watchAdvertisements === 'function') await this.waitForAdvertisement(device);
+      await this.openGatt();
+      return true;
+    } catch {
+      this.forgetDevice();
+      this._deviceId = null;
+      this.setStatus('disconnected', BLE_MESSAGES.notSeen);
+      return false;
+    }
+  }
+
+  /** Resolves when the device advertises (it is on and in range), or rejects after 30 s. */
+  private waitForAdvertisement(device: BluetoothDevice): Promise<void> {
+    const abort = new AbortController();
+    return new Promise<void>((resolve, reject) => {
+      const timer = this.deps.clock.setTimeout(() => {
+        abort.abort();
+        reject(new Error('not seen'));
+      }, REMEMBERED_WAIT_MS);
+      device.addEventListener(
+        'advertisementreceived',
+        () => {
+          this.deps.clock.clearTimeout(timer);
+          abort.abort();
+          resolve();
+        },
+        { once: true },
+      );
+      device.watchAdvertisements({ signal: abort.signal }).catch((error: unknown) => {
+        this.deps.clock.clearTimeout(timer);
+        reject(error instanceof Error ? error : new Error('watch failed'));
+      });
+    });
+  }
+
+  private adopt(device: BluetoothDevice): void {
+    this.forgetDevice();
+    this.device = device;
+    this._deviceId = device.id;
+    this._deviceName = device.name ?? 'Sensor';
+    device.addEventListener('gattserverdisconnected', this.onGattDisconnected);
   }
 
   async disconnect(): Promise<void> {
@@ -88,6 +161,7 @@ export abstract class BleSensor<K extends SensorKind> extends SensorBase<K> {
     if (this.device?.gatt?.connected) this.device.gatt.disconnect();
     this.forgetDevice();
     this._deviceName = null;
+    this._deviceId = null;
     this.setStatus('disconnected');
   }
 

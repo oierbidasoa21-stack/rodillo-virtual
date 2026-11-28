@@ -1,8 +1,10 @@
 import { useSensorsStore } from '../store/sensorsStore';
 import { useSettingsStore } from '../store/settingsStore';
 import { useSimulationStore } from '../store/simulationStore';
+import { BleSensor } from './ble/bleSensor';
 import { CscSensor } from './ble/cscSensor';
 import { HeartRateSensor } from './ble/heartRateSensor';
+import { rememberSensor, rememberedSensor } from './remembered';
 import { SimulatedCscSensor } from './simulated/simulatedCsc';
 import { SimulatedHrSensor } from './simulated/simulatedHr';
 import type { Sensor, SensorKind } from './types';
@@ -57,15 +59,45 @@ class SensorManager {
     const done = sensor.connect();
     useSensorsStore.getState().patch(kind, { status: sensor.status, source: sensor.source });
     await done;
+    this.syncAfterConnect(kind, sensor);
+  }
+
+  /**
+   * At start-up, reconnects the real sensors chosen last time, without
+   * Chrome's chooser, where Chrome allows it (see BleSensor.reconnectRemembered).
+   */
+  async reconnectRemembered(): Promise<void> {
+    if (useSettingsStore.getState().settings.simulateSensors) return;
+    await Promise.all(
+      (['hr', 'csc'] as const).map(async (kind) => {
+        const id = rememberedSensor(kind);
+        if (!id) return;
+        const sensor = this.ensure(kind);
+        if (!(sensor instanceof BleSensor)) return;
+        await sensor.reconnectRemembered(id);
+        this.syncAfterConnect(kind, sensor);
+      }),
+    );
+  }
+
+  private syncAfterConnect(kind: SensorKind, sensor: AnySensor): void {
     useSensorsStore.getState().patch(kind, {
       status: sensor.status,
       deviceName: sensor.deviceName,
       error: sensor.error,
     });
+    // Remember the real sensor that just connected; forget one that was not found.
+    if (sensor instanceof BleSensor) {
+      if (sensor.status === 'connected') rememberSensor(kind, sensor.deviceId);
+      else if (sensor.status === 'disconnected' && sensor.error) rememberSensor(kind, null);
+    }
   }
 
+  /** A manual disconnect also forgets the sensor: it will not reconnect by itself. */
   async disconnect(kind: SensorKind): Promise<void> {
-    await this.sensors.get(kind)?.sensor.disconnect();
+    const sensor = this.sensors.get(kind)?.sensor;
+    await sensor?.disconnect();
+    if (sensor instanceof BleSensor) rememberSensor(kind, null);
   }
 
   /** Simulated sensors only: rehearse a lost connection. */
