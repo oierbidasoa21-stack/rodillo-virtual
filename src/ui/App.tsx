@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { requestPersistentStorage } from '../storage/persist';
-import { watchSimulationSetting } from '../sensors/manager';
+import { sensorManager, watchSimulationSetting } from '../sensors/manager';
 import { loadAll } from '../store/loadAll';
 import { useUiStore } from '../store/uiStore';
 import EditorSheet from './editor/EditorSheet';
@@ -36,6 +36,7 @@ export default function App() {
       .then(() => {
         setStatus('ready');
         watchSimulationSetting();
+        void sensorManager.reconnectRemembered();
         void requestPersistentStorage().then(useUiStore.getState().setStoragePersistence);
       })
       .catch((error: unknown) => {

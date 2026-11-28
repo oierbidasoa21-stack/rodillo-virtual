@@ -36,7 +36,10 @@ import {
 } from '../../recording/ghost';
 import { currentRideInput } from './rideInput';
 import { RIDE_MODE_HINT } from './rideMode';
-import { saveFinishedSession } from '../session/saveSession';
+import { downloadOnSave, saveFinishedSession } from '../session/saveSession';
+import StravaCard from '../session/StravaCard';
+import { isSimulatedSession, sessionFile } from '../../recording/sessionFile';
+import { downloadText } from '../download';
 import { hasWebGL } from '../world/webgl';
 import { TIME_OF_DAY_LABEL, type TimeOfDay } from '../world/timeOfDay';
 
@@ -82,7 +85,11 @@ export default function RideView({
   const [ride, setRide] = useState<RideState>(() => resume?.ride ?? startRide());
   const rideRef = useRef(ride);
   const recorder = useSessionRecorder(resume?.recorder ?? null);
-  const [result, setResult] = useState<{ summary: SessionSummary; saved: boolean } | null>(null);
+  const [result, setResult] = useState<{
+    summary: SessionSummary;
+    saved: boolean;
+    downloaded: string | null;
+  } | null>(null);
 
   const snapshot = (): RideSnapshot => ({
     kind: 'ride',
@@ -140,7 +147,7 @@ export default function RideView({
       beep(1568, 300, 0.36);
     }
     voice.finished(summary);
-    setResult({ summary, saved });
+    setResult({ summary, saved, downloaded: downloadOnSave(summary, recorder.ref.current, saved) });
   };
 
   const running = status === 'running';
@@ -175,7 +182,18 @@ export default function RideView({
   if (result) {
     return (
       <div className="overlay">
-        <Summary summary={result.summary} saved={result.saved} onClose={close} />
+        <Summary summary={result.summary} saved={result.saved} onClose={close}>
+          {result.saved && (
+            <StravaCard
+              simulated={isSimulatedSession(result.summary)}
+              downloaded={result.downloaded}
+              onDownload={() => {
+                const f = sessionFile(result.summary, recorder.ref.current.recording);
+                downloadText(f.fileName, f.content, f.type);
+              }}
+            />
+          )}
+        </Summary>
       </div>
     );
   }

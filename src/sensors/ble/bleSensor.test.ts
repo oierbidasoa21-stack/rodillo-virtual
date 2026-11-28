@@ -207,3 +207,68 @@ describe('CscSensor', () => {
     expect(readings.at(-1)?.speedKmh).toBeNull();
   });
 });
+
+describe('BleSensor · remembered sensor (phase 15a)', () => {
+  /** A device Chrome already knows, that advertises when "in range". */
+  class KnownDevice extends FakeDevice {
+    id = 'dev-1';
+    inRange = true;
+    watchAdvertisements = vi.fn(async ({ signal }: { signal: AbortSignal }) => {
+      if (this.inRange)
+        queueMicrotask(() => this.dispatchEvent(new Event('advertisementreceived')));
+      signal.addEventListener('abort', () => undefined);
+    });
+  }
+
+  function remembered(device: FakeDevice, withGetDevices = true) {
+    const bluetooth = {
+      getAvailability: vi.fn(async () => true),
+      requestDevice: vi.fn(async () => device),
+      ...(withGetDevices ? { getDevices: vi.fn(async () => [device]) } : {}),
+    } as unknown as Bluetooth;
+    const hr = new HeartRateSensor({ bluetooth, clock: realClock });
+    const statuses: SensorStatus[] = [];
+    hr.onStatus((s) => statuses.push(s));
+    return { bluetooth, hr, statuses };
+  }
+
+  it('reconnects to the same sensor without opening the chooser', async () => {
+    const device = new KnownDevice();
+    const { bluetooth, hr, statuses } = remembered(device);
+    const ok = await hr.reconnectRemembered('dev-1');
+    expect(ok).toBe(true);
+    expect(bluetooth.requestDevice).not.toHaveBeenCalled();
+    expect(device.watchAdvertisements).toHaveBeenCalled();
+    expect(statuses).toEqual(['connecting', 'connected']);
+    expect(hr.deviceId).toBe('dev-1');
+  });
+
+  it('gives up after 30 s if the sensor is not around', async () => {
+    const device = new KnownDevice();
+    device.inRange = false;
+    const { hr } = remembered(device);
+    const pending = hr.reconnectRemembered('dev-1');
+    await vi.advanceTimersByTimeAsync(30_000);
+    expect(await pending).toBe(false);
+    expect(hr.status).toBe('disconnected');
+    expect(hr.error).toBe(BLE_MESSAGES.notSeen);
+    expect(hr.deviceId).toBeNull();
+  });
+
+  it('does nothing without Chrome’s getDevices or for an unknown id', async () => {
+    const device = new KnownDevice();
+    expect(await remembered(device, false).hr.reconnectRemembered('dev-1')).toBe(false);
+    const { hr, statuses } = remembered(device);
+    expect(await hr.reconnectRemembered('otro')).toBe(false);
+    expect(statuses).toEqual([]);
+  });
+
+  it('a manual connect remembers the chosen device, and disconnecting forgets it', async () => {
+    const device = new KnownDevice();
+    const { hr } = remembered(device);
+    await hr.connect();
+    expect(hr.deviceId).toBe('dev-1');
+    await hr.disconnect();
+    expect(hr.deviceId).toBeNull();
+  });
+});

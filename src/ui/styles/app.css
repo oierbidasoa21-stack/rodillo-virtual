@@ -736,3 +736,11 @@ tr.clickable:hover td {
   border-radius: 3px;
   vertical-align: -1px;
 }
+.strava-card {
+  margin-top: 12px;
+}
+a.btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}

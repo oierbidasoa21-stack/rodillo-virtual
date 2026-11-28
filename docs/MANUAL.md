@@ -57,7 +57,7 @@ Cada dirección (la web publicada, `localhost:8080` o tu dominio) guarda **sus p
 
 En **Ajustes → Tus datos** pon tu **peso**, el **peso de la bici** y la **circunferencia de rueda** (2155 mm para 700×32, 2105 mm para 700×25). El peso sirve para las kcal y la velocidad virtual en las rutas; la rueda, para pasar vueltas de rueda a velocidad.
 
-En el mismo sitio eliges si quieres **avisos por voz**, **pitidos**, el **tema** (claro, oscuro o como el sistema) y la **calidad del 3D** ([apartado 6](#vista-3d)).
+En el mismo sitio eliges si quieres **avisos por voz**, **pitidos**, el **tema** (claro, oscuro o como el sistema), si se **descarga el archivo al guardar** ([apartado 7](#llevarte-el-archivo)) y la **calidad del 3D** ([apartado 6](#vista-3d)).
 
 ![Ajustes: tus datos](manual/02-ajustes-datos.png)
 
@@ -95,7 +95,13 @@ La app lee por Bluetooth:
 2. Chrome abre una lista: elige tu sensor. **No lo emparejes antes** en la configuración Bluetooth de Windows.
 3. Cuando conecta, la tarjeta pasa a **Conectado** y enseña lo que marca.
 
-Chrome pide elegir el sensor **una vez cada vez que abres la app**. Es una limitación del navegador.
+Chrome pide elegir el sensor **una vez cada vez que abres la app**. Para evitarlo hay una opción experimental de Chrome:
+
+1. Escribe `chrome://flags/#enable-web-bluetooth-new-permissions-backend` en la barra de direcciones.
+2. Pon la opción en **Enabled** y pulsa **Relaunch** para reiniciar Chrome.
+3. Conecta tus sensores una vez, como siempre.
+
+Desde entonces la app **recuerda** los sensores y, al abrirla, los conecta sola si están encendidos y cerca (espera hasta 30 segundos a que aparezcan). Si no los encuentra, lo dice y pulsas **Conectar** como antes. Si desconectas un sensor a mano, la app lo olvida. Al ser experimental, puede cambiar con las versiones de Chrome.
 
 ### Si se cae un sensor
 
@@ -188,8 +194,8 @@ De arriba abajo:
 
 - **nombre de la sesión**, bloque actual y tiempo que queda de sesión;
 - el **perfil** de la sesión, con una línea en el punto donde vas;
-- la **tarjeta del bloque**, con el color de su zona: tipo de bloque, zona, rango en /10″ y en ppm, y la sensación que debería dar. En bloques por potencia, los vatios objetivo con una banda de ±5 % (o el % si no hay FTP);
-- el **reloj** del bloque, que se pone en aviso en los últimos 10 segundos;
+- la **tarjeta del bloque**, con el color de su zona (al empezar un bloque nuevo entra con una animación corta, para que el cambio se vea desde la bici): tipo de bloque, zona, rango en /10″ y en ppm, y la sensación que debería dar. En bloques por potencia, los vatios objetivo con una banda de ±5 % (o el % si no hay FTP);
+- el **reloj** del bloque, que se pone en aviso en los últimos 10 segundos y, en los **últimos 5**, se convierte en un solo dígito grande (5, 4, 3, 2, 1) que late cada segundo;
 - las **métricas en directo**: pulso en ppm y /10″ con **En zona / Por encima / Por debajo**, potencia estimada, velocidad y cadencia (solo lo que tenga sensor);
 - **Siguiente**: el próximo bloque y su duración.
 
@@ -301,7 +307,18 @@ Los cálculos se explican en el [apartado 11](#11-cálculos-explicados).
 
 ### Llevarte el archivo
 
-Desde el detalle de la sesión en **Historial**, **Exportar TCX** descarga la salida en formato TCX para subirla a Strava, Garmin Connect o intervals.icu a mano. Todavía no hay subida automática a Strava ni exportación FIT: están planificadas en la Fase 15 del [`ROADMAP`](ROADMAP.md).
+**Al guardar una sesión**, la app descarga sola su archivo (TCX) y el resumen muestra una tarjeta para **subirla a Strava**:
+
+1. Pulsa **Abrir Strava para subir**: se abre en otra pestaña la página de subida de Strava (con tu sesión de Strava iniciada).
+2. Elige el archivo recién descargado (está en tu carpeta de Descargas, con un nombre como `rodillo-2026-11-28-1830-fondo-z2.tcx`) y confirma en Strava.
+
+Son unos 20 segundos y no hace falta conectar la app con Strava: no se guarda ninguna contraseña ni clave. Si cierras la tarjeta, en el detalle de la sesión del **Historial** tienes **Exportar TCX** y **Abrir Strava para subir**. El mismo archivo sirve para Garmin Connect o intervals.icu.
+
+- **Ajustes → Descargar el archivo al guardar** (activado de serie) lo desactiva si prefieres descargarlo solo cuando quieras.
+- Las sesiones con **sensores simulados** no se descargan ni se ofrecen a Strava: no son datos tuyos.
+- El archivo marca la potencia como **estimada** en sus notas. En las rutas de ejemplo, que son inventadas, va **sin posición GPS**; en tus GPX importados, con ella.
+
+La exportación FIT para el entrenador está planificada en la Fase 15b del [`ROADMAP`](ROADMAP.md).
 
 ---
 
@@ -321,7 +338,7 @@ Debajo están la curva de condición y fatiga de 90 días (pasa el ratón para v
 
 ### Detalle de una sesión
 
-Pulsa una fila para abrir su detalle: el mismo resumen del final, **Exportar TCX**, **Borrar sesión** y una **gráfica por cada dato grabado** (pulso sobre los colores de tus zonas, potencia, velocidad, cadencia y, en ruta, altitud). Pasa el ratón por encima para ver los valores de cada segundo. Las sesiones de antes de la grabación solo tienen resumen.
+Pulsa una fila para abrir su detalle: el mismo resumen del final, **Exportar TCX**, **Abrir Strava para subir**, **Borrar sesión** y una **gráfica por cada dato grabado** (pulso sobre los colores de tus zonas, potencia, velocidad, cadencia y, en ruta, altitud). Pasa el ratón por encima para ver los valores de cada segundo. Las sesiones de antes de la grabación solo tienen resumen.
 
 ![Detalle de una sesión](manual/13-detalle.png)
 
@@ -404,7 +421,7 @@ Usa valores típicos de un ciclista en carretera (CdA 0,32, Crr 0,005, 97,5 % de
 
 **El sensor se desconecta durante la sesión.** La app avisa y reintenta sola. Si pasa a menudo: acerca el ordenador a la bici, cambia la pila del sensor y aleja otros aparatos inalámbricos.
 
-**Tengo que elegir el sensor cada vez que abro la app.** Es normal: Chrome lo pide una vez por sesión. La reconexión sin preguntar está apuntada para la Fase 15.
+**Tengo que elegir el sensor cada vez que abro la app.** Es lo normal en Chrome. Con la opción experimental del [apartado 2](#emparejar) la app los recuerda y los conecta sola.
 
 **No sale la potencia.** Elige tu rodillo en Ajustes → Rodillo y potencia y conecta el sensor de velocidad. Sin las dos cosas, la app no la muestra.
 
