@@ -44,6 +44,14 @@ export default function SensorsView() {
             Chrome te pedirá elegir el sensor una vez cada vez que abras la app. Si se cae durante
             una sesión, la app intenta reconectarlo sola.
           </p>
+          <p>
+            <b>Para no tener que elegirlo cada vez:</b> en Chrome, abre{' '}
+            <code>chrome://flags/#enable-web-bluetooth-new-permissions-backend</code>, ponla en{' '}
+            <i>Enabled</i> y reinicia Chrome. Así la app recuerda los sensores y, al abrirla, los
+            vuelve a conectar sola si están encendidos y cerca. Es una opción experimental de
+            Chrome: puede cambiar con las versiones. Si desconectas un sensor a mano, la app lo
+            olvida.
+          </p>
         </div>
       )}
     </>
