@@ -694,3 +694,7 @@ tr.clickable:hover td {
   color: var(--ok);
   font-weight: 600;
 }
+/* A stat that should catch the eye (time over the heart rate ceiling). */
+.stat.warnstat .v {
+  color: #b3261e;
+}

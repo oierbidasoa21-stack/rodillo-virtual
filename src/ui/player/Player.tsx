@@ -22,7 +22,8 @@ import {
   tick,
   togglePlay,
 } from '../../domain/workout/player';
-import { BLOCK_KIND_LABELS, type Workout, hrZoneOf } from '../../domain/workout/types';
+import { BLOCK_KIND_LABELS, type Workout, capOfStep, hrZoneOf } from '../../domain/workout/types';
+import { capLabel } from '../../domain/zones/hrCap';
 import { type HrZone, ZONE_META, findZone } from '../../domain/zones/zones';
 import { routeInputOf } from '../../recording/recorder';
 import { type SessionSnapshot, summaryFromSnapshot } from '../../recording/session';
@@ -95,6 +96,7 @@ export default function Player({
   const rideRef = useRef(ride);
   // Target zone when the count was opened; the step may change while counting.
   const [countTarget, setCountTarget] = useState<HrZone | null>(null);
+  const [overCap, setOverCap] = useState(false);
   // The simulator as it was before this session, restored when it ends or the player closes.
   const [simBefore] = useState(() => {
     const { targetBpm, speedKmh, cadenceRpm } = useSimulationStore.getState();
@@ -157,10 +159,11 @@ export default function Player({
       rideRef.current = advanceRide(rideRef.current, route.route, dt, input, true);
       setRide(rideRef.current);
     }
-    recorder.tick(dt, route ? routeInputOf(route.route, rideRef.current, true) : null);
+    const cap = capOfStep(currentStep(playerRef.current), workout);
+    recorder.tick(dt, route ? routeInputOf(route.route, rideRef.current, true) : null, cap);
     apply(tick(playerRef.current, dt));
     if (playerRef.current.status === 'running') {
-      voice.workoutTick(dt, playerRef.current);
+      setOverCap(voice.workoutTick(dt, playerRef.current, cap));
       if (route) voice.routeTick(rideRef.current.distanceM);
     }
   });
@@ -217,6 +220,7 @@ export default function Player({
   }
 
   const step = currentStep(player);
+  const stepCap = capOfStep(step, workout);
   const next = nextStep(player);
   const hrZoneId = hrZoneOf(step);
   // Heart rate zone of the block; null for power blocks.
@@ -270,6 +274,12 @@ export default function Player({
           )}
           {!zone && <PowerTargetDetail target={step.target} ftpW={ftpW} />}
           {step.note && <span className="bnote">{step.note}</span>}
+          {stepCap && (
+            <span className={overCap && running ? 'capchip over' : 'capchip'} role="status">
+              {overCap && running ? '¡Por encima del máximo! ' : ''}
+              {capLabel(stepCap, zones)}
+            </span>
+          )}
         </div>
 
         <div

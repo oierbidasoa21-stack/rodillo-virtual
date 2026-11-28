@@ -90,3 +90,15 @@
 .target-in .pct input {
   width: 64px;
 }
+.capin {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.capin input {
+  width: 64px;
+}
+.ed-row .meta .capin input {
+  flex: 0 0 64px;
+  min-width: 0;
+}

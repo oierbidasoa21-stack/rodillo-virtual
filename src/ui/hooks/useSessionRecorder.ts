@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { curveFor } from '../../domain/trainer/curves';
+import type { HrCap } from '../../domain/zones/hrCap';
 import {
   type RecorderInput,
   type RecorderState,
@@ -20,8 +21,11 @@ export function useSessionRecorder(initial: RecorderState | null) {
   // A new session's start time is set on its first tick.
   const ref = useRef<RecorderState>(initial ?? startRecorder(0));
 
-  /** Advances by `dtSec`; `route` is the position on a route, if any. */
-  const tick = (dtSec: number, route: RecorderInput['route']) => {
+  /**
+   * Advances by `dtSec`; `route` is the position on a route, if any, and `cap`
+   * the heart rate ceiling of the current block.
+   */
+  const tick = (dtSec: number, route: RecorderInput['route'], cap: HrCap | null = null) => {
     const { settings } = useSettingsStore.getState();
     const { hr, csc } = useSensorsStore.getState();
     const now = Date.now();
@@ -43,6 +47,7 @@ export function useSessionRecorder(initial: RecorderState | null) {
         wheelSpeedKmh: cscLast?.speedKmh ?? null,
         cadenceRpm: cscLast?.cadenceRpm ?? null,
         route,
+        cap,
       },
       settings.athlete.hrZonesPer10s,
     );

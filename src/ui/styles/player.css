@@ -299,3 +299,31 @@
   font-size: 0.45em;
   color: var(--muted);
 }
+/* Heart rate ceiling of the block; red and pulsing while it is crossed. */
+.zonecard .capchip {
+  align-self: flex-start;
+  justify-self: start;
+  width: fit-content;
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.18);
+  font-weight: 600;
+  font-size: 15px;
+}
+.zonecard .capchip.over {
+  background: #b3261e;
+  color: #fff;
+  font-size: 22px;
+  animation: cap-pulse 1s ease-in-out infinite;
+}
+@keyframes cap-pulse {
+  50% {
+    opacity: 0.65;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zonecard .capchip.over {
+    animation: none;
+  }
+}
