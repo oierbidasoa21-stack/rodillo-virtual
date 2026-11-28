@@ -53,3 +53,18 @@ export function landscapeTiles(points: readonly { lat: number; lon: number }[]):
 export function estimateBytes(tiles: readonly LandscapeTile[]): number {
   return tiles.reduce((sum, t) => sum + TILE_BYTES[t.layer], 0);
 }
+
+const tileKeyOf = (t: LandscapeTile) => `${t.layer}/${t.tile.z}/${t.tile.x}/${t.tile.y}`;
+
+/**
+ * Tiles of a route's landscape that no other route's landscape uses: the ones
+ * that can go when that landscape (or route) is deleted. Nearby routes share
+ * tiles, and deleting one must not leave a hole in another.
+ */
+export function tilesOnlyIn(
+  route: readonly { lat: number; lon: number }[],
+  others: readonly (readonly { lat: number; lon: number }[])[],
+): LandscapeTile[] {
+  const kept = new Set(others.flatMap((o) => landscapeTiles(o).map(tileKeyOf)));
+  return landscapeTiles(route).filter((t) => !kept.has(tileKeyOf(t)));
+}

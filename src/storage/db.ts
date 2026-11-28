@@ -12,6 +12,22 @@ import type { AppSettings } from './settings';
 export const SETTINGS_KEY = 'app';
 export type SettingsRow = AppSettings & { key: typeof SETTINGS_KEY };
 
+/**
+ * A GPX route whose real landscape (phase 10) was downloaded. The tiles
+ * themselves live in Cache Storage (src/tiles); this row only says what was
+ * fetched and when.
+ */
+export interface RouteLandscape {
+  routeId: string;
+  downloadedAtMs: number;
+  /** Tiles the landscape needs. */
+  tiles: number;
+  /** Tiles that could not be downloaded (those spots use the usual ground). */
+  failed: number;
+  /** Bytes downloaded the last time. */
+  bytes: number;
+}
+
 /** The session in progress is a single row with a fixed key. */
 export const IN_PROGRESS_KEY = 'current';
 export type InProgressRow = SessionSnapshot & { key: typeof IN_PROGRESS_KEY };
@@ -34,6 +50,8 @@ export class RodilloDb extends Dexie {
   inProgress!: EntityTable<InProgressRow, 'key'>;
   /** Weekly plans imported from the coaching agent. */
   plans!: EntityTable<TrainingPlan, 'id'>;
+  /** Which GPX routes have their real landscape downloaded. */
+  landscapes!: EntityTable<RouteLandscape, 'routeId'>;
 
   constructor(name = 'rodillo-virtual') {
     super(name);
@@ -83,5 +101,7 @@ export class RodilloDb extends Dexie {
             });
         }
       });
+    // v7 (phase 10): which routes have their real landscape downloaded.
+    this.version(7).stores({ ...STORES_V5, landscapes: 'routeId' });
   }
 }

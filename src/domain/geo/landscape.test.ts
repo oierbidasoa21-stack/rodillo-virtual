@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LANDSCAPE, TILE_BYTES, estimateBytes, landscapeTiles } from './landscape';
+import { LANDSCAPE, TILE_BYTES, estimateBytes, landscapeTiles, tilesOnlyIn } from './landscape';
 import { boxAround, tilesCovering } from './mercator';
 
 // An invented 3 km climb in a mountain area (no real route).
@@ -35,5 +35,24 @@ describe('landscape tiles', () => {
     expect(estimateBytes(tiles)).toBe(terrain * TILE_BYTES.terrain + imagery * TILE_BYTES.imagery);
     // A short climb stays well under 10 MB: a size worth asking about, not a surprise.
     expect(estimateBytes(tiles)).toBeLessThan(10_000_000);
+  });
+
+  it('keeps tiles another landscape still uses when deleting one', () => {
+    // A second invented route 2 km east shares most of its tiles with the first.
+    const nearby = route.map((p) => ({ lat: p.lat, lon: p.lon + 0.025 }));
+    const far = route.map((p) => ({ lat: p.lat + 3, lon: p.lon }));
+    const all = landscapeTiles(route);
+    const own = tilesOnlyIn(route, [nearby]);
+    expect(own.length).toBeGreaterThan(0);
+    expect(own.length).toBeLessThan(all.length);
+    const nearbyKeys = new Set(
+      landscapeTiles(nearby).map((t) => `${t.layer}/${t.tile.z}/${t.tile.x}/${t.tile.y}`),
+    );
+    expect(
+      own.every((t) => !nearbyKeys.has(`${t.layer}/${t.tile.z}/${t.tile.x}/${t.tile.y}`)),
+    ).toBe(true);
+    // Nothing shared with a route 330 km away, or with no other route: all of them go.
+    expect(tilesOnlyIn(route, [far])).toHaveLength(all.length);
+    expect(tilesOnlyIn(route, [])).toHaveLength(all.length);
   });
 });
