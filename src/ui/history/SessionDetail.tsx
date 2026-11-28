@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { type SessionSummary, hasKcal } from '../../domain/metrics/summary';
+import type { SessionSummary } from '../../domain/metrics/summary';
 import type { SessionRecording } from '../../recording/session';
-import { buildTcx, tcxFileName } from '../../recording/tcx';
+import { STRAVA_UPLOAD_URL, isSimulatedSession, sessionFile } from '../../recording/sessionFile';
 import { storage } from '../../storage/repositories';
 import { useHistoryStore } from '../../store/historyStore';
 import { useSettingsStore } from '../../store/settingsStore';
@@ -40,23 +40,12 @@ export default function SessionDetail({
 
   // Power on this trainer always comes from a speed curve.
   const powerEstimated = true;
-  const simulated = !!(summary.hrMeasured?.simulated || summary.power?.simulated);
+  const simulated = isSimulatedSession(summary);
 
   const exportTcx = () => {
     if (!recording) return;
-    const tcx = buildTcx({
-      name: summary.workoutName,
-      startMs: recording.startMs,
-      samples: recording.samples,
-      kcal: hasKcal(summary) ? summary.kcalEstimated : null,
-      powerEstimated,
-      simulated,
-    });
-    downloadText(
-      tcxFileName(recording.startMs, summary.workoutName),
-      tcx,
-      'application/vnd.garmin.tcx+xml',
-    );
+    const f = sessionFile(summary, recording);
+    downloadText(f.fileName, f.content, f.type);
   };
 
   return (
@@ -91,6 +80,17 @@ export default function SessionDetail({
           >
             Exportar TCX
           </button>
+          {!simulated && recording?.samples.length ? (
+            <a
+              className="btn"
+              href={STRAVA_UPLOAD_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Abre la página de subida de Strava: elige ahí el archivo exportado"
+            >
+              Abrir Strava para subir
+            </a>
+          ) : null}
           <ConfirmButton
             label="Borrar sesión"
             onConfirm={() => {

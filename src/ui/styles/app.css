@@ -694,3 +694,11 @@ tr.clickable:hover td {
   color: var(--ok);
   font-weight: 600;
 }
+.strava-card {
+  margin-top: 12px;
+}
+a.btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
