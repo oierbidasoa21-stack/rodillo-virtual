@@ -31,7 +31,7 @@ Pages no deja poner cabeceras HTTP, así que la **CSP va en una `<meta>`** dentr
 Dos etapas:
 
 1. **Build**: `node:24-alpine` compila la app. No pasa a la imagen final.
-2. **Servir**: `nginxinc/nginx-unprivileged:1.29-alpine`.
+2. **Servir**: `nginxinc/nginx-unprivileged:1.31-alpine`.
    - nginx corre como el usuario `nginx` (uid 101), **no como root**, y escucha en el 8080.
    - Al construir se aplican los parches de seguridad de Alpine (`apk upgrade`) y se quita `curl`, que no hace falta.
    - Tiene un `HEALTHCHECK` que comprueba que responde.

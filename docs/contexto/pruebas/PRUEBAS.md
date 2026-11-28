@@ -27,15 +27,17 @@ Claude usa la skill `browser-automation` (un Chrome sin ventana, con patchright)
 
 ## 3. Qué se comprobó en cada fase (resumen)
 
-| Fase | Comprobación en navegador                                                                                                                                                                                             |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1    | Crear/editar/borrar sesiones y persistencia tras recargar; ajustes e importación de `athlete.json`; sesión completa con contador de pulso y resumen; historial                                                        |
-| 2    | Manifest e iconos; service worker activo; **sesión entera sin conexión**; aviso de actualización que espera al player y al editor                                                                                     |
-| 3    | Sensores simulados con valores en directo; «Sin cadencia»; caída y reconexión; player con «En zona»; resumen «Medido por pulsómetro (simulado)»                                                                       |
-| 4    | Migración v1 → v2 sembrada; copia de seguridad exportar/importar; ramp test completo hasta guardar el FTP; sesión por potencia con NP/IF/TSS y TSS en el historial                                                    |
-| 5    | Migración v2 → v3; importar GPX bueno y roto; Puerto entero en modo potencia (velocidad en llano/subida, distancia y desnivel finales); modo rueda; sesión sobre ruta con 2 vueltas; player con ruta cabe en 1280×900 |
-| 6    | Sesión guardada cada 10 s, recarga, «Sesión sin terminar» y Retomar; detalle con 5 gráficas, TCX de 240 puntos y borrar; `.zwo` exportar/importar igual, rampa con aviso y archivo roto (scripts `fase6-*.mjs`)       |
-| 7    | Demo 3D en el Puerto y el Rompepiernas a 60 fps (headless), HUD, cambio 2D/3D, nada guardado; la salida de la Fase 6 en 3D sigue grabando (script `fase7-demo-3d.mjs`)                                                |
+| Fase     | Comprobación en navegador                                                                                                                                                                                                                 |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1        | Crear/editar/borrar sesiones y persistencia tras recargar; ajustes e importación de `athlete.json`; sesión completa con contador de pulso y resumen; historial                                                                            |
+| 2        | Manifest e iconos; service worker activo; **sesión entera sin conexión**; aviso de actualización que espera al player y al editor                                                                                                         |
+| 3        | Sensores simulados con valores en directo; «Sin cadencia»; caída y reconexión; player con «En zona»; resumen «Medido por pulsómetro (simulado)»                                                                                           |
+| 4        | Migración v1 → v2 sembrada; copia de seguridad exportar/importar; ramp test completo hasta guardar el FTP; sesión por potencia con NP/IF/TSS y TSS en el historial                                                                        |
+| 5        | Migración v2 → v3; importar GPX bueno y roto; Puerto entero en modo potencia (velocidad en llano/subida, distancia y desnivel finales); modo rueda; sesión sobre ruta con 2 vueltas; player con ruta cabe en 1280×900                     |
+| 6        | Sesión guardada cada 10 s, recarga, «Sesión sin terminar» y Retomar; detalle con 5 gráficas, TCX de 240 puntos y borrar; `.zwo` exportar/importar igual, rampa con aviso y archivo roto (scripts `fase6-*.mjs`)                           |
+| 7        | Demo 3D en el Puerto y el Rompepiernas a 60 fps (headless), HUD, cambio 2D/3D, nada guardado; la salida de la Fase 6 en 3D sigue grabando (script `fase7-demo-3d.mjs`)                                                                    |
+| Mejoras  | Forma con 60 sesiones sembradas (`mejoras-forma.mjs`), aviso de subida en el Rompepiernas (`mejoras-voz.mjs`), fantasma sembrado en el Puerto a 7,5 m/s (`mejoras-fantasma.mjs`), plan con errores y válido, Empezar (`mejoras-plan.mjs`) |
+| Fase 15a | Pestaña Inicio vacía y con historial y plan (`mejoras-inicio.mjs`), fantasma con etiqueta y marca en el perfil (`mejoras-fantasma.mjs`), CSP sin violaciones tras cada PR (`fase14-csp.mjs`)                                              |
 
 ## 4. Pruebas manuales del usuario (pendientes)
 
@@ -43,4 +45,3 @@ Todas en Chrome para Windows, con la web publicada:
 
 - **Fase 2:** instalar la app, abrirla sin conexión y ver el aviso de actualización (pasos detallados en `sesiones/2026-10-02_03.md`).
 - **Fases 3–5:** con banda de pulso, sensor de velocidad y rodillo reales (milestone «Pruebas con hardware real»).
-  | Mejoras | Forma con 60 sesiones sembradas (`mejoras-forma.mjs`), aviso de subida en el Rompepiernas (`mejoras-voz.mjs`), fantasma sembrado en el Puerto a 7,5 m/s (`mejoras-fantasma.mjs`), plan con errores y válido, Empezar (`mejoras-plan.mjs`) |

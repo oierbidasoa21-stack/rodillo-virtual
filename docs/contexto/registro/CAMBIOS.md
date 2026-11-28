@@ -209,6 +209,23 @@ Antes de la fase, actualizaciones de Dependabot: `57248f0` github-script v9 y Ty
 
 - _(y el PR de cierre de la fase, con este registro)_
 
+## Fase 15a — Mejoras aceptadas (antes del paisaje real)
+
+Con _squash_ (un commit por PR):
+
+- `c65fdab` · 2026-11-28 · docs(contexto): phase 15a plan ([#96](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/96))
+- `512d8d4` · 2026-11-28 · feat(world): selector de calidad gráfica del 3D ([#98](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/98), closes #54)
+- `2b7ccdb` · 2026-11-28 · feat(session): descargar el archivo al guardar y botón «Abrir Strava para subir» ([#100](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/100), closes #56)
+- `1518bf5` · 2026-11-28 · feat(sensors): reconexión de Bluetooth sin preguntar, si Chrome lo permite ([#101](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/101), closes #59)
+- `32c6360` · 2026-11-28 · feat(player): transición entre bloques y cuenta atrás grande en los últimos 5 s ([#102](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/102), refs #60)
+- `4d88799` · 2026-11-28 · docs(contexto): drop the finish arch (T16) and update the tracking page ([#103](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/103))
+- `bb2f6b2` · 2026-11-28 · feat(home): add home panel with week, form and next plan session ([#105](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/105), closes #55)
+- _(#104, anillo de zonas y fantasma, closes #60, y #99, pulso máximo, closes #58: se añaden al fusionarse)_
+
+Fuera de la fase, en los mismos días: `137e41c` página de seguimiento con la Fase 14 cerrada ([#97](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/97)), `e0d2ea1` nginx-unprivileged 1.31 ([#94](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/94), Dependabot) y `b68af17` grupo de acciones ([#87](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/87), Dependabot).
+
+- _(y el PR de cierre de la fase, con este registro)_
+
 ## Documentación de contexto (`docs/contexto/`) desde `3250f48`
 
 Commits de Claude en la nube (tareas, decisiones, estudios y página de seguimiento) y del agente de VS Code (estado y registro), que no estaban en ninguna fase:
