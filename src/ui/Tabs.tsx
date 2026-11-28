@@ -1,6 +1,7 @@
 import { type Tab, useUiStore } from '../store/uiStore';
 
 const TABS: { id: Tab; label: string }[] = [
+  { id: 'home', label: 'Inicio' },
   { id: 'library', label: 'Sesiones' },
   { id: 'routes', label: 'Rutas' },
   { id: 'history', label: 'Historial' },
