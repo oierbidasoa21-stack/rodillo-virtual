@@ -5,13 +5,18 @@ import type { Lighting } from './sun';
 
 /** Half the side of the square that gets sharp shadows, in metres. */
 const SHADOW_HALF_M = 40;
-const SHADOW_MAP_PX = 2048;
 
 /**
  * The sun: a directional light whose shadow box follows the camera, so the
  * rider, posts and nearby trees cast shadows without a huge shadow map.
  */
-export default function WorldSun({ light: lighting }: { light: Lighting }) {
+export default function WorldSun({
+  light: lighting,
+  shadowMapPx,
+}: {
+  light: Lighting;
+  shadowMapPx: number;
+}) {
   const light = useRef<DirectionalLight>(null);
   const tmp = useRef({ fwd: new Vector3(), centre: new Vector3() });
 
@@ -24,7 +29,7 @@ export default function WorldSun({ light: lighting }: { light: Lighting }) {
     fwd.normalize();
     // Centre the box a bit ahead of the camera (where the rider is), snapped to
     // whole shadow texels so the shadow edges do not shimmer while riding.
-    const texel = (SHADOW_HALF_M * 2) / SHADOW_MAP_PX;
+    const texel = (SHADOW_HALF_M * 2) / shadowMapPx;
     centre.copy(camera.position).addScaledVector(fwd, 15);
     centre.set(
       Math.round(centre.x / texel) * texel,
@@ -42,7 +47,7 @@ export default function WorldSun({ light: lighting }: { light: Lighting }) {
       castShadow
       color={lighting.sunColor}
       intensity={lighting.sunIntensity}
-      shadow-mapSize={[SHADOW_MAP_PX, SHADOW_MAP_PX]}
+      shadow-mapSize={[shadowMapPx, shadowMapPx]}
       shadow-camera-left={-SHADOW_HALF_M}
       shadow-camera-right={SHADOW_HALF_M}
       shadow-camera-top={SHADOW_HALF_M}

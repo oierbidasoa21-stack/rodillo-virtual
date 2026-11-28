@@ -2,6 +2,7 @@ import { useFrame } from '@react-three/fiber';
 import { type RefObject, useLayoutEffect, useMemo, useRef } from 'react';
 import { Color, type InstancedMesh, Matrix4, Quaternion, Vector3 } from 'three';
 import type { WorldPath } from '../../domain/world/path';
+import { thin } from '../../domain/world/quality';
 import { placeSpectators } from '../../domain/world/roadside';
 import { type RoadIndex, rng } from '../../domain/world/terrain';
 import type { RiderMotion } from './WorldRider';
@@ -43,12 +44,14 @@ export default function WorldSpectators({
   path,
   index,
   motion,
+  density = 1,
 }: {
   path: WorldPath;
   index: RoadIndex;
   motion: RefObject<RiderMotion>;
+  density?: number;
 }) {
-  const crowd = useMemo(() => placeSpectators(path, index), [path, index]);
+  const crowd = useMemo(() => thin(placeSpectators(path, index), density), [path, index, density]);
   const legs = useRef<InstancedMesh>(null);
   const body = useRef<InstancedMesh>(null);
   const head = useRef<InstancedMesh>(null);
