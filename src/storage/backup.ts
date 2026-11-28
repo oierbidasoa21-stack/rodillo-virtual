@@ -237,6 +237,13 @@ function parseRoute(v: unknown): Route | null {
   };
 }
 
+/** Time with a heart rate ceiling and above it; dropped if it doesn't add up. */
+function parseHrCap(v: unknown): SessionSummary['hrCap'] {
+  if (!isRecord(v) || !isNum(v.cappedSec) || !isNum(v.aboveSec)) return undefined;
+  if (v.cappedSec <= 0 || v.aboveSec < 0 || v.aboveSec > v.cappedSec) return undefined;
+  return { cappedSec: v.cappedSec, aboveSec: v.aboveSec };
+}
+
 /** A history entry, or null if it's missing anything the app needs to show it. */
 function parseSession(v: unknown): SessionSummary | null {
   if (!isRecord(v) || typeof v.id !== 'string' || typeof v.workoutName !== 'string') return null;
@@ -252,6 +259,7 @@ function parseSession(v: unknown): SessionSummary | null {
   const hrMeasured = parseHrMeasured(v.hrMeasured);
   const power = parsePower(v.power);
   const ride = parseRide(v.ride);
+  const hrCap = parseHrCap(v.hrCap);
   return {
     id: v.id,
     dateMs: v.dateMs,
@@ -265,6 +273,7 @@ function parseSession(v: unknown): SessionSummary | null {
     ...(hrMeasured ? { hrMeasured } : {}),
     ...(power ? { power } : {}),
     ...(ride ? { ride } : {}),
+    ...(hrCap ? { hrCap } : {}),
   };
 }
 

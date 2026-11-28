@@ -35,6 +35,7 @@ const workout = {
   name: 'Mía',
   description: 'Con repetición',
   blocks: [makeBlock(600, 'Z1', 'warm'), makeRepeat(3, [makeBlock(600, 'Z4', 'work')])],
+  maxHr: { type: 'bpm' as const, bpm: 165 },
 };
 
 const session: SessionSummary = {
@@ -76,6 +77,7 @@ const session: SessionSummary = {
     mode: 'power',
     laps: 0,
   },
+  hrCap: { cappedSec: 3500, aboveSec: 42 },
 };
 
 const builtRoute = buildRoute(
@@ -336,12 +338,26 @@ describe('backup', () => {
   });
 
   it('keeps older history entries without measured heart rate', () => {
-    const { hrMeasured: _hr, power: _power, ride: _ride, ...older } = session;
+    const { hrMeasured: _hr, power: _power, ride: _ride, hrCap: _cap, ...older } = session;
     void _hr;
     void _power;
     void _ride;
+    void _cap;
     const parsed = parseBackup({ app: BACKUP_APP, format: 1, workouts: [], history: [older] });
     expect(parsed.ok && parsed.value.backup.history[0]).toEqual(older);
+  });
+
+  it('drops a time above the heart rate ceiling that does not add up', () => {
+    const broken = { ...session, hrCap: { cappedSec: 100, aboveSec: 500 } };
+    const parsed = parseBackup({
+      app: BACKUP_APP,
+      format: BACKUP_FORMAT,
+      workouts: [],
+      history: [broken],
+    });
+    if (!parsed.ok) throw new Error(parsed.errors.join(' '));
+    expect(parsed.value.backup.history[0]?.hrCap).toBeUndefined();
+    expect(parsed.value.backup.history[0]?.id).toBe('h-1');
   });
 
   it('rejects files that are not backups of this app', () => {

@@ -3,6 +3,8 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { SessionSummary } from '../domain/metrics/summary';
 import { emptySecByZone } from '../domain/metrics/timeInZone';
 import { BUILTIN_WORKOUTS } from '../domain/workout/library';
+import { startRecorder } from '../recording/recorder';
+import type { SessionSnapshot } from '../recording/session';
 import { RodilloDb, SETTINGS_KEY } from './db';
 import { type Storage, createStorage } from './repositories';
 import { defaultSettings } from './settings';
@@ -107,5 +109,22 @@ describe('recordings and the session in progress', () => {
     expect(await storage.getInProgress()).toEqual({ kind: 'ride', savedAtMs: 2 });
     await storage.clearInProgress();
     expect(await storage.getInProgress()).toBeUndefined();
+  });
+
+  it('resumes a session with its heart rate ceiling and the time above it', async () => {
+    const base = BUILTIN_WORKOUTS[0];
+    if (!base) throw new Error('no builtin workout');
+    const snap = {
+      kind: 'workout',
+      savedAtMs: 5,
+      workout: { ...base, maxHr: { type: 'zone', zoneId: 'Z4' } },
+      playMode: 'normal',
+      recorder: { ...startRecorder(0), capSec: 600, aboveCapSec: 38 },
+    } as unknown as SessionSnapshot;
+    await storage.saveInProgress(snap);
+    const back = await storage.getInProgress();
+    if (back?.kind !== 'workout') throw new Error('expected a workout snapshot');
+    expect(back.workout.maxHr).toEqual({ type: 'zone', zoneId: 'Z4' });
+    expect(back.recorder).toMatchObject({ capSec: 600, aboveCapSec: 38 });
   });
 });
