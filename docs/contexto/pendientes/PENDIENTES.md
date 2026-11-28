@@ -373,6 +373,8 @@ Comprobar en ese momento el precio y las condiciones (atribución, caché).
 
 ### T16 · Arco o cámara de llegada («FINISH»)
 
+**DESCARTADA por el usuario (2026-11-28).** Issue #57 cerrado como no planificado. No se hace.
+
 Pedido el 2026-11-27:
 
 - un arco de meta 3D propio al final de la ruta (o al final de cada vuelta);
