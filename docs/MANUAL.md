@@ -272,6 +272,9 @@ El selector de **hora del día** cambia entre mañana, mediodía y atardecer. **
 
 Al repetir una ruta, rueda contigo tu **salida más rápida en ella** (sale de su grabación), y se ve cuántos segundos le sacas o te saca.
 
+- En 3D es un ciclista **azul claro y semitransparente**, con una etiqueta encima (por ejemplo, «Tú · 23 nov», el día de esa salida) que se lee igual de cerca que de lejos.
+- En el **perfil de la ruta** sale como una raya discontinua, y una barra une su posición con la tuya: verde si vas por delante, roja si vas por detrás.
+
 ### Demo 3D
 
 **Rutas → Demo 3D**: elige una ruta y pulsa **Ver demo 3D** para ver el mundo sin ningún sensor. El ciclista avanza solo a 200 W **simulados**. Va marcada como DEMO y no se graba nada.
@@ -289,7 +292,7 @@ Al pulsar **Terminar** (dos veces) sale el resumen. Si la sesión ha durado **me
 Lo que puede salir, según los sensores que había:
 
 - **siempre**: tiempo de sesión, **carga** y **kcal estimadas**;
-- **con banda de pulso**: pulso medio y máximo, y el **tiempo en cada zona de pulso** medido. Sin banda, el tiempo en zona sale de los bloques que has hecho;
+- **con banda de pulso**: pulso medio y máximo, y el **tiempo en cada zona de pulso** medido, con un **anillo** que muestra qué parte del total fue en cada zona (y el porcentaje al lado). Sin banda, el tiempo en zona sale de los bloques que has hecho;
 - **con conteos de 10″**: la tabla de cada conteo y cuántos estaban en zona;
 - **con potencia estimada**: media, **NP**, máxima, trabajo (kJ), y con FTP también **IF**, **TSS** y el tiempo en cada zona de potencia. Las kcal pasan a salir de los kJ;
 - **en una ruta**: distancia, velocidad media, desnivel y vueltas.
