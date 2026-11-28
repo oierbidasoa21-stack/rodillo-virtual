@@ -77,6 +77,7 @@ export function summaryFromSnapshot(
     ...common,
     workoutName: s.workout.name,
     player: s.player,
+    hrCap: { cappedSec: r.capSec ?? 0, aboveSec: r.aboveCapSec ?? 0 },
     ...(s.route ? { ride: rideSummaryOf(s.route.route, s.ride, s.route.mode) } : {}),
   });
 }

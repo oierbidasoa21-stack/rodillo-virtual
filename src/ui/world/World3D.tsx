@@ -28,7 +28,7 @@ interface Props {
   /** Ajustes → Calidad del 3D. */
   quality?: GraphicsQuality;
   /** Your best earlier ride on this route, replayed. */
-  ghost?: { distanceM: number; speedMs: number } | null;
+  ghost?: { distanceM: number; speedMs: number; label?: string } | null;
 }
 
 /**
@@ -105,7 +105,7 @@ export default function World3D({
       <WorldTrees path={path} index={index} density={preset.propDensity} />
       <WorldScenery path={path} index={index} density={preset.propDensity} />
       <WorldRider path={path} motion={motion} />
-      {ghost && <WorldRider path={path} motion={ghostMotion} ghost />}
+      {ghost && <WorldRider path={path} motion={ghostMotion} ghost label={ghost.label} />}
     </Canvas>
   );
 }

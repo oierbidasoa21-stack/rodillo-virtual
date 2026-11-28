@@ -1,6 +1,14 @@
 import { useFrame } from '@react-three/fiber';
 import { type RefObject, useLayoutEffect, useMemo, useRef } from 'react';
-import { type Group, type Mesh, type PerspectiveCamera, Mesh as ThreeMesh, Vector3 } from 'three';
+import {
+  CanvasTexture,
+  type Group,
+  type Mesh,
+  type PerspectiveCamera,
+  Mesh as ThreeMesh,
+  SRGBColorSpace,
+  Vector3,
+} from 'three';
 import { type WorldPath, chaseCamera, poseAt } from '../../domain/world/path';
 import { spanRod } from './geometry';
 
@@ -59,6 +67,34 @@ function knee(hip: Vector3, foot: Vector3, out: Vector3): Vector3 {
   return out.set(hip.x, hip.y + Math.sin(angle) * THIGH_M, hip.z - Math.cos(angle) * THIGH_M);
 }
 
+/** Colour of the ghost rider and of its marks on the profile. */
+export const GHOST_COLOUR = '#22c7f0';
+
+/** A rounded label drawn on a canvas, used as a sprite texture. */
+function labelCanvasTexture(text: string): CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 128;
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    ctx.fillStyle = 'rgba(8, 40, 56, 0.82)';
+    ctx.beginPath();
+    ctx.roundRect(4, 4, 504, 120, 60);
+    ctx.fill();
+    ctx.strokeStyle = GHOST_COLOUR;
+    ctx.lineWidth = 8;
+    ctx.stroke();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '600 64px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, 256, 68, 470);
+  }
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  return texture;
+}
+
 /**
  * A simple cyclist that pedals with the cadence and turns its wheels with the
  * speed, and the chase camera behind it. Between race-view ticks it keeps moving
@@ -68,12 +104,16 @@ export default function WorldRider({
   path,
   motion,
   ghost = false,
+  label,
 }: {
   path: WorldPath;
   motion: RefObject<RiderMotion>;
   /** A translucent rival a little to the left that does not drive the camera. */
   ghost?: boolean;
+  /** Text floating over the rider (the ghost: "Tú · 22 nov"). */
+  label?: string;
 }) {
+  const labelTexture = useMemo(() => (label ? labelCanvasTexture(label) : null), [label]);
   const bike = useRef<Group>(null);
   const crank = useRef<Group>(null);
   // Moving parts, filled in by callback refs: wheels [rear, front], legs [thigh, shin] × 2.
@@ -107,10 +147,14 @@ export default function WorldRider({
     bike.current?.traverse((o) => {
       o.castShadow = !ghost;
       if (ghost && o instanceof ThreeMesh) {
+        // One colour of its own, lit from inside, so it stands out from the
+        // scenery and from your rider even a long way ahead.
         for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
           m.transparent = true;
-          m.opacity = 0.42;
+          m.opacity = 0.6;
           m.depthWrite = false;
+          if ('color' in m) m.color.set(GHOST_COLOUR);
+          if ('emissive' in m) m.emissive.set(GHOST_COLOUR).multiplyScalar(0.45);
         }
       }
     });
@@ -208,6 +252,18 @@ export default function WorldRider({
 
   return (
     <group ref={bike}>
+      {labelTexture && (
+        // On top, facing the camera and the same size on screen however far
+        // ahead the ghost is (no size attenuation), so it always reads.
+        <sprite position={[0, 2.3, 0]} scale={[0.14, 0.035, 1]} renderOrder={10}>
+          <spriteMaterial
+            map={labelTexture}
+            depthTest={false}
+            transparent
+            sizeAttenuation={false}
+          />
+        </sprite>
+      )}
       {[P.rearHub, P.frontHub].map((hub, i) => (
         <group
           key={i}

@@ -99,3 +99,33 @@ describe('routeInputOf', () => {
     expect([r.lat, r.lon]).toEqual([start.lat, start.lon]);
   });
 });
+
+describe('heart rate ceiling (phase 15a)', () => {
+  const base = {
+    bpmSimulated: false,
+    watts: null,
+    wattsSimulated: false,
+    wheelSpeedKmh: null,
+    cadenceRpm: null,
+    route: null,
+  };
+
+  it('counts the time over the ceiling, only with a reading and a ceiling', () => {
+    const cap = { type: 'bpm', bpm: 160 } as const;
+    let s = startRecorder(0);
+    s = recorderTick(s, 3, { ...base, bpm: 150, cap }, ZONES); // under
+    s = recorderTick(s, 2, { ...base, bpm: 170, cap }, ZONES); // over
+    s = recorderTick(s, 4, { ...base, bpm: null, cap }, ZONES); // no reading
+    s = recorderTick(s, 5, { ...base, bpm: 175, cap: null }, ZONES); // no ceiling
+    expect(s.capSec).toBe(5);
+    expect(s.aboveCapSec).toBe(2);
+  });
+
+  it('a session saved before the ceilings still ticks', () => {
+    const old = startRecorder(0);
+    delete old.capSec;
+    delete old.aboveCapSec;
+    const s = recorderTick(old, 1, { ...base, bpm: 170, cap: { type: 'bpm', bpm: 160 } }, ZONES);
+    expect(s.aboveCapSec).toBe(1);
+  });
+});

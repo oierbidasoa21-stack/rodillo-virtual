@@ -694,6 +694,52 @@ tr.clickable:hover td {
   color: var(--ok);
   font-weight: 600;
 }
+/* A stat that should catch the eye (time over the heart rate ceiling). */
+.stat.warnstat .v {
+  color: #b3261e;
+}
+/* Ring chart of the time in each heart rate zone (summary). */
+.zone-donut {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 0 0 12px;
+}
+.zone-donut svg {
+  width: 150px;
+  height: 150px;
+  flex: none;
+}
+.zone-donut-track {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 14;
+}
+.zone-donut-total {
+  text-anchor: middle;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 15px;
+  fill: currentColor;
+}
+.zone-donut-sub {
+  text-anchor: middle;
+  font-size: 8px;
+  fill: var(--muted);
+}
+.zone-donut figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-weight: 600;
+}
+.zone-donut figcaption i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  vertical-align: -1px;
+}
 .strava-card {
   margin-top: 12px;
 }

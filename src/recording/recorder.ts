@@ -1,5 +1,6 @@
 import { type HrTime, addHrSample, emptyHrTime } from '../domain/metrics/hrTime';
 import { type PowerSampler, emptyPowerSampler, samplePower } from '../domain/metrics/power';
+import { type HrCap, isAboveCap } from '../domain/zones/hrCap';
 import type { HrZone } from '../domain/zones/zones';
 import { positionAt } from '../domain/route/position';
 import type { RideState } from '../domain/route/ride';
@@ -15,6 +16,12 @@ export interface RecorderState {
   recording: Recording;
   /** Real distance from the wheel sensor, used when there is no route. */
   wheelDistanceM: number;
+  /**
+   * Time with a heart rate reading under a ceiling, and the part of it above.
+   * Missing in sessions saved before phase 15a (read as 0).
+   */
+  capSec?: number;
+  aboveCapSec?: number;
 }
 
 /** Readings available on one tick. Null means no fresh reading. */
@@ -33,6 +40,8 @@ export interface RecorderInput {
     lat: number;
     lon: number;
   } | null;
+  /** Heart rate ceiling of the current block, if any. */
+  cap?: HrCap | null;
 }
 
 export function startRecorder(startMs: number): RecorderState {
@@ -43,6 +52,8 @@ export function startRecorder(startMs: number): RecorderState {
     powerSimulated: false,
     recording: startRecording(startMs),
     wheelDistanceM: 0,
+    capSec: 0,
+    aboveCapSec: 0,
   };
 }
 
@@ -57,6 +68,8 @@ export function recorderTick(
     state.wheelDistanceM + (input.wheelSpeedKmh !== null ? (input.wheelSpeedKmh / 3.6) * dtSec : 0);
   const hasWheel = input.wheelSpeedKmh !== null || state.wheelDistanceM > 0;
   const r = input.route;
+  const capped = input.cap && input.bpm !== null ? input.cap : null;
+  const above = capped !== null && input.bpm !== null && isAboveCap(input.bpm, capped, zones);
   return {
     hrTime: addHrSample(state.hrTime, input.bpm, dtSec, zones),
     hrSimulated: state.hrSimulated || (input.bpm !== null && input.bpmSimulated),
@@ -73,6 +86,8 @@ export function recorderTick(
       lon: r ? r.lon : null,
     }),
     wheelDistanceM,
+    capSec: (state.capSec ?? 0) + (capped ? dtSec : 0),
+    aboveCapSec: (state.aboveCapSec ?? 0) + (above ? dtSec : 0),
   };
 }
 

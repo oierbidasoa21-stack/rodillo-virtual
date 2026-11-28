@@ -15,6 +15,7 @@ import { useWorkoutsStore } from '../../store/workoutsStore';
 import { formatMinutes } from '../format';
 import WorkoutProfile from '../WorkoutProfile';
 import BlockRow from './BlockRow';
+import HrCapInput from './HrCapInput';
 import RepeatGroup from './RepeatGroup';
 
 type Draft = Omit<Workout, 'id'> & { id: string | null };
@@ -74,6 +75,26 @@ export default function EditorSheet({ initial }: { initial: Draft }) {
               value={draft.description}
               onChange={(e) => setDraft({ ...draft, description: e.target.value })}
             />
+          </div>
+          <div className="field">
+            <label htmlFor="ed-cap">Pulso máximo</label>
+            <HrCapInput
+              id="ed-cap"
+              noneLabel="Sin máximo"
+              value={draft.maxHr}
+              onChange={(maxHr) =>
+                setDraft((d) => {
+                  const next = { ...d };
+                  if (maxHr) next.maxHr = maxHr;
+                  else delete next.maxHr;
+                  return next;
+                })
+              }
+            />
+            <span className="note">
+              Si el pulso lo pasa, la app avisa al momento con pitido y voz. Cada bloque puede tener
+              el suyo.
+            </span>
           </div>
           <div className="row1">
             <span className="tag">Perfil</span>
