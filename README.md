@@ -42,6 +42,8 @@ Cómo se usa todo, paso a paso y con capturas: **[docs/MANUAL.md](docs/MANUAL.md
 docker compose up -d        # después abre http://localhost:8080
 ```
 
+En un servidor propio con dominio y HTTPS: `docker compose --profile prod up -d`. Detalle, actualizaciones y cómo volver atrás en [`docs/despliegue/`](docs/despliegue/README.md).
+
 **Desarrollo** (Node.js 24, ver `.nvmrc`):
 
 ```sh
@@ -62,6 +64,7 @@ Sesiones, historial, rutas y ajustes se guardan solo en el navegador (IndexedDB)
 
 - [`docs/MANUAL.md`](docs/MANUAL.md): manual de uso.
 - [`docs/ESTRUCTURA.md`](docs/ESTRUCTURA.md): qué es cada carpeta y archivo del código.
+- [`docs/despliegue/`](docs/despliegue/README.md): cómo se publica, se actualiza y se vuelve atrás.
 - [`docs/ROADMAP.md`](docs/ROADMAP.md): fases y tareas.
 - [`docs/contexto/`](docs/contexto/): estado del proyecto, decisiones y registro de cambios.
 - [`docs/agente-entrenador.md`](docs/agente-entrenador.md): cómo usar la app con un agente entrenador.

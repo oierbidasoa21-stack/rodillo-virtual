@@ -8,27 +8,28 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 
 ## Raíz
 
-| Archivo                                                       | Para qué sirve                                                                                               |
-| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `README.md`                                                   | Qué es la app, cómo se usa y cómo se arranca.                                                                |
-| `CLAUDE.md`                                                   | Reglas del proyecto para Claude Code (stack, arquitectura, convenciones, forma de trabajar).                 |
-| `package.json` / `package-lock.json`                          | Dependencias y scripts (`dev`, `build`, `test`, `lint`). El lock fija las versiones exactas.                 |
-| `index.html`                                                  | Página de entrada que carga `src/main.tsx`.                                                                  |
-| `vite.config.ts`                                              | Configuración de Vite: ruta base (`/rodillo-virtual/` en GitHub Pages, `/` en Docker), PWA y tests.          |
-| `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`    | TypeScript en modo estricto: para la app y para los archivos de configuración que corren en Node.            |
-| `eslint.config.js`                                            | Reglas de ESLint, incluidas las de React Hooks.                                                              |
-| `.prettierrc.json`, `.prettierignore`                         | Formato del código con Prettier y qué archivos no se formatean.                                              |
-| `.nvmrc`                                                      | Versión de Node (24) que usan CI y Docker.                                                                   |
-| `.gitignore`, `.gitattributes`                                | Qué no se sube a git (dependencias, builds, datos personales, capturas de prueba) y finales de línea.        |
-| `Dockerfile`                                                  | Imagen Docker: compila la app con Node y la sirve con nginx.                                                 |
-| `compose.yaml`                                                | `docker compose up -d` y la app queda en http://localhost:8080.                                              |
-| `.dockerignore`                                               | Qué no entra en la imagen: dependencias, `data/`, `config/*.local.json` (datos personales), `.git`, `docs/`. |
-| `LICENSE`                                                     | Todos los derechos reservados: el código se puede ver, pero no reutilizar sin permiso.                       |
-| `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`                       | Cómo proponer cambios y normas de trato.                                                                     |
-| `SECURITY.md`, `SUPPORT.md`                                   | Cómo avisar de un fallo de seguridad en privado y dónde pedir ayuda.                                         |
-| `CHANGELOG.md`                                                | Cambios por versión; lo mantiene release-please.                                                             |
-| `commitlint.config.js`                                        | Reglas de Conventional Commits que CI comprueba en cada PR.                                                  |
-| `release-please-config.json`, `.release-please-manifest.json` | Configuración de release-please y última versión publicada.                                                  |
+| Archivo                                                       | Para qué sirve                                                                                                              |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `README.md`                                                   | Qué es la app, cómo se usa y cómo se arranca.                                                                               |
+| `CLAUDE.md`                                                   | Reglas del proyecto para Claude Code (stack, arquitectura, convenciones, forma de trabajar).                                |
+| `package.json` / `package-lock.json`                          | Dependencias y scripts (`dev`, `build`, `test`, `lint`). El lock fija las versiones exactas.                                |
+| `index.html`                                                  | Página de entrada que carga `src/main.tsx`.                                                                                 |
+| `vite.config.ts`                                              | Configuración de Vite: ruta base (`/rodillo-virtual/` en GitHub Pages, `/` en Docker), PWA y tests.                         |
+| `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`    | TypeScript en modo estricto: para la app y para los archivos de configuración que corren en Node.                           |
+| `eslint.config.js`                                            | Reglas de ESLint, incluidas las de React Hooks.                                                                             |
+| `.prettierrc.json`, `.prettierignore`                         | Formato del código con Prettier y qué archivos no se formatean.                                                             |
+| `.nvmrc`                                                      | Versión de Node (24) que usan CI y Docker.                                                                                  |
+| `.gitignore`, `.gitattributes`                                | Qué no se sube a git (dependencias, builds, datos personales, capturas de prueba) y finales de línea.                       |
+| `Dockerfile`                                                  | Imagen Docker: compila la app con Node y la sirve con nginx sin root; imágenes fijadas por digest.                          |
+| `compose.yaml`                                                | `docker compose up -d` → http://localhost:8080, endurecido (solo lectura, sin capacidades). Perfil `prod`: Caddy con HTTPS. |
+| `.env.example`                                                | Plantilla del `.env` (ignorado) con el dominio del perfil `prod`.                                                           |
+| `.dockerignore`                                               | Qué no entra en la imagen: dependencias, `data/`, `config/*.local.json` (datos personales), `.git`, `docs/`.                |
+| `LICENSE`                                                     | Todos los derechos reservados: el código se puede ver, pero no reutilizar sin permiso.                                      |
+| `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`                       | Cómo proponer cambios y normas de trato.                                                                                    |
+| `SECURITY.md`, `SUPPORT.md`                                   | Cómo avisar de un fallo de seguridad en privado y dónde pedir ayuda.                                                        |
+| `CHANGELOG.md`                                                | Cambios por versión; lo mantiene release-please.                                                                            |
+| `commitlint.config.js`                                        | Reglas de Conventional Commits que CI comprueba en cada PR.                                                                 |
+| `release-please-config.json`, `.release-please-manifest.json` | Configuración de release-please y última versión publicada.                                                                 |
 
 ## Carpetas de primer nivel
 
@@ -37,7 +38,7 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 | `.github/workflows/`     | `ci.yml`: lint, tests, build e imagen Docker. `deploy.yml`: publica en GitHub Pages desde `main`. `commitlint.yml`, `codeql.yml`, `scorecard.yml`, `release-please.yml`, `labels.yml` y `milestones.yml`: Conventional Commits, análisis de seguridad, versiones, etiquetas y milestones. |
 | `.github/`               | Plantillas de issue y de PR, `CODEOWNERS`, `dependabot.yml`, `labels.json`, `milestones.json` e imagen para compartir el repo.                                                                                                                                                            |
 | `config/`                | `athlete.example.json`: atleta de ejemplo (peso, bici, zonas de pulso). El tuyo va en `athlete.local.json`, que no se sube.                                                                                                                                                               |
-| `docker/`                | `nginx.conf`: servidor de la imagen (caché larga de los assets, sin caché del service worker, rutas a `index.html`).                                                                                                                                                                      |
+| `docker/`                | `nginx.conf` (caché, rutas a `index.html`, sin versión), `security-headers.conf` (CSP y cabeceras, también fuente de la `<meta>` de Pages) y `Caddyfile` (HTTPS del perfil `prod`).                                                                                                       |
 | `public/icons/`          | Iconos de la app y de la PWA (192, 512, maskable, Apple y SVG).                                                                                                                                                                                                                           |
 | `docs/`                  | Documentación (ver abajo).                                                                                                                                                                                                                                                                |
 | `src/`                   | Código de la app (ver abajo).                                                                                                                                                                                                                                                             |
@@ -46,24 +47,25 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 
 ## `docs/`
 
-| Ruta                                | Para qué sirve                                                                                    |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `ROADMAP.md`                        | Fases del proyecto con sus tareas marcadas.                                                       |
-| `ESTRUCTURA.md`                     | Este documento.                                                                                   |
-| `MANUAL.md`                         | Manual de uso de toda la app, para personas, con capturas.                                        |
-| `manual/`                           | Capturas del manual (PNG a 1280×900, con sensores simulados y el atleta de ejemplo).              |
-| `agente-entrenador.md`              | Cómo conectar la app con tu agente entrenador (informe hacia el agente y plan semanal de vuelta). |
-| `reference/rodillo-pulso-v1.html`   | La versión 1 en un solo HTML: referencia funcional de la Fase 1.                                  |
-| `contexto/README.md`                | Cómo se organiza el contexto entre conversaciones y qué se actualiza tras cada tarea.             |
-| `contexto/estado/ESTADO.md`         | Dónde está el proyecto ahora mismo.                                                               |
-| `contexto/fases/`                   | El plan de cada fase y de cada tanda de mejoras, escrito antes de empezarla.                      |
-| `contexto/decisiones/DECISIONES.md` | Decisiones técnicas y de producto, con su motivo.                                                 |
-| `contexto/arquitectura/`            | Mapa de módulos y cómo encajan.                                                                   |
-| `contexto/pruebas/PRUEBAS.md`       | Qué se comprobó en cada fase y cómo.                                                              |
-| `contexto/pruebas/scripts/`         | Scripts de prueba en navegador headless (demo 3D, forma, fantasma, voz, plan…).                   |
-| `contexto/pendientes/PENDIENTES.md` | Lo que falta o está a medias.                                                                     |
-| `contexto/registro/CAMBIOS.md`      | Registro de commits por fase.                                                                     |
-| `contexto/sesiones/`                | Resumen de cada sesión de trabajo.                                                                |
+| Ruta                                | Para qué sirve                                                                                                |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `ROADMAP.md`                        | Fases del proyecto con sus tareas marcadas.                                                                   |
+| `ESTRUCTURA.md`                     | Este documento.                                                                                               |
+| `MANUAL.md`                         | Manual de uso de toda la app, para personas, con capturas.                                                    |
+| `manual/`                           | Capturas del manual (PNG a 1280×900, con sensores simulados y el atleta de ejemplo).                          |
+| `despliegue/README.md`              | Cómo se publica la app (Pages, Docker, `prod`), cada pieza de seguridad, cómo actualizar y cómo volver atrás. |
+| `agente-entrenador.md`              | Cómo conectar la app con tu agente entrenador (informe hacia el agente y plan semanal de vuelta).             |
+| `reference/rodillo-pulso-v1.html`   | La versión 1 en un solo HTML: referencia funcional de la Fase 1.                                              |
+| `contexto/README.md`                | Cómo se organiza el contexto entre conversaciones y qué se actualiza tras cada tarea.                         |
+| `contexto/estado/ESTADO.md`         | Dónde está el proyecto ahora mismo.                                                                           |
+| `contexto/fases/`                   | El plan de cada fase y de cada tanda de mejoras, escrito antes de empezarla.                                  |
+| `contexto/decisiones/DECISIONES.md` | Decisiones técnicas y de producto, con su motivo.                                                             |
+| `contexto/arquitectura/`            | Mapa de módulos y cómo encajan.                                                                               |
+| `contexto/pruebas/PRUEBAS.md`       | Qué se comprobó en cada fase y cómo.                                                                          |
+| `contexto/pruebas/scripts/`         | Scripts de prueba en navegador headless (demo 3D, forma, fantasma, voz, plan…).                               |
+| `contexto/pendientes/PENDIENTES.md` | Lo que falta o está a medias.                                                                                 |
+| `contexto/registro/CAMBIOS.md`      | Registro de commits por fase.                                                                                 |
+| `contexto/sesiones/`                | Resumen de cada sesión de trabajo.                                                                            |
 
 ## `src/`
 
