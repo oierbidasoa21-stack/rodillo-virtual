@@ -157,13 +157,14 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 
 **`geo/`** · paisaje real (Fase 10)
 
-| Archivo         | Para qué sirve                                                                                      |
-| --------------- | --------------------------------------------------------------------------------------------------- |
-| `mercator.ts`   | Teselas Web Mercator: lon/lat ↔ tesela, teselas que cubren una zona, zona alrededor de una ruta.    |
-| `terrarium.ts`  | Leer la altura guardada en los colores de una tesela de relieve (Terrarium).                        |
-| `heights.ts`    | Mosaico de alturas con interpolación bilineal; sin dato donde falta una tesela, nunca una supuesta. |
-| `localFrame.ts` | Metros locales del mundo 3D ↔ lon/lat (el mismo marco que la carretera).                            |
-| `landscape.ts`  | Qué teselas necesita el paisaje de una ruta (cerca y horizonte) y cuánto pesan.                     |
+| Archivo         | Para qué sirve                                                                                                                        |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `mercator.ts`   | Teselas Web Mercator: lon/lat ↔ tesela, teselas que cubren una zona, zona alrededor de una ruta.                                      |
+| `terrarium.ts`  | Leer la altura guardada en los colores de una tesela de relieve (Terrarium).                                                          |
+| `heights.ts`    | Mosaico de alturas con interpolación bilineal; sin dato donde falta una tesela, nunca una supuesta.                                   |
+| `localFrame.ts` | Metros locales del mundo 3D ↔ lon/lat (el mismo marco que la carretera).                                                              |
+| `landscape.ts`  | Qué teselas necesita el paisaje de una ruta (cerca y horizonte) y cuánto pesan.                                                       |
+| `imagery.ts`    | Mosaico de fotos de satélite: qué teselas, a cuántos píxeles caben en una textura y coordenadas de textura de cada punto del terreno. |
 
 ### `src/tiles/` — descarga y caché de teselas (Fase 10)
 
@@ -174,6 +175,7 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 | `cache.ts`    | Guardar, leer y borrar teselas en Cache Storage (`rodillo-virtual-tiles`), para usarlas sin conexión.              |
 | `decode.ts`   | Pasar una tesela de relieve a alturas en el navegador.                                                             |
 | `heights.ts`  | Leer de la caché las teselas de relieve de una ruta GPX ya descargadas; sin ninguna, la vista 3D es la de siempre. |
+| `imagery.ts`  | Componer las fotos de satélite guardadas de una ruta en una imagen; donde falta una tesela, color neutro.          |
 | `csp.test.ts` | Comprueba que `connect-src` de la CSP y la lista de servidores coinciden.                                          |
 
 ### `src/sensors/` — sensores (Web Bluetooth y simulados)
@@ -261,20 +263,20 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 
 **Pantallas y piezas**
 
-| Carpeta     | Para qué sirve                                                                                                                                                                                                                             |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `library/`  | Pestaña Sesiones: `LibraryView` (lista, importar y exportar `.zwo`) y `WorkoutCard` (cada sesión).                                                                                                                                         |
-| `plan/`     | `PlanCard`: plan del entrenador (copiar informe, instrucciones, importar plan, empezar cada día).                                                                                                                                          |
-| `editor/`   | Editor de sesiones: `EditorSheet`, `BlockRow`, `RepeatGroup`, `ItemControls`, `TargetInput`.                                                                                                                                               |
-| `player/`   | Reproductor de sesiones: `Player`, métricas en vivo, contador de pulso de 10″, alertas de sensores y resumen final.                                                                                                                        |
-| `ramp/`     | Test de rampa: tarjeta para empezarlo y resultado con el FTP estimado.                                                                                                                                                                     |
-| `routes/`   | Pestaña Rutas: `RoutesView`, `RouteCard` (cada ruta, importar GPX) y `DemoCard` (demo 3D).                                                                                                                                                 |
-| `ride/`     | Rodar una ruta: `RideView`, HUD, perfil, minimapa, franja 2D, etiqueta del fantasma, modo y resumen.                                                                                                                                       |
-| `world/`    | Vista 3D (Three.js): escena, terreno, horizonte, carretera, árboles, matorrales, público, quitamiedos, cielo, sol, ciclista y, con paisaje real descargado, terreno y horizonte reales (sin árboles ni rocas inventados). Se carga aparte. |
-| `history/`  | Pestaña Historial: lista, panel de forma, gráficas de condición y fatiga y de carga semanal, y detalle de cada sesión.                                                                                                                     |
-| `sensors/`  | Pestaña Sensores: conectar banda y sensor, y sensores simulados para desarrollar.                                                                                                                                                          |
-| `settings/` | Pestaña Ajustes: atleta y zonas, rodillo, copia de seguridad y archivo de atleta.                                                                                                                                                          |
-| `session/`  | Guardar una sesión al terminar y aviso para retomar una sin terminar.                                                                                                                                                                      |
-| `pwa/`      | Registro del service worker y aviso de actualización de la PWA, que espera si hay una sesión en marcha.                                                                                                                                    |
-| `hooks/`    | Hooks: reloj del reproductor, grabación, guardado continuo, voz, pantalla siempre encendida, tema, ancho de un elemento…                                                                                                                   |
-| `styles/`   | CSS: `tokens.css` (colores de los temas claro y oscuro), `app.css`, `player.css`, `ride.css`, `editor.css`.                                                                                                                                |
+| Carpeta     | Para qué sirve                                                                                                                                                                                                                                                            |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `library/`  | Pestaña Sesiones: `LibraryView` (lista, importar y exportar `.zwo`) y `WorkoutCard` (cada sesión).                                                                                                                                                                        |
+| `plan/`     | `PlanCard`: plan del entrenador (copiar informe, instrucciones, importar plan, empezar cada día).                                                                                                                                                                         |
+| `editor/`   | Editor de sesiones: `EditorSheet`, `BlockRow`, `RepeatGroup`, `ItemControls`, `TargetInput`.                                                                                                                                                                              |
+| `player/`   | Reproductor de sesiones: `Player`, métricas en vivo, contador de pulso de 10″, alertas de sensores y resumen final.                                                                                                                                                       |
+| `ramp/`     | Test de rampa: tarjeta para empezarlo y resultado con el FTP estimado.                                                                                                                                                                                                    |
+| `routes/`   | Pestaña Rutas: `RoutesView`, `RouteCard` (cada ruta, importar GPX) y `DemoCard` (demo 3D).                                                                                                                                                                                |
+| `ride/`     | Rodar una ruta: `RideView`, HUD, perfil, minimapa, franja 2D, etiqueta del fantasma, modo y resumen.                                                                                                                                                                      |
+| `world/`    | Vista 3D (Three.js): escena, terreno, horizonte, carretera, árboles, matorrales, público, quitamiedos, cielo, sol, ciclista y, con paisaje real descargado, terreno y horizonte reales con la foto de satélite encima (sin árboles ni rocas inventados). Se carga aparte. |
+| `history/`  | Pestaña Historial: lista, panel de forma, gráficas de condición y fatiga y de carga semanal, y detalle de cada sesión.                                                                                                                                                    |
+| `sensors/`  | Pestaña Sensores: conectar banda y sensor, y sensores simulados para desarrollar.                                                                                                                                                                                         |
+| `settings/` | Pestaña Ajustes: atleta y zonas, rodillo, copia de seguridad y archivo de atleta.                                                                                                                                                                                         |
+| `session/`  | Guardar una sesión al terminar y aviso para retomar una sin terminar.                                                                                                                                                                                                     |
+| `pwa/`      | Registro del service worker y aviso de actualización de la PWA, que espera si hay una sesión en marcha.                                                                                                                                                                   |
+| `hooks/`    | Hooks: reloj del reproductor, grabación, guardado continuo, voz, pantalla siempre encendida, tema, ancho de un elemento…                                                                                                                                                  |
+| `styles/`   | CSS: `tokens.css` (colores de los temas claro y oscuro), `app.css`, `player.css`, `ride.css`, `editor.css`.                                                                                                                                                               |
