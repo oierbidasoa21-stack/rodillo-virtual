@@ -112,6 +112,16 @@ export default function SettingsView() {
           </select>
         </div>
         <div className="field">
+          <label htmlFor="download-on-save">Descargar el archivo al guardar</label>
+          <input
+            id="download-on-save"
+            type="checkbox"
+            checked={settings.downloadOnSave}
+            onChange={(e) => void update({ downloadOnSave: e.target.checked })}
+          />
+          <span className="note">Para subir la sesión a Strava (no con sensores simulados).</span>
+        </div>
+        <div className="field">
           <label htmlFor="graphics">Calidad del 3D</label>
           <select
             id="graphics"

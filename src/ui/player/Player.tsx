@@ -50,7 +50,10 @@ import RampResultCard from '../ramp/RampResultCard';
 import ModeBadge from '../ride/ModeBadge';
 import { currentRideInput } from '../ride/rideInput';
 import RouteStrip from '../ride/RouteStrip';
-import { saveFinishedSession } from '../session/saveSession';
+import { downloadOnSave, saveFinishedSession } from '../session/saveSession';
+import StravaCard from '../session/StravaCard';
+import { isSimulatedSession, sessionFile } from '../../recording/sessionFile';
+import { downloadText } from '../download';
 import HrCounter from './HrCounter';
 import PowerTargetDetail from './PowerTargetDetail';
 import LiveMetrics from './LiveMetrics';
@@ -106,6 +109,7 @@ export default function Player({
     saved: boolean;
     ramp: RampResult | null;
     powerSimulated: boolean;
+    downloaded: string | null;
   } | null>(null);
 
   const voice = useVoiceCoach(route?.route ?? null);
@@ -145,7 +149,13 @@ export default function Player({
       const ramp =
         mode === 'ramp' ? ftpFromRamp(rec.power.samples, rampStepsCompleted(t.state.index)) : null;
       setCountTarget(null);
-      setResult({ summary, saved, ramp, powerSimulated: rec.powerSimulated });
+      setResult({
+        summary,
+        saved,
+        ramp,
+        powerSimulated: rec.powerSimulated,
+        downloaded: downloadOnSave(summary, rec, saved),
+      });
       voice.finished(summary);
     }
   };
@@ -210,6 +220,16 @@ export default function Player({
         <Summary summary={result.summary} saved={result.saved} onClose={close}>
           {mode === 'ramp' && (
             <RampResultCard result={result.ramp} simulated={result.powerSimulated} />
+          )}
+          {result.saved && (
+            <StravaCard
+              simulated={isSimulatedSession(result.summary)}
+              downloaded={result.downloaded}
+              onDownload={() => {
+                const f = sessionFile(result.summary, recorder.ref.current.recording);
+                downloadText(f.fileName, f.content, f.type);
+              }}
+            />
           )}
         </Summary>
       </div>

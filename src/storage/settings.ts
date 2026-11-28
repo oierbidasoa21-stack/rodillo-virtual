@@ -20,6 +20,8 @@ export interface AppSettings {
   trainer: TrainerChoice;
   /** How much the 3D view draws. 'high' by default (what it drew before there was a choice). */
   graphicsQuality: GraphicsQuality;
+  /** Download the session's file when it is saved, to upload it to Strava. On by default. */
+  downloadOnSave: boolean;
 }
 
 function exampleAthlete(): AthleteConfig {
@@ -38,6 +40,7 @@ export function defaultSettings(): AppSettings {
     simulateSensors: false,
     trainer: { ...DEFAULT_TRAINER_CHOICE },
     graphicsQuality: 'high',
+    downloadOnSave: true,
   };
 }
 
@@ -82,5 +85,7 @@ export function normalizeSettings(stored: Partial<AppSettings> | undefined): App
     graphicsQuality: isGraphicsQuality(stored.graphicsQuality)
       ? stored.graphicsQuality
       : defaults.graphicsQuality,
+    downloadOnSave:
+      typeof stored.downloadOnSave === 'boolean' ? stored.downloadOnSave : defaults.downloadOnSave,
   };
 }
