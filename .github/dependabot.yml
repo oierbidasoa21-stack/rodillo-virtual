@@ -45,3 +45,13 @@ updates:
     commit-message:
       prefix: chore(docker)
     labels: ['tipo: dependencias', 'área: docker']
+
+  # The Caddy image of the prod profile in compose.yaml.
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: chore(docker)
+    labels: ['tipo: dependencias', 'área: docker']

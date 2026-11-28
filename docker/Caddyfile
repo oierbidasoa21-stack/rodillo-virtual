@@ -1,0 +1,18 @@
+# HTTPS in front of the app for the "prod" profile of compose.yaml.
+# Set DOMAIN in .env. Without DOMAIN it serves
+# https://localhost with Caddy's own local certificate, for testing.
+{
+	# The container is read-only: never try to add Caddy's local test CA to
+	# its own trust store (only used for https://localhost).
+	skip_install_trust
+}
+
+{$DOMAIN:localhost} {
+	encode zstd gzip
+	header {
+		# Browsers remember to use HTTPS only, for a year.
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+	}
+	reverse_proxy rodillo-virtual:8080
+}
