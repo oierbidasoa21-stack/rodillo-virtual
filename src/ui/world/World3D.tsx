@@ -114,13 +114,15 @@ export default function World3D({
       {real ? (
         <>
           <WorldRealTerrain
+            route={route}
             path={path}
             index={index}
             rh={real}
             maxVertices={preset.realTerrainVertices}
+            imageryMaxPx={preset.imageryMaxPx}
             onGrid={setNearGrid}
           />
-          {nearGrid && <WorldRealHorizon path={path} rh={real} near={nearGrid} />}
+          {nearGrid && <WorldRealHorizon route={route} path={path} rh={real} near={nearGrid} />}
         </>
       ) : (
         <>
