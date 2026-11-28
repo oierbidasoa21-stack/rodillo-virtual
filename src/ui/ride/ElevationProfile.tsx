@@ -9,6 +9,8 @@ interface Props {
   /** Stretch ahead of the rider drawn bold. */
   aheadM?: number;
   height?: number;
+  /** Where your ghost is, in metres into the route: a mark and a bar for the gap. */
+  ghostM?: number | null;
 }
 
 const W = 1000;
@@ -25,6 +27,7 @@ export default function ElevationProfile({
   positionM = null,
   aheadM = 500,
   height = 120,
+  ghostM = null,
 }: Props) {
   const geo = useMemo(() => {
     const step = Math.max(1, Math.ceil(route.points.length / MAX_DRAWN));
@@ -76,6 +79,11 @@ export default function ElevationProfile({
     }
   }
 
+  const ghostX =
+    ghostM !== null && positionM !== null
+      ? geo.x(Math.min(route.distanceM, Math.max(0, ghostM)))
+      : null;
+
   return (
     <div className="elevation-wrap" style={{ height }}>
       <svg
@@ -104,6 +112,29 @@ export default function ElevationProfile({
             strokeWidth={7}
             vectorEffect="non-scaling-stroke"
           />
+        )}
+        {ghostX !== null && marker && (
+          <>
+            {/* The gap: a bar along the top from you to the ghost, green ahead, red behind. */}
+            <line
+              x1={marker.x}
+              x2={ghostX}
+              y1={6}
+              y2={6}
+              className={ghostX > marker.x ? 'elevation-gap behind' : 'elevation-gap ahead'}
+              strokeWidth={8}
+              vectorEffect="non-scaling-stroke"
+            />
+            <line
+              x1={ghostX}
+              x2={ghostX}
+              y1={0}
+              y2={H}
+              className="elevation-ghost"
+              strokeWidth={2}
+              vectorEffect="non-scaling-stroke"
+            />
+          </>
         )}
         {marker && (
           <>

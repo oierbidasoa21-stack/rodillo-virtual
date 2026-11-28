@@ -291,3 +291,18 @@
 .overlay:fullscreen .world-stage {
   height: calc(100vh - 310px);
 }
+/* Your ghost on the profile: its own colour (the same as in 3D) and the gap bar. */
+.elevation-ghost {
+  stroke: #22c7f0;
+  stroke-dasharray: 6 4;
+}
+.elevation-gap {
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+.elevation-gap.ahead {
+  stroke: #2e9a57;
+}
+.elevation-gap.behind {
+  stroke: #c0392b;
+}
