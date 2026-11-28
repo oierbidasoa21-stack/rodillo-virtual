@@ -10,3 +10,4 @@ config/*.local.json
 docs
 *.png
 !public/**/*.png
+.env
