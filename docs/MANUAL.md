@@ -169,6 +169,8 @@ La biblioteca trae 10 sesiones: 8 por pulso (Fondo Z2, Tempo 3×12′ Z3, Umbral
 
 Con las flechas cambias el orden y con ✕ quitas el bloque. **Añadir repetición** crea un grupo de bloques que se repite las veces que digas (por ejemplo, 5 × [3′ Z5 + 3′ Z1]). Arriba se ve el perfil y la duración total mientras editas. **Guardar sesión** la deja en «Mis sesiones».
 
+**Pulso máximo** (opcional): un tope que no quieres pasar. Puede ser **«No pasar de Zn»** (el final de esa zona) o un número **en ppm**. Se pone para toda la sesión, arriba, y cada bloque puede tener el suyo, que manda sobre el de la sesión (por ejemplo, máximo 165 ppm en la sesión, pero «No pasar de Z1» en las recuperaciones). Qué pasa en el player está en el [apartado 5](#avisos-de-voz-y-pitidos).
+
 ![Editor de sesiones](manual/06-editor.png)
 
 ### Importar y exportar `.zwo`
@@ -219,6 +221,7 @@ Con **Avisos por voz** y **Pitidos** activados en Ajustes:
 - **al empezar la sesión** (y al saltar de bloque), la voz dice el tipo de bloque, la zona y la duración (por ejemplo, «Calentamiento, zona uno, 10 minutos»);
 - **10 segundos antes** de acabar un bloque avisa del siguiente («En diez segundos: recuperación, zona uno»), con pitidos de cuenta atrás y otro al cambiar;
 - en bloques de 4 minutos o más dice **«Mitad del bloque»**, y en los de 5 minutos o más, **«Último minuto»**;
+- **pulso máximo** (si la sesión o el bloque tiene uno y hay banda conectada): **en cuanto el pulso lo pasa**, tres pitidos y la voz «Pulso por encima del máximo: baja ya», y se repite **cada 10 segundos** mientras siga por encima, sin las esperas de los avisos de zona. En la tarjeta del bloque se ve el máximo («máx. 165 ppm» o «máx. Z4 (≤ 164 ppm)»), que se pone en rojo mientras lo pasas. Mientras suena este aviso, los de zona se callan para no pisarse;
 - **pulso fuera de zona** (con banda conectada): después del primer minuto del bloque, si el pulso lleva 25 segundos seguidos fuera de la zona, avisa «Pulso por encima de la zona, afloja un poco» o «Pulso por debajo de la zona, aprieta un poco». No repite antes de 90 segundos. Cuando vuelves y aguantas 10 segundos dentro, dice «Pulso en zona, así». En recuperaciones y vuelta a la calma no avisa por ir por debajo, solo por ir alto;
 - **en rutas**, avisa de las subidas: 300 m antes («Subida en 300 metros: 1,2 kilómetros al 6 por ciento»), a 500 m de la cima en las subidas largas, y en la cima;
 - **al terminar**, un resumen hablado: minutos, carga y pulso medio.
@@ -289,7 +292,7 @@ Al pulsar **Terminar** (dos veces) sale el resumen. Si la sesión ha durado **me
 Lo que puede salir, según los sensores que había:
 
 - **siempre**: tiempo de sesión, **carga** y **kcal estimadas**;
-- **con banda de pulso**: pulso medio y máximo, y el **tiempo en cada zona de pulso** medido. Sin banda, el tiempo en zona sale de los bloques que has hecho;
+- **con banda de pulso**: pulso medio y máximo, el **tiempo en cada zona de pulso** medido y, si la sesión tenía pulso máximo, el **tiempo por encima del máximo**. Sin banda, el tiempo en zona sale de los bloques que has hecho;
 - **con conteos de 10″**: la tabla de cada conteo y cuántos estaban en zona;
 - **con potencia estimada**: media, **NP**, máxima, trabajo (kJ), y con FTP también **IF**, **TSS** y el tiempo en cada zona de potencia. Las kcal pasan a salir de los kJ;
 - **en una ruta**: distancia, velocidad media, desnivel y vueltas.
