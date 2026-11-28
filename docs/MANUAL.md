@@ -188,8 +188,8 @@ De arriba abajo:
 
 - **nombre de la sesión**, bloque actual y tiempo que queda de sesión;
 - el **perfil** de la sesión, con una línea en el punto donde vas;
-- la **tarjeta del bloque**, con el color de su zona: tipo de bloque, zona, rango en /10″ y en ppm, y la sensación que debería dar. En bloques por potencia, los vatios objetivo con una banda de ±5 % (o el % si no hay FTP);
-- el **reloj** del bloque, que se pone en aviso en los últimos 10 segundos;
+- la **tarjeta del bloque**, con el color de su zona (al empezar un bloque nuevo entra con una animación corta, para que el cambio se vea desde la bici): tipo de bloque, zona, rango en /10″ y en ppm, y la sensación que debería dar. En bloques por potencia, los vatios objetivo con una banda de ±5 % (o el % si no hay FTP);
+- el **reloj** del bloque, que se pone en aviso en los últimos 10 segundos y, en los **últimos 5**, se convierte en un solo dígito grande (5, 4, 3, 2, 1) que late cada segundo;
 - las **métricas en directo**: pulso en ppm y /10″ con **En zona / Por encima / Por debajo**, potencia estimada, velocidad y cadencia (solo lo que tenga sensor);
 - **Siguiente**: el próximo bloque y su duración.
 
