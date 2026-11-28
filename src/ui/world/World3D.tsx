@@ -2,6 +2,7 @@ import { Canvas } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import type { Route } from '../../domain/route/route';
 import { projectRoute } from '../../domain/world/path';
+import { type GraphicsQuality, QUALITY_PRESETS } from '../../domain/world/quality';
 import { indexRoad } from '../../domain/world/terrain';
 import WorldHorizon from './WorldHorizon';
 import WorldPosts from './WorldPosts';
@@ -24,6 +25,8 @@ interface Props {
   cadenceRpm: number | null;
   running: boolean;
   timeOfDay?: TimeOfDay;
+  /** Ajustes → Calidad del 3D. */
+  quality?: GraphicsQuality;
   /** Your best earlier ride on this route, replayed. */
   ghost?: { distanceM: number; speedMs: number } | null;
 }
@@ -39,9 +42,11 @@ export default function World3D({
   cadenceRpm,
   running,
   timeOfDay = 'morning',
+  quality = 'high',
   ghost = null,
 }: Props) {
   const light = LIGHTING[timeOfDay];
+  const preset = QUALITY_PRESETS[quality];
   const path = useMemo(() => projectRoute(route), [route]);
   const index = useMemo(() => indexRoad(path), [path]);
   const motion = useRef<RiderMotion>({
@@ -76,26 +81,29 @@ export default function World3D({
 
   return (
     <Canvas
+      // Shadows, antialiasing and the camera are set when the canvas is created:
+      // a new level means a new canvas.
+      key={quality}
       className="world-canvas"
-      dpr={[1, 1.5]}
-      shadows
-      gl={{ antialias: true, powerPreference: 'high-performance' }}
-      camera={{ fov: 58, near: 0.5, far: 8000 }}
+      dpr={[1, preset.maxDpr]}
+      shadows={preset.shadows}
+      gl={{ antialias: preset.antialias, powerPreference: 'high-performance' }}
+      camera={{ fov: 58, near: 0.5, far: preset.farM }}
       aria-label={`Vista 3D de ${route.name}`}
     >
       <color attach="background" args={[light.horizon]} />
-      <fog attach="fog" args={[light.horizon, 250, 6000]} />
+      <fog attach="fog" args={[light.horizon, 250, preset.fogEndM]} />
       <hemisphereLight args={light.hemi} />
-      <WorldSun light={light} />
+      <WorldSun light={light} shadowMapPx={preset.shadowMapPx} />
       <WorldSky light={light} />
       <WorldTerrain path={path} index={index} />
       <WorldHorizon path={path} />
       <WorldRoad path={path} />
       <WorldPosts path={path} />
       <WorldGuardrails path={path} />
-      <WorldSpectators path={path} index={index} motion={motion} />
-      <WorldTrees path={path} index={index} />
-      <WorldScenery path={path} index={index} />
+      <WorldSpectators path={path} index={index} motion={motion} density={preset.crowdDensity} />
+      <WorldTrees path={path} index={index} density={preset.propDensity} />
+      <WorldScenery path={path} index={index} density={preset.propDensity} />
       <WorldRider path={path} motion={motion} />
       {ghost && <WorldRider path={path} motion={ghostMotion} ghost />}
     </Canvas>

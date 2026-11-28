@@ -1,3 +1,8 @@
+import {
+  GRAPHICS_QUALITIES,
+  GRAPHICS_QUALITY_LABEL,
+  isGraphicsQuality,
+} from '../../domain/world/quality';
 import { WHEEL_CIRCUMFERENCE_RANGE_MM } from '../../domain/zones/athleteConfig';
 import type { ThemePreference } from '../../storage/settings';
 import { defaultSettings } from '../../storage/settings';
@@ -105,6 +110,27 @@ export default function SettingsView() {
               </option>
             ))}
           </select>
+        </div>
+        <div className="field">
+          <label htmlFor="graphics">Calidad del 3D</label>
+          <select
+            id="graphics"
+            value={settings.graphicsQuality}
+            onChange={(e) => {
+              if (isGraphicsQuality(e.target.value))
+                void update({ graphicsQuality: e.target.value });
+            }}
+          >
+            {GRAPHICS_QUALITIES.map((q) => (
+              <option key={q} value={q}>
+                {GRAPHICS_QUALITY_LABEL[q]}
+              </option>
+            ))}
+          </select>
+          <span className="note">
+            Baja: sin sombras, menos árboles y público, y menos distancia. Úsala si el 3D va a
+            tirones.
+          </span>
         </div>
       </div>
 

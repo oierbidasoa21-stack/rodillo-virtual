@@ -1,14 +1,23 @@
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import { Color, type InstancedMesh, Matrix4 } from 'three';
 import type { WorldPath } from '../../domain/world/path';
+import { thin } from '../../domain/world/quality';
 import { scatterBushes, scatterRocks } from '../../domain/world/scenery';
 import { type RoadIndex, rng } from '../../domain/world/terrain';
 import { propMatrix } from './geometry';
 
 /** Bushes and rocks by the roadside, half sunk into the ground. */
-export default function WorldScenery({ path, index }: { path: WorldPath; index: RoadIndex }) {
-  const bushes = useMemo(() => scatterBushes(path, index), [path, index]);
-  const rocks = useMemo(() => scatterRocks(path, index), [path, index]);
+export default function WorldScenery({
+  path,
+  index,
+  density = 1,
+}: {
+  path: WorldPath;
+  index: RoadIndex;
+  density?: number;
+}) {
+  const bushes = useMemo(() => thin(scatterBushes(path, index), density), [path, index, density]);
+  const rocks = useMemo(() => thin(scatterRocks(path, index), density), [path, index, density]);
   const bushRef = useRef<InstancedMesh>(null);
   const rockRef = useRef<InstancedMesh>(null);
 

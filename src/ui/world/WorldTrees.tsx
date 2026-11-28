@@ -1,6 +1,7 @@
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import { Color, type InstancedMesh, Matrix4 } from 'three';
 import type { WorldPath } from '../../domain/world/path';
+import { thin } from '../../domain/world/quality';
 import { scatterTrees } from '../../domain/world/scenery';
 import { type RoadIndex, rng } from '../../domain/world/terrain';
 import { propMatrix } from './geometry';
@@ -10,8 +11,16 @@ import { propMatrix } from './geometry';
  * with two tiers, leafy trees with an uneven crown, and tall poplars with pale
  * trunks. Each one turned and tinted a little differently.
  */
-export default function WorldTrees({ path, index }: { path: WorldPath; index: RoadIndex }) {
-  const trees = useMemo(() => scatterTrees(path, index), [path, index]);
+export default function WorldTrees({
+  path,
+  index,
+  density = 1,
+}: {
+  path: WorldPath;
+  index: RoadIndex;
+  density?: number;
+}) {
+  const trees = useMemo(() => thin(scatterTrees(path, index), density), [path, index, density]);
   const groups = useMemo(
     () => ({
       conifer: trees.filter((t) => t.kind === 0),

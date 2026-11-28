@@ -4,6 +4,7 @@ import {
   TRAINER_CURVES,
   type TrainerChoice,
 } from '../domain/trainer/curves';
+import { type GraphicsQuality, isGraphicsQuality } from '../domain/world/quality';
 import { type AthleteConfig, parseAthleteConfig } from '../domain/zones/athleteConfig';
 
 export type ThemePreference = 'system' | 'light' | 'dark';
@@ -17,6 +18,8 @@ export interface AppSettings {
   simulateSensors: boolean;
   /** Trainer whose speed → power curve estimates watts. 'none' by default: no power. */
   trainer: TrainerChoice;
+  /** How much the 3D view draws. 'high' by default (what it drew before there was a choice). */
+  graphicsQuality: GraphicsQuality;
 }
 
 function exampleAthlete(): AthleteConfig {
@@ -34,6 +37,7 @@ export function defaultSettings(): AppSettings {
     theme: 'system',
     simulateSensors: false,
     trainer: { ...DEFAULT_TRAINER_CHOICE },
+    graphicsQuality: 'high',
   };
 }
 
@@ -75,5 +79,8 @@ export function normalizeSettings(stored: Partial<AppSettings> | undefined): App
         ? stored.simulateSensors
         : defaults.simulateSensors,
     trainer: normalizeTrainer(stored.trainer),
+    graphicsQuality: isGraphicsQuality(stored.graphicsQuality)
+      ? stored.graphicsQuality
+      : defaults.graphicsQuality,
   };
 }

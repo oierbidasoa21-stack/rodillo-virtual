@@ -75,6 +75,7 @@ export default function RideView({
   const [webgl] = useState(hasWebGL);
   const [view, setView] = useState<'3d' | '2d'>(webgl ? '3d' : '2d');
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('morning');
+  const graphicsQuality = useSettingsStore((s) => s.settings.graphicsQuality);
 
   const [status, setStatus] = useState<Status>(demo ? 'running' : resume ? 'paused' : 'ready');
   const [ride, setRide] = useState<RideState>(() => resume?.ride ?? startRide());
@@ -254,6 +255,7 @@ export default function RideView({
                 cadenceRpm={cadence}
                 running={running}
                 timeOfDay={timeOfDay}
+                quality={graphicsQuality}
                 ghost={ghostNow}
               />
             </Suspense>

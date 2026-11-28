@@ -57,7 +57,7 @@ Cada dirección (la web publicada, `localhost:8080` o tu dominio) guarda **sus p
 
 En **Ajustes → Tus datos** pon tu **peso**, el **peso de la bici** y la **circunferencia de rueda** (2155 mm para 700×32, 2105 mm para 700×25). El peso sirve para las kcal y la velocidad virtual en las rutas; la rueda, para pasar vueltas de rueda a velocidad.
 
-En el mismo sitio eliges si quieres **avisos por voz**, **pitidos** y el **tema** (claro, oscuro o como el sistema).
+En el mismo sitio eliges si quieres **avisos por voz**, **pitidos**, el **tema** (claro, oscuro o como el sistema) y la **calidad del 3D** ([apartado 6](#vista-3d)).
 
 ![Ajustes: tus datos](manual/02-ajustes-datos.png)
 
@@ -264,6 +264,8 @@ Al rodar, la ruta se ve en 3D si el navegador tiene WebGL (Chrome lo tiene):
 
 El selector de **hora del día** cambia entre mañana, mediodía y atardecer. **Vista 2D** vuelve a la vista plana. **Pantalla completa** (o **F**) funciona igual que en el player. La parte 3D se descarga la primera vez y después funciona sin conexión.
 
+**Calidad del 3D** (Ajustes → Tus datos): **Alta** (la de siempre), **Media** o **Baja**. En baja no hay sombras, se dibujan algo más de un tercio de los árboles, matorrales y rocas y menos de un tercio del público, y el horizonte queda más cerca. Úsala si el 3D va a tirones en tu portátil; la carretera, el ciclista y los datos son los mismos.
+
 ![Vista 3D al rodar una ruta](manual/11-ruta-3d.png)
 
 ### Fantasma
@@ -407,7 +409,7 @@ Usa valores típicos de un ciclista en carretera (CdA 0,32, Crr 0,005, 97,5 % de
 
 **La app no se actualiza.** Espera el aviso «Nueva versión disponible» y pulsa **Actualizar** (no sale durante una sesión). Si no aparece, cierra todas las ventanas de la app y vuelve a abrirla con conexión.
 
-**La vista 3D no se ve o va a tirones.** Necesita WebGL: en Chrome, Configuración → Sistema → «Usar aceleración por hardware cuando esté disponible» activado. **Vista 2D** siempre funciona.
+**La vista 3D no se ve o va a tirones.** Necesita WebGL: en Chrome, Configuración → Sistema → «Usar aceleración por hardware cuando esté disponible» activado. Si se ve pero va lenta, baja la **Calidad del 3D** en Ajustes a Media o Baja. **Vista 2D** siempre funciona.
 
 **No veo mis datos.** ¿Estás en la misma dirección de siempre? La web publicada, `localhost:5173` (`npm run dev`) y `localhost:8080` (Docker) guardan cada una sus propios datos. Pásalos con Exportar copia e Importar copia.
 
