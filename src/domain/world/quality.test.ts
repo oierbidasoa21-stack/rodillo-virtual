@@ -4,7 +4,15 @@ import { GRAPHICS_QUALITIES, QUALITY_PRESETS, isGraphicsQuality, thin } from './
 describe('graphics quality presets', () => {
   it('draw more from low to high', () => {
     const { low, medium, high } = QUALITY_PRESETS;
-    for (const key of ['propDensity', 'crowdDensity', 'farM', 'maxDpr', 'shadowMapPx'] as const) {
+    for (const key of [
+      'propDensity',
+      'crowdDensity',
+      'farM',
+      'maxDpr',
+      'shadowMapPx',
+      'realTerrainVertices',
+      'realFarM',
+    ] as const) {
       expect(low[key]).toBeLessThan(medium[key]);
       expect(medium[key]).toBeLessThan(high[key]);
     }
@@ -15,6 +23,7 @@ describe('graphics quality presets', () => {
   it('keep the haze inside the far plane, so the world never ends in a hard edge', () => {
     for (const q of GRAPHICS_QUALITIES) {
       expect(QUALITY_PRESETS[q].fogEndM).toBeLessThan(QUALITY_PRESETS[q].farM);
+      expect(QUALITY_PRESETS[q].realFogEndM).toBeLessThan(QUALITY_PRESETS[q].realFarM);
     }
   });
 

@@ -25,6 +25,12 @@ export interface QualityPreset {
   farM: number;
   /** Where the haze becomes solid, in metres (just inside `farM`). */
   fogEndM: number;
+  /** With real landscape (phase 10): vertices of the near real terrain. */
+  realTerrainVertices: number;
+  /** With real landscape: far plane, to see the real horizon (up to 25 km away). */
+  realFarM: number;
+  /** With real landscape: where the haze becomes solid. */
+  realFogEndM: number;
 }
 
 /** "Alta" is what the 3D view drew before there was a choice. */
@@ -38,6 +44,9 @@ export const QUALITY_PRESETS: Record<GraphicsQuality, QualityPreset> = {
     crowdDensity: 0.3,
     farM: 2500,
     fogEndM: 2200,
+    realTerrainVertices: 40_000,
+    realFarM: 9_000,
+    realFogEndM: 8_000,
   },
   medium: {
     shadows: true,
@@ -48,6 +57,9 @@ export const QUALITY_PRESETS: Record<GraphicsQuality, QualityPreset> = {
     crowdDensity: 0.6,
     farM: 5000,
     fogEndM: 4200,
+    realTerrainVertices: 90_000,
+    realFarM: 16_000,
+    realFogEndM: 14_000,
   },
   high: {
     shadows: true,
@@ -58,6 +70,9 @@ export const QUALITY_PRESETS: Record<GraphicsQuality, QualityPreset> = {
     crowdDensity: 1,
     farM: 8000,
     fogEndM: 6000,
+    realTerrainVertices: 160_000,
+    realFarM: 27_000,
+    realFogEndM: 25_000,
   },
 };
 

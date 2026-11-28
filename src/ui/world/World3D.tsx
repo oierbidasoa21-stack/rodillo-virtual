@@ -1,11 +1,14 @@
 import { Canvas } from '@react-three/fiber';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Route } from '../../domain/route/route';
 import { projectRoute } from '../../domain/world/path';
 import { type GraphicsQuality, QUALITY_PRESETS } from '../../domain/world/quality';
+import type { RealGrid } from '../../domain/world/realTerrain';
 import { indexRoad } from '../../domain/world/terrain';
 import WorldHorizon from './WorldHorizon';
 import WorldPosts from './WorldPosts';
+import WorldRealHorizon from './WorldRealHorizon';
+import WorldRealTerrain from './WorldRealTerrain';
 import WorldRider, { type RiderMotion } from './WorldRider';
 import WorldRoad from './WorldRoad';
 import WorldScenery from './WorldScenery';
@@ -17,6 +20,7 @@ import WorldTerrain from './WorldTerrain';
 import WorldTrees from './WorldTrees';
 import { LIGHTING } from './sun';
 import type { TimeOfDay } from './timeOfDay';
+import { useRealHeights } from './useRealHeights';
 
 interface Props {
   route: Route;
@@ -49,6 +53,11 @@ export default function World3D({
   const preset = QUALITY_PRESETS[quality];
   const path = useMemo(() => projectRoute(route), [route]);
   const index = useMemo(() => indexRoad(path), [path]);
+  // Real relief, when this GPX route's landscape was downloaded (phase 10).
+  const real = useRealHeights(route);
+  const [nearGrid, setNearGrid] = useState<RealGrid | null>(null);
+  const farM = real ? preset.realFarM : preset.farM;
+  const fogEndM = real ? preset.realFogEndM : preset.fogEndM;
   const motion = useRef<RiderMotion>({
     distanceM,
     speedMs,
@@ -83,27 +92,49 @@ export default function World3D({
     <Canvas
       // Shadows, antialiasing and the camera are set when the canvas is created:
       // a new level means a new canvas.
-      key={quality}
+      key={`${quality}-${real ? 'real' : 'usual'}`}
       className="world-canvas"
       dpr={[1, preset.maxDpr]}
       shadows={preset.shadows}
-      gl={{ antialias: preset.antialias, powerPreference: 'high-performance' }}
-      camera={{ fov: 58, near: 0.5, far: preset.farM }}
+      gl={{
+        antialias: preset.antialias,
+        powerPreference: 'high-performance',
+        // Tens of km of real horizon and a road a metre away: a linear depth
+        // buffer would make far slopes flicker through each other.
+        logarithmicDepthBuffer: !!real,
+      }}
+      camera={{ fov: 58, near: 0.5, far: farM }}
       aria-label={`Vista 3D de ${route.name}`}
     >
       <color attach="background" args={[light.horizon]} />
-      <fog attach="fog" args={[light.horizon, 250, preset.fogEndM]} />
+      <fog attach="fog" args={[light.horizon, real ? 600 : 250, fogEndM]} />
       <hemisphereLight args={light.hemi} />
       <WorldSun light={light} shadowMapPx={preset.shadowMapPx} />
       <WorldSky light={light} />
-      <WorldTerrain path={path} index={index} />
-      <WorldHorizon path={path} />
+      {real ? (
+        <>
+          <WorldRealTerrain
+            path={path}
+            index={index}
+            rh={real}
+            maxVertices={preset.realTerrainVertices}
+            onGrid={setNearGrid}
+          />
+          {nearGrid && <WorldRealHorizon path={path} rh={real} near={nearGrid} />}
+        </>
+      ) : (
+        <>
+          <WorldTerrain path={path} index={index} />
+          <WorldHorizon path={path} />
+        </>
+      )}
       <WorldRoad path={path} />
       <WorldPosts path={path} />
       <WorldGuardrails path={path} />
       <WorldSpectators path={path} index={index} motion={motion} density={preset.crowdDensity} />
-      <WorldTrees path={path} index={index} density={preset.propDensity} />
-      <WorldScenery path={path} index={index} density={preset.propDensity} />
+      {/* With real landscape nothing is made up: no invented trees, bushes or rocks. */}
+      {!real && <WorldTrees path={path} index={index} density={preset.propDensity} />}
+      {!real && <WorldScenery path={path} index={index} density={preset.propDensity} />}
       <WorldRider path={path} motion={motion} />
       {ghost && <WorldRider path={path} motion={ghostMotion} ghost label={ghost.label} />}
     </Canvas>
