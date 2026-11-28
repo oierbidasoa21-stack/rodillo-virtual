@@ -46,6 +46,7 @@ import { TIME_OF_DAY_LABEL, type TimeOfDay } from '../world/timeOfDay';
 // Three.js is big: the 3D view loads only when it is first shown.
 const World3D = lazy(() => import('../world/World3D'));
 const HOURS: TimeOfDay[] = ['morning', 'noon', 'evening'];
+const GHOST_DAY = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'short' });
 
 /** Constant power the demo rides at, with the usual physics. */
 const DEMO_WATTS = 200;
@@ -126,6 +127,7 @@ export default function RideView({
         distanceM: ghostDistanceAt(ghost, ride.elapsedSec),
         speedMs: ghostSpeedAt(ghost, ride.elapsedSec),
         gapSec: gapToGhostSec(ghost, ride.distanceM, ride.elapsedSec),
+        label: `Tú · ${GHOST_DAY.format(ghost.dateMs)}`,
       }
     : null;
 
@@ -292,7 +294,12 @@ export default function RideView({
         <div className="ride-graphs">
           <div className="card ride-profile">
             <span className="tag">Perfil · próximos 500 m resaltados</span>
-            <ElevationProfile route={route} positionM={ride.distanceM} height={in3d ? 80 : 150} />
+            <ElevationProfile
+              route={route}
+              positionM={ride.distanceM}
+              ghostM={ghostNow ? ghostNow.distanceM % route.distanceM : null}
+              height={in3d ? 80 : 150}
+            />
           </div>
           <div className="card ride-map">
             <span className="tag">Recorrido</span>

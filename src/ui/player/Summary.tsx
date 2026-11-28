@@ -1,3 +1,4 @@
+import ZoneDonut from './ZoneDonut';
 import type { ReactNode } from 'react';
 import { KCAL_MET_UNCERTAINTY } from '../../domain/metrics/kcal';
 import { type SessionSummary, hasKcal, hasLoad } from '../../domain/metrics/summary';
@@ -112,6 +113,7 @@ export default function Summary({
             </span>
           </div>
           <div className="card">
+            <ZoneDonut secByZone={done} />
             {ZONE_IDS.map((id) => (
               <div className="zbar" key={id}>
                 <b style={{ color: zoneColor(id) }}>{id}</b>
