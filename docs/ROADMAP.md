@@ -5,7 +5,7 @@ Marca `[x]` al completar cada tarea.
 
 Los criterios de «hecho» se comprueban en el **ordenador (Chrome en Windows)**, con la web publicada. La app es solo para ordenador: no hay fase de móvil.
 
-**Fase actual: 15a (mejoras aceptadas, antes del paisaje real).** Las fases 9, 13 y 14 están cerradas (2026-11-28); de la 13 quedan los ajustes de GitHub que hace el usuario después de la Fase 12 (issue #82).
+**Fase actual: 10 (paisaje real).** Las fases 9, 13, 14 y 15a están cerradas (2026-11-28); de la 13 quedan los ajustes de GitHub que hace el usuario después de la Fase 12 (issue #82).
 
 **Orden de ejecución:** 9 → 13 → 14 → 15a → 10 → T14 → 11 → 12 → 15b → Datos en Supabase → T13 → T19. Los números no cambian; la 8 entra cuando llegue el rodillo inteligente. Las tareas Tn y el porqué del orden están en `docs/contexto/pendientes/PENDIENTES.md` (T2).
 
@@ -204,13 +204,15 @@ Issues #46–#53 (etiqueta `fase-14`). Tarea T4. La CSP se pone aquí, antes de 
 
 Issues #54–#60 (etiqueta `fase-15a`).
 
-- [ ] Selector de calidad gráfica del 3D
-- [ ] Panel de inicio
-- [ ] Strava sin API: descargar el archivo al guardar y botón «Abrir Strava para subir» (T8, opción b)
-- [ ] Arco de meta y cámara de llegada (T16)
-- [ ] Pulso máximo de la sesión con aviso inmediato (T17)
-- [ ] Reconexión de Bluetooth sin preguntar, si Chrome lo permite (T18)
-- [ ] Transiciones entre bloques, cuenta atrás grande en los últimos 5 s y gráfica de zonas tipo donut en el resumen
+Cerrada el 2026-11-28.
+
+- [x] Selector de calidad gráfica del 3D
+- [x] Panel de inicio
+- [x] Strava sin API: descargar el archivo al guardar y botón «Abrir Strava para subir» (T8, opción b)
+- ~~Arco de meta y cámara de llegada (T16)~~: descartado por el usuario el 2026-11-28 (#57)
+- [x] Pulso máximo de la sesión con aviso inmediato (T17)
+- [x] Reconexión de Bluetooth sin preguntar, si Chrome lo permite (T18). Falta probarla con hardware real (#19)
+- [x] Transiciones entre bloques, cuenta atrás grande en los últimos 5 s y gráfica de zonas tipo donut en el resumen, y fantasma más visible
 
 ## Fase 15b — Mejoras aceptadas (después del paisaje real)
 

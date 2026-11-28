@@ -41,9 +41,9 @@ Fase 6:
 
 ## Modelo de datos (lo que se guarda)
 
-- **`Workout`**: `{ id, name, description, blocks }`. Cada `Block` es `{ type: 'block', durationSec, target, kind, note }` y `target` es `{ type: 'hr', zoneId } | { type: 'power', pctFtp } | { type: 'watts', watts }` (`watts` solo para el ramp test). `Repeat` = `{ type: 'repeat', times, items }`, un solo nivel.
-- **`SessionSummary`** (historial): duración, carga, kcal estimadas, tiempo por zona planificado y realizado, conteos de pulso, y opcionales `hrMeasured` (pulso medido), `power` (NP, IF, TSS, kJ, zonas, `simulated`) y `ride` (ruta, distancia, desnivel, velocidad media, modo, vueltas).
-- **`AppSettings`**: `athlete` (peso, bici, rueda, zonas, FTP), voz, pitidos, tema, `simulateSensors`, `trainer` (modelo o curva personalizada).
+- **`Workout`**: `{ id, name, description, blocks }`. Cada `Block` es `{ type: 'block', durationSec, target, kind, note }` y `target` es `{ type: 'hr', zoneId } | { type: 'power', pctFtp } | { type: 'watts', watts }` (`watts` solo para el ramp test). `Repeat` = `{ type: 'repeat', times, items }`, un solo nivel. Opcional `maxHr` en la sesión y en cada bloque: `{ type: 'bpm', bpm } | { type: 'zone', zoneId }` (Fase 15a, sin versión nueva de Dexie).
+- **`SessionSummary`** (historial): duración, carga, kcal estimadas, tiempo por zona planificado y realizado, conteos de pulso, y opcionales `hrMeasured` (pulso medido), `power` (NP, IF, TSS, kJ, zonas, `simulated`) `ride` (ruta, distancia, desnivel, velocidad media, modo, vueltas) y `hrCap` (`{ cappedSec, aboveSec }`: segundos con tope y por encima).
+- **`AppSettings`**: `athlete` (peso, bici, rueda, zonas, FTP), voz, pitidos, tema, `simulateSensors`, `trainer` (modelo o curva personalizada), `graphicsQuality` (calidad del 3D) y `downloadOnSave` (descargar el archivo al guardar). Los ids de los sensores recordados van aparte, en `localStorage` (`rodillo-virtual:remembered-sensors`), porque son una comodidad.
 - **`SessionRecording`**: `{ sessionId, startMs, samples }`; cada muestra `{ t, hr, powerW, speedKmh, cadenceRpm, distanceM, altitudeM, lat, lon }` con `null` donde no hubo lectura.
 - **`SessionSnapshot`** (sesión en curso): sesión o salida, estado del player o de la ruta y el grabador entero, para retomarla.
 - **`Route`** (importadas): puntos cada 10 m `{ distanceM, lat, lon, ele }` con la altitud ya suavizada, distancia, desnivel y pendiente máxima.

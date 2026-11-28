@@ -21,7 +21,7 @@ Un PR por issue, en este orden, cada uno con `Closes #n`. El agente avisa al coo
 ## Decisiones de partida
 
 - **Node 24 se queda** en Docker, CI y `.nvmrc`. Es LTS hasta 2028 y lo usa todo el proyecto. Subir a Node 26 sería un cambio de todo el proyecto, no solo de la imagen. Por eso el #72 de Dependabot se cierra.
-- **nginx: rama 1.29** (la _mainline_, que es la que recomienda nginx), en su variante sin root. Así el #74 queda incluido en #46.
+- **nginx: rama 1.29** (la _mainline_, que es la que recomienda nginx), en su variante sin root. Así el #74 queda incluido en #46. _Después, Dependabot la subió a 1.31 (#94)._
 - **La imagen se publica desde el mismo workflow de release-please.** Una release creada con `GITHUB_TOKEN` no lanza otros workflows (`on: release`), así que un workflow aparte nunca se ejecutaría. Hasta que el usuario active el permiso de Actions (tras la Fase 12), release-please no crea versiones y, por tanto, tampoco se publica imagen. Queda preparado.
 - **CSP en GitHub Pages con `<meta>`**: Pages no deja poner cabeceras. Con `<meta>` no funcionan `frame-ancestors` ni las demás cabeceras; eso queda solo en Docker.
 

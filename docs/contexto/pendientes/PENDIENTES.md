@@ -384,6 +384,8 @@ Pedido el 2026-11-27:
 
 ### T17 · Pulso máximo de la sesión y avisos
 
+**Estado (2026-11-28): hecha en la Fase 15a** ([PR #99](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/99), issue #58). Sin versión nueva de Dexie (campos opcionales). La copia de seguridad conserva el tope y el tiempo por encima. El `.zwo` y el formato del plan no lo llevan.
+
 Pedido el 2026-11-27:
 
 - **Lo que ya existe:** el editor deja planificar por bloques de zona (por ejemplo 30′ Z2 + 20′ Z4 + 10′ Z2) y el player avisa por voz si el pulso sale de la zona del bloque (tras 60 s de bloque, avisa a los 25 s fuera y no repite antes de 90 s). Hay que contárselo bien al usuario en el manual (T11).
@@ -394,6 +396,8 @@ Pedido el 2026-11-27:
   - se guarda con la sesión y en la copia de seguridad (cambio de modelo, así que migración de Dexie si hace falta).
 
 ### T18 · Reconexión de Bluetooth sin preguntar
+
+**Estado (2026-11-28): hecha en la Fase 15a** ([PR #101](https://github.com/oierbidasoa21-stack/rodillo-virtual/pull/101), issue #59), probada solo con simulados. Falta la prueba con sensores reales (issue #19).
 
 Sobre la limitación «Chrome pide elegir el sensor una vez por sesión»:
 

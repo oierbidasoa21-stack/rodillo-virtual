@@ -196,3 +196,17 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Técnica · El 8080 del perfil normal solo en `127.0.0.1`**: el usuario usa la app en su ordenador, y desde otros equipos hace falta HTTPS (perfil `prod`) de todos modos.
 - **Proceso · Nada de PR encadenados**: con _squash_, cada fusión desfasa al siguiente. La cadena #90–#93 se fusionó con merge normal, como excepción, porque aún no está activo el _ruleset_ que obliga a _squash_.
 - **Usuario · Arco de meta y cámara de llegada descartados** (T16, #57 cerrado). La Fase 15a queda en 6 tareas.
+
+## 2026-11-28 — Fase 15a · Mejoras aceptadas (decisiones técnicas)
+
+- **Técnica · Pulso máximo sin versión nueva de Dexie** (#58). `Workout.maxHr`, `Block.maxHr` y `SessionSummary.hrCap` son opcionales, los índices no cambian y lo guardado sin ellos sigue siendo válido. `migrateWorkout` conserva el tope, admite los nombres de zona de antes de la Fase 9 y descarta valores imposibles. La copia de seguridad valida `hrCap` y lo omite si no cuadra. Aprobado por el coordinador.
+- **Técnica · Un tope por zona se pasa con el mismo redondeo que clasifica una lectura**: ppm/6 redondeado mayor que el final de la zona. Así «No pasar de Z4» y el color de zona del player nunca se contradicen. La última zona no tiene final, así que no sirve de tope.
+- **Técnica · El aviso del pulso máximo calla los de zona** mientras suena, y se repite cada 10 s, sin las esperas de los avisos de zona. Es una alarma: no puede esperar 25 s.
+- **Técnica · `localStorage` para los ids de sensores recordados** (#59). Es una comodidad, no un dato importante: si se pierde, Chrome vuelve a pedir el sensor como antes. Por eso no va en Dexie. Aprobado por el coordinador.
+- **Técnica · Reconexión de Bluetooth solo si Chrome la ofrece**: `getDevices()` y `watchAdvertisements()`, que necesitan la opción experimental de Chrome, con una espera de 30 s. Si no están, todo sigue como antes. Desconectar a mano olvida el sensor, para que no vuelva solo.
+- **Técnica · Strava opción (b) con TCX** (#56): descarga al guardar, activada por defecto y con interruptor en Ajustes, y un botón que abre la página de subida de Strava. Las sesiones con sensores simulados no se descargan ni ofrecen subirse, para no llevar datos inventados a Strava. Las rutas de ejemplo no llevan posición, porque son inventadas. El FIT llega en la 15b.
+- **Técnica · La cuenta atrás de los últimos 5 s va dentro del reloj** (#60), con la misma altura de caja, en lugar de una capa por encima. La capa tapaba el reloj y movía la pantalla. Sin animaciones si el sistema pide menos movimiento.
+- **Técnica · Etiqueta del fantasma de tamaño fijo en pantalla** (`sizeAttenuation={false}`): lejos, una etiqueta en el mundo 3D no se leía.
+- **Técnica · «Inicio» como pestaña por defecto** (#55): la acción más probable al abrir la app es empezar la sesión del plan. El player sigue volviendo a «Sesiones» al cerrar, que es lo que dice su botón. Las sesiones simuladas no cuentan en la semana ni en la forma, igual que en el historial.
+- **Técnica · Calidad del 3D por defecto alta** (#54), que es como se veía hasta ahora. La vegetación se aclara con la secuencia áurea para que, en baja, no queden huecos ni filas.
+- **Técnica · nginx 1.31** (Dependabot #94): la rama _mainline_ pasó de 1.29 a 1.31. Docs al día (`docs/despliegue/`).
