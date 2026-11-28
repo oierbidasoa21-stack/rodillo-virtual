@@ -15,6 +15,12 @@ RUN npm run build
 # nginx-unprivileged runs as the nginx user (uid 101), listens on 8080 and keeps
 # its pid and temporary files in /tmp, so the container can run read-only.
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
+# Alpine fixes reach the package mirror before a new base image is published:
+# apply them at build time (Trivy in CI fails on a fixable critical one), and
+# drop curl, which nothing in the image needs (the healthcheck uses wget).
+USER root
+RUN apk upgrade --no-cache && apk del --no-cache curl
+USER 101
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY docker/security-headers.conf /etc/nginx/snippets/security-headers.conf
 COPY --from=build /app/dist /usr/share/nginx/html
