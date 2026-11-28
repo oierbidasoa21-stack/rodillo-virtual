@@ -1,3 +1,4 @@
+import type { HrCap } from '../zones/hrCap';
 import { type ZoneId, isZoneId } from '../zones/zones';
 
 export const BLOCK_KINDS = ['warm', 'work', 'rec', 'cool', 'steady'] as const;
@@ -26,6 +27,8 @@ export interface Block {
   target: BlockTarget;
   kind: BlockKind;
   note: string;
+  /** Ceiling for this block, over the session's. Optional. */
+  maxHr?: HrCap;
 }
 
 /** Repeats its blocks `times` times. One level only: no nested repeats. */
@@ -42,6 +45,8 @@ export interface Workout {
   name: string;
   description: string;
   blocks: WorkoutItem[];
+  /** Heart rate ceiling for the whole session. Optional; a block's own one wins. */
+  maxHr?: HrCap;
 }
 
 /** A block in the flat, playable list, with its position inside a repeat. */
@@ -72,4 +77,12 @@ export function makeRepeat(times: number, items: Block[]): Repeat {
 /** The heart rate zone a block targets, or null for power blocks. */
 export function hrZoneOf(block: Pick<Block, 'target'>): ZoneId | null {
   return block.target.type === 'hr' ? block.target.zoneId : null;
+}
+
+/** The ceiling that applies to a step: its own, else the session's, else none. */
+export function capOfStep(
+  step: Pick<Block, 'maxHr'>,
+  workout: Pick<Workout, 'maxHr'>,
+): HrCap | null {
+  return step.maxHr ?? workout.maxHr ?? null;
 }

@@ -299,3 +299,21 @@ describe('workout on a route', () => {
     expect(s.load).toBeCloseTo(20, 9); // 10′ in Z2 × 2, from the blocks
   });
 });
+
+describe('buildSessionSummary with a heart rate ceiling (phase 15a)', () => {
+  const steps = expandWorkout([makeBlock(600, 'Z4')]);
+  const p = tick(togglePlay(createPlayer(steps)).state, 600).state;
+  const base = { id: 'c', dateMs: 0, workoutName: 'Umbral', player: p, weightKg: 70 };
+
+  it('keeps the time under and over the ceiling', () => {
+    const s = buildSessionSummary({ ...base, hrCap: { cappedSec: 540, aboveSec: 45 } });
+    expect(s.hrCap).toEqual({ cappedSec: 540, aboveSec: 45 });
+  });
+
+  it('leaves it out when no block had one', () => {
+    expect(
+      buildSessionSummary({ ...base, hrCap: { cappedSec: 0, aboveSec: 0 } }),
+    ).not.toHaveProperty('hrCap');
+    expect(buildSessionSummary(base)).not.toHaveProperty('hrCap');
+  });
+});

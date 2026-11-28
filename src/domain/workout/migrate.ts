@@ -1,3 +1,4 @@
+import { parseHrCap } from '../zones/hrCap';
 import { toZoneId } from '../zones/zones';
 import { BLOCK_KINDS, type Block, type BlockKind, type Workout, type WorkoutItem } from './types';
 
@@ -12,7 +13,14 @@ function migrateBlock(raw: unknown): Block | null {
   if (!isRecord(raw) || raw.type !== 'block' || typeof raw.durationSec !== 'number') return null;
   const kind: BlockKind = BLOCK_KINDS.find((k) => k === raw.kind) ?? 'steady';
   const note = typeof raw.note === 'string' ? raw.note : '';
-  const base = { type: 'block' as const, durationSec: raw.durationSec, kind, note };
+  const maxHr = parseHrCap(raw.maxHr);
+  const base = {
+    type: 'block' as const,
+    durationSec: raw.durationSec,
+    kind,
+    note,
+    ...(maxHr ? { maxHr } : {}),
+  };
 
   const t = raw.target;
   if (isRecord(t)) {
@@ -41,10 +49,12 @@ function migrateItem(raw: unknown): WorkoutItem | null {
 /** Normalises a stored workout (any version) to the current model. */
 export function migrateWorkout(raw: unknown): Workout | null {
   if (!isRecord(raw) || typeof raw.id !== 'string' || !Array.isArray(raw.blocks)) return null;
+  const maxHr = parseHrCap(raw.maxHr);
   return {
     id: raw.id,
     name: typeof raw.name === 'string' ? raw.name : '',
     description: typeof raw.description === 'string' ? raw.description : '',
     blocks: raw.blocks.map(migrateItem).filter((i): i is WorkoutItem => i !== null),
+    ...(maxHr ? { maxHr } : {}),
   };
 }
