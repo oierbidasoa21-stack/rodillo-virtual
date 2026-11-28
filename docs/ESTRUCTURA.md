@@ -2,7 +2,7 @@
 
 Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas a la raíz del repositorio.
 
-**Cómo se reparte el código.** La lógica que calcula cosas (zonas, métricas, física, rutas, mundo 3D) está en `src/domain/`. Es pura: no sabe nada de React ni del navegador y se prueba en Node. Alrededor están los sensores (`src/sensors/`), la grabación (`src/recording/`), el almacenamiento (`src/storage/`), el estado (`src/store/`) y la interfaz (`src/ui/`).
+**Cómo se reparte el código.** La lógica que calcula cosas (zonas, métricas, física, rutas, mundo 3D) está en `src/domain/`. Es pura: no sabe nada de React ni del navegador y se prueba en Node. Alrededor están los sensores (`src/sensors/`), las teselas del paisaje real (`src/tiles/`), la grabación (`src/recording/`), el almacenamiento (`src/storage/`), el estado (`src/store/`) y la interfaz (`src/ui/`).
 
 **Tests.** Cada `nombre.test.ts` está junto al archivo que prueba (por ejemplo, `fitness.test.ts` junto a `fitness.ts`). No se listan uno a uno.
 
@@ -152,6 +152,26 @@ Qué hay en cada carpeta y para qué sirve cada archivo. Las rutas son relativas
 | `plan.ts`         | Leer el plan semanal (`rodillo-virtual/plan@1`) con todos sus errores; días hechos. |
 | `report.ts`       | Informe para el agente: zonas, forma y sesiones de las últimas 4 semanas.           |
 | `instructions.ts` | Instrucciones para el agente (las que se descargan desde la app).                   |
+
+**`geo/`** · paisaje real (Fase 10)
+
+| Archivo         | Para qué sirve                                                                                      |
+| --------------- | --------------------------------------------------------------------------------------------------- |
+| `mercator.ts`   | Teselas Web Mercator: lon/lat ↔ tesela, teselas que cubren una zona, zona alrededor de una ruta.    |
+| `terrarium.ts`  | Leer la altura guardada en los colores de una tesela de relieve (Terrarium).                        |
+| `heights.ts`    | Mosaico de alturas con interpolación bilineal; sin dato donde falta una tesela, nunca una supuesta. |
+| `localFrame.ts` | Metros locales del mundo 3D ↔ lon/lat (el mismo marco que la carretera).                            |
+| `landscape.ts`  | Qué teselas necesita el paisaje de una ruta (cerca y horizonte) y cuánto pesan.                     |
+
+### `src/tiles/` — descarga y caché de teselas (Fase 10)
+
+| Archivo       | Para qué sirve                                                                                        |
+| ------------- | ----------------------------------------------------------------------------------------------------- |
+| `sources.ts`  | Direcciones de los dos servidores de teselas (los únicos que admite la CSP) y su atribución.          |
+| `download.ts` | Descarga con pocas peticiones a la vez, progreso, cancelación y fallos sin inventar nada.             |
+| `cache.ts`    | Guardar, leer y borrar teselas en Cache Storage (`rodillo-virtual-tiles`), para usarlas sin conexión. |
+| `decode.ts`   | Pasar una tesela de relieve a alturas en el navegador.                                                |
+| `csp.test.ts` | Comprueba que `connect-src` de la CSP y la lista de servidores coinciden.                             |
 
 ### `src/sensors/` — sensores (Web Bluetooth y simulados)
 

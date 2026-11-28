@@ -44,7 +44,7 @@ Las dos imágenes base están **fijadas por digest** (`@sha256:…`): nadie pued
 - Cualquier ruta desconocida devuelve `index.html`.
 - `server_tokens off`: no dice qué versión de nginx es.
 - **Cabeceras de seguridad**, en `security-headers.conf`, incluido en el `server` y **en cada `location`**. En nginx, un `add_header` dentro de un `location` borra los heredados; si se añade un `location` nuevo, hay que incluir ahí el archivo.
-  - **Content-Security-Policy**: la app solo puede cargar código, estilos, fuentes y datos de su propio origen (`'self'`). Las imágenes pueden ser también `data:` y `blob:` (texturas y descargas). Nada de `unsafe-inline` ni `unsafe-eval`. `frame-ancestors 'none'`: nadie puede meterla en un iframe.
+  - **Content-Security-Policy**: la app solo puede cargar código, estilos y fuentes de su propio origen (`'self'`). Las imágenes pueden ser también `data:` y `blob:` (texturas y descargas). Para datos (`connect-src`), además del propio origen, solo los dos servidores de teselas del paisaje real (Fase 10): `https://elevation-tiles-prod.s3.amazonaws.com` (relieve) y `https://tiles.maps.eox.at` (satélite). Nada de `unsafe-inline` ni `unsafe-eval`. `frame-ancestors 'none'`: nadie puede meterla en un iframe.
   - `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, `Cross-Origin-Opener-Policy: same-origin` y `X-Frame-Options: DENY`.
   - **Permissions-Policy**: solo Bluetooth, mantener la pantalla encendida y pantalla completa, y solo en el propio sitio. Cámara, micrófono, ubicación, pagos, USB, puerto serie y HID desactivados.
 
@@ -126,9 +126,9 @@ Para usar una versión publicada en lugar de construirla, cambia en `compose.yam
 
 ## Abrir la CSP a un servicio nuevo
 
-La CSP solo deja usar el propio origen. Cuando una fase necesite un servicio externo (por ejemplo, las teselas de mapas de la Fase 10):
+La CSP solo deja usar el propio origen y, para datos, los dos servidores de teselas de la Fase 10. Cuando una fase necesite otro servicio externo:
 
-1. Añade el dominio, solo ese, a la directiva que toque en `docker/security-headers.conf`: `img-src` para imágenes, `connect-src` para `fetch`.
+1. Añade el dominio, solo ese, a la directiva que toque en `docker/security-headers.conf`: `img-src` para imágenes, `connect-src` para `fetch`. Si lo pide el código de `src/tiles/`, añádelo también en `src/tiles/sources.ts`: el test `src/tiles/csp.test.ts` falla si la lista y la política no coinciden.
 2. La `<meta>` de Pages se actualiza sola en el siguiente build.
 3. Comprueba que no hay violaciones con `docs/contexto/pruebas/scripts/fase14-csp.mjs`, contra `npm run preview` y contra Docker.
 
