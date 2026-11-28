@@ -182,3 +182,16 @@ Cada decisión con su fecha, quién la tomó (**usuario** o **técnica**, propue
 - **Técnica · La imagen en GHCR por versión pasa a la Fase 14** (#52), junto a la firma y el SBOM (#50).
 - **Técnica · Imagen para compartir en JPG** (117 KB frente a 774 KB en PNG); GitHub acepta los dos.
 - **Proceso · Contexto en un PR de cierre de fase**: los PR de una fase se revisan en paralelo y, si todos tocaran `estado/`, `registro/` y `sesiones/`, chocarían al fusionarlos. Acordado con el coordinador, que solo toca `PENDIENTES.md` (decisiones del usuario), `decisiones/` (al final), `estudios/` y `seguimiento.html`.
+
+## 2026-11-28 — Fase 14 · Docker de producción (decisiones técnicas)
+
+- **Técnica · Node 24 se queda** en Docker, CI y `.nvmrc` (LTS hasta 2028). Subir a Node 26 sería un cambio de todo el proyecto; se cerró el #72 de Dependabot.
+- **Técnica · nginx 1.29 sin root** (`nginxinc/nginx-unprivileged`, rama _mainline_, la recomendada por nginx); se cerró el #74.
+- **Técnica · TypeScript 7 en espera**: typescript-eslint aún exige `typescript <6.1`. `dependabot.yml` ignora las mayores de TypeScript hasta que lo admita (#77 cerrado).
+- **Técnica · github-script 9** en los dos workflows (#85), en lugar del #73 de Dependabot, que solo tocaba uno. Los scripts no usan lo que rompe la v9.
+- **Técnica · Una sola fuente para la CSP**: `docker/security-headers.conf`. nginx la incluye en cada `location` (un `add_header` en un `location` borra los heredados) y un plugin de Vite la copia como `<meta>` para GitHub Pages, sin `frame-ancestors`, que solo vale como cabecera. Solo en `build`, porque el servidor de desarrollo necesita scripts en línea.
+- **Técnica (aprobada por el coordinador) · `apk upgrade` y quitar `curl` en la imagen**: la base fijada por digest traía paquetes con arreglo (1 crítico). Se prioriza la seguridad sobre la reproducibilidad exacta: el digest sigue fijando la base, solo entran parches de la misma Alpine y Dependabot sube la base.
+- **Técnica · Trivy bloquea solo críticos con arreglo**; todo lo demás va a Code scanning. `npm audit` bloquea desde «alto» solo en dependencias de producción; las de desarrollo no llegan al navegador.
+- **Técnica · La imagen se publica desde el workflow de release-please**: una release creada con `GITHUB_TOKEN` no lanza workflows `on: release`. Firma cosign sin clave (identidad OIDC del workflow) y SBOM y procedencia de BuildKit.
+- **Técnica · El 8080 del perfil normal solo en `127.0.0.1`**: el usuario usa la app en su ordenador, y desde otros equipos hace falta HTTPS (perfil `prod`) de todos modos.
+- **Proceso · Nada de PR encadenados**: con _squash_, cada fusión desfasa al siguiente. La cadena #90–#93 se fusionó con merge normal, como excepción, porque aún no está activo el _ruleset_ que obliga a _squash_.

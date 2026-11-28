@@ -41,6 +41,18 @@ La app se puede instalar y después funciona **sin conexión**.
 2. Se abre en su propia ventana y aparece en el menú Inicio de Windows.
 3. Cuando hay una versión nueva sale el aviso **«Nueva versión disponible»** con el botón **Actualizar**. La app nunca se recarga sola, y el aviso no sale mientras haces una sesión o editas una.
 
+### Usarla con Docker (opcional)
+
+Lo normal es la web publicada. Si prefieres tenerla en tu ordenador sin depender de GitHub, con [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado:
+
+1. Descarga el repositorio y, en su carpeta, ejecuta `docker compose up -d`.
+2. Abre **http://localhost:8080** en Chrome. Solo se abre desde ese ordenador. El Bluetooth funciona, porque Chrome trata `localhost` como seguro.
+3. Para pararla: `docker compose down`. Para actualizarla: `git pull` y `docker compose up -d --build`.
+
+En un **servidor propio con dominio**, `docker compose --profile prod up -d` la sirve con HTTPS (certificado de Let's Encrypt), que hace falta para el Bluetooth y para instalarla fuera de `localhost`. Los pasos están en [`docs/despliegue/`](despliegue/README.md).
+
+Cada dirección (la web publicada, `localhost:8080` o tu dominio) guarda **sus propios datos**: para pasarlos, usa la copia de seguridad ([apartado 10](#10-datos-y-copia-de-seguridad)).
+
 ### Tus datos
 
 En **Ajustes → Tus datos** pon tu **peso**, el **peso de la bici** y la **circunferencia de rueda** (2155 mm para 700×32, 2105 mm para 700×25). El peso sirve para las kcal y la velocidad virtual en las rutas; la rueda, para pasar vueltas de rueda a velocidad.
