@@ -31,6 +31,8 @@ export interface QualityPreset {
   realFarM: number;
   /** With real landscape: where the haze becomes solid. */
   realFogEndM: number;
+  /** Largest side, in pixels, of the satellite photo texture (near terrain). */
+  imageryMaxPx: number;
 }
 
 /** "Alta" is what the 3D view drew before there was a choice. */
@@ -47,6 +49,7 @@ export const QUALITY_PRESETS: Record<GraphicsQuality, QualityPreset> = {
     realTerrainVertices: 40_000,
     realFarM: 9_000,
     realFogEndM: 8_000,
+    imageryMaxPx: 2048,
   },
   medium: {
     shadows: true,
@@ -60,6 +63,7 @@ export const QUALITY_PRESETS: Record<GraphicsQuality, QualityPreset> = {
     realTerrainVertices: 90_000,
     realFarM: 16_000,
     realFogEndM: 14_000,
+    imageryMaxPx: 4096,
   },
   high: {
     shadows: true,
@@ -73,6 +77,7 @@ export const QUALITY_PRESETS: Record<GraphicsQuality, QualityPreset> = {
     realTerrainVertices: 160_000,
     realFarM: 27_000,
     realFogEndM: 25_000,
+    imageryMaxPx: 8192,
   },
 };
 

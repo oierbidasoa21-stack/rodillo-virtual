@@ -12,6 +12,7 @@ describe('graphics quality presets', () => {
       'shadowMapPx',
       'realTerrainVertices',
       'realFarM',
+      'imageryMaxPx',
     ] as const) {
       expect(low[key]).toBeLessThan(medium[key]);
       expect(medium[key]).toBeLessThan(high[key]);
